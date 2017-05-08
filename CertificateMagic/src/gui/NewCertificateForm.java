@@ -81,8 +81,15 @@ public class NewCertificateForm extends JDialog {
 			certificateModels = cm.load();
 			//issuer.addItem("");
 			for (String k : certificateModels.keySet()) {
-				if(certificateModels.get(k).isCA() && certificateModels.get(k).isValid())
-					issuer.addItem(k);
+				CertificateModel certMod = certificateModels.get(k);
+				if(certMod.isCA() && certMod.isValid()) {
+					Date now = new Date();
+					if(now.before(certMod.getEndDate())){
+						issuer.addItem(k);
+					} else {
+						certMod.setValid(false);
+					}
+				}
 			}
 		} catch (ClassNotFoundException | IOException e2) {
 			e2.printStackTrace();
@@ -210,7 +217,7 @@ public class NewCertificateForm extends JDialog {
 				//Pravljenje i cuvanje sertifikata za buduce ponude u combo boxu
 				cm = new CertificateModel(name_text.getText(), oUnit_text.getText(), oUnit_text.getText(), 
 						oName_text.getText(), oUnit_text.getText(), 
-						country_text.getText(), email_text.getText(), uid, isCA, randomNum);
+						country_text.getText(), email_text.getText(), uid, isCA, randomNum, endDate);
 				certificateModels.put(name_text.getText(), cm);
 				
 				try {

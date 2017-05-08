@@ -60,7 +60,7 @@ public class EnterCertificateForm extends JDialog{
 						if(mode.equals("OPEN")){
 							OpenCertificateDisplay ocd = new OpenCertificateDisplay(cm);
 							ocd.setVisible(true);
-						} else {
+						} else if (mode.equals("WITHDRAW")){
 							cm.setValid(false);
 							try {
 								helperCertificate.save(certificateModels);
@@ -68,6 +68,12 @@ public class EnterCertificateForm extends JDialog{
 								e1.printStackTrace();
 							}
 							JOptionPane.showMessageDialog(new JFrame(), "Certificate successfully withdrawn.", "Success", JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							if(cm.isValid()) {
+								JOptionPane.showMessageDialog(new JFrame(), "Certificate is valid.", "Info", JOptionPane.INFORMATION_MESSAGE);
+							} else {
+								JOptionPane.showMessageDialog(new JFrame(), "Certificate isn't valid.", "Info", JOptionPane.INFORMATION_MESSAGE);
+							}
 						}
 						break;
 					}

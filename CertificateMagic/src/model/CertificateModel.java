@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ public class CertificateModel implements Serializable {
 	private int serialNumber;
 	private boolean isValid;
 	private KeyStoreModel ks;
+	private Date endDate;
 	private Map<Integer, KeyStoreModel> keyset = new HashMap<Integer, KeyStoreModel>();
 	
 	public CertificateModel() {
@@ -31,7 +33,7 @@ public class CertificateModel implements Serializable {
 	}
 	
 	public CertificateModel(String common_name, String surname, String givenname, String oName,
-			String oUnit, String country_text, String email, String uid, boolean isCA, int serialNumber) {
+			String oUnit, String country_text, String email, String uid, boolean isCA, int serialNumber, Date endDate) {
 		super();
 		this.common_name = common_name;
 		this.surname = surname;
@@ -44,8 +46,17 @@ public class CertificateModel implements Serializable {
 		this.isCA = isCA;
 		this.serialNumber = serialNumber;
 		this.isValid = true;
+		this.endDate = endDate;
 	}
 	
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 	public boolean isValid() {
 		return isValid;
 	}

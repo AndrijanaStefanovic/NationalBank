@@ -62,6 +62,19 @@ public class MainFrame extends JFrame {
 		
 		file.add(withdrawCertificate);
 		
+		JMenuItem statusCertificate = new JMenuItem("Check certificate status");
+		statusCertificate.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				EnterCertificateForm cscf = new EnterCertificateForm("CHECK_STATUS");
+				cscf.setVisible(true);
+				
+			}
+		});
+		
+		file.add(statusCertificate);
+		
 		menuBar.add(file);
 		setJMenuBar(menuBar);
 	}
