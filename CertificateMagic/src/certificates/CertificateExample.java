@@ -19,9 +19,9 @@ import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import data.IssuerData;
-import data.SubjectData;
-import keystores.KeyStoreWriter;
+import security.IssuerData;
+import security.KeyStoreWriter;
+import security.SubjectData;
 
 public class CertificateExample{
 	public CertificateExample() {

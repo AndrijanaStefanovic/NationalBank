@@ -1,4 +1,4 @@
-package keystores;
+package security;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
