@@ -29,13 +29,39 @@ public class MainFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				NewCertificateForm f = new NewCertificateForm();
 				f.setVisible(true);
 			}
 		});
 
 		file.add(newSertificate);
+		
+		JMenuItem openCertificate = new JMenuItem("Open Certificate");
+		openCertificate.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				EnterCertificateForm ocf = new EnterCertificateForm("OPEN");
+				ocf.setVisible(true);
+				
+			}
+		});
+		
+		file.add(openCertificate);
+		
+		JMenuItem withdrawCertificate = new JMenuItem("Withdraw Certificate");
+		withdrawCertificate.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				EnterCertificateForm wcf = new EnterCertificateForm("WITHDRAW");
+				wcf.setVisible(true);
+				
+			}
+		});
+		
+		file.add(withdrawCertificate);
+		
 		menuBar.add(file);
 		setJMenuBar(menuBar);
 	}

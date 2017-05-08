@@ -63,13 +63,12 @@ public class PasswordForm extends JDialog{
 					dispose();
 					
 				} else {
-					System.out.println("NE POKLAPAJU SE!");
+					JOptionPane.showMessageDialog(new JFrame(), "Incorrect password!", "Ok", JOptionPane.WARNING_MESSAGE);
+					return;
 				}
 				dispose();
 			}
 		});
-			
-			
 	}
 	
 	

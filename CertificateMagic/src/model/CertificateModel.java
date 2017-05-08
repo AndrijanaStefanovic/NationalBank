@@ -20,6 +20,9 @@ public class CertificateModel implements Serializable {
 	private String country_text;
 	private String email;
 	private String uid;
+	private boolean isCA;
+	private int serialNumber;
+	private boolean isValid;
 	private KeyStoreModel ks;
 	private Map<Integer, KeyStoreModel> keyset = new HashMap<Integer, KeyStoreModel>();
 	
@@ -28,7 +31,7 @@ public class CertificateModel implements Serializable {
 	}
 	
 	public CertificateModel(String common_name, String surname, String givenname, String oName,
-			String oUnit, String country_text, String email, String uid) {
+			String oUnit, String country_text, String email, String uid, boolean isCA, int serialNumber) {
 		super();
 		this.common_name = common_name;
 		this.surname = surname;
@@ -38,8 +41,35 @@ public class CertificateModel implements Serializable {
 		this.country_text = country_text;
 		this.email = email;
 		this.uid = uid;
+		this.isCA = isCA;
+		this.serialNumber = serialNumber;
+		this.isValid = true;
 	}
 	
+	public boolean isValid() {
+		return isValid;
+	}
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+	
+	public int getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(int serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+	
+	public boolean isCA() {
+		return isCA;
+	}
+
+	public void setCA(boolean isCA) {
+		this.isCA = isCA;
+	}
+
 	public KeyStoreModel getKs() {
 		return ks;
 	}

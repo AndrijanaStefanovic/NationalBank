@@ -20,9 +20,12 @@ import java.util.UUID;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -55,11 +58,13 @@ public class NewCertificateForm extends JDialog {
 	private JTextField country_text = new JTextField(20);
 	private JTextField email_text = new JTextField(20);
 	
+	private JCheckBox check_box = new JCheckBox();
+	
 	private JButton save = new JButton("Ok");
 	private JButton cancel = new JButton("Cancel");
 	
 	private JPanel main_panel = new JPanel();
-	private JPanel[] main_panels = new JPanel[9];
+	private JPanel[] main_panels = new JPanel[10];
 	
 	
 	private CertificateModel cm = new CertificateModel();
@@ -71,12 +76,13 @@ public class NewCertificateForm extends JDialog {
 		
 		setupDialog();
 		
-		//ucitavanje sertifikata za combo box
+		//ucitavanje CA sertifikata za combo box
 		try {
 			certificateModels = cm.load();
-			issuer.addItem("");
+			//issuer.addItem("");
 			for (String k : certificateModels.keySet()) {
-				issuer.addItem(k);
+				if(certificateModels.get(k).isCA() && certificateModels.get(k).isValid())
+					issuer.addItem(k);
 			}
 		} catch (ClassNotFoundException | IOException e2) {
 			e2.printStackTrace();
@@ -87,6 +93,20 @@ public class NewCertificateForm extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e1) {
 
+				// preuzima se izabrano sertifikaciono telo
+				String nameOfCA = (String) issuer.getSelectedItem();
+				
+				if(nameOfCA.equals("") && !check_box.isSelected()){
+					JOptionPane.showMessageDialog(new JFrame(), "Please choose a CA certificate.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				if(name_text.getText().trim().equals("") || oUnit_text.getText().trim().equals("") || oName_text.getText().trim().equals("") ||
+						lName_text.getText().trim().equals("") || sName_text.getText().trim().equals("") || country_text.getText().trim().equals("") || email_text.getText().trim().equals("")){
+					JOptionPane.showMessageDialog(new JFrame(), "Please enter all values!", "Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
 				// klasa koja ima metodu koja od IssuerData i SubjectData napravi sertifikat
 				CertificateGenerator cg = new CertificateGenerator();
 				// generise se par kljuceva za izdavaoca
@@ -96,9 +116,6 @@ public class NewCertificateForm extends JDialog {
 				X500NameBuilder subjectBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 				X500NameBuilder issuerBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
-				// preuzima se izabrano sertifikaciono telo
-				String nameOfCA = (String) issuer.getSelectedItem();
-				
 				//U slucaju sertifikata koji nije samopotpisan bice potrebno ovo:
 				CertificateModel issuerCertificate =  new CertificateModel();
 				
@@ -184,10 +201,16 @@ public class NewCertificateForm extends JDialog {
 					e.printStackTrace();
 				}
 				
+				//razlika izmedju fizickih lica i sertifikacionih tela
+				boolean isCA = false;
+				if(check_box.isSelected()) {
+					isCA = true;
+				}
+				
 				//Pravljenje i cuvanje sertifikata za buduce ponude u combo boxu
 				cm = new CertificateModel(name_text.getText(), oUnit_text.getText(), oUnit_text.getText(), 
 						oName_text.getText(), oUnit_text.getText(), 
-						country_text.getText(), email_text.getText(), uid);
+						country_text.getText(), email_text.getText(), uid, isCA, randomNum);
 				certificateModels.put(name_text.getText(), cm);
 				
 				try {
@@ -195,17 +218,24 @@ public class NewCertificateForm extends JDialog {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+				System.out.println(randomNum);
 				if(nameOfCA.equalsIgnoreCase("")){
 					//ZA SAMOPOTPISANE - POTREBNA SAMO PRVA DVA PARAMETRA
 					KeyStoreForm ksf = new KeyStoreForm(keyPairIssuer, cert, name_text.getText(), null, cm, null) ;
 					ksf.setVisible(true);
 				} else {
-					System.out.println(issuerCertificate);
 					PasswordForm pf = new PasswordForm(issuerCertificate.getKs().getPassAlias(), keyPairIssuer, cert, name_text.getText(), cm, issuerCertificate);
 					pf.setVisible(true);
 				}
-
+				dispose();
+			}
+		});
+		
+		cancel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
 			}
 		});
 	}
@@ -224,7 +254,7 @@ public class NewCertificateForm extends JDialog {
 			main_panels[i] = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		}
 		//main_panels[8] = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		main_panels[8] = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		main_panels[9] = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
 		main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
 
@@ -252,8 +282,11 @@ public class NewCertificateForm extends JDialog {
 		main_panels[7].add(email);
 		main_panels[7].add(email_text);
 
-		main_panels[8].add(save);
-		main_panels[8].add(cancel);
+		main_panels[8].add(check_box);
+		check_box.setText("for CA");
+		
+		main_panels[9].add(save);
+		main_panels[9].add(cancel);
 		
 		for (int i = 0; i < main_panels.length; i++) {
 			main_panel.add(main_panels[i]);
