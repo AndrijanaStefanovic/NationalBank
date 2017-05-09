@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 
 import model.CertificateModel;
 import model.KeyStoreModel;
-import security.KeyStoreWriter;
+import securitydata.KeyStoreWriter;
 
 public class KeyStoreForm extends JDialog {
 	

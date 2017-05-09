@@ -30,13 +30,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import model.CertificateModel;
+import securitydata.IssuerData;
+import securitydata.SubjectData;
 
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 
 import certificates.CertificateGenerator;
-import security.IssuerData;
-import security.SubjectData;
 
 public class NewCertificateForm extends JDialog {
 

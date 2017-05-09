@@ -22,8 +22,8 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
-import security.IssuerData;
-import security.SubjectData;
+import securitydata.IssuerData;
+import securitydata.SubjectData;
 import util.Base64Utility;
 
 public class CertificateGenerator {
@@ -93,10 +93,8 @@ public class CertificateGenerator {
             os.close();
             System.out.println("Sertifikat je uspesno sacuvan!");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (CertificateEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
        
