@@ -6,7 +6,7 @@
 //
 
 
-package com.example.service.paymentorder;
+package com.example.service.mt103;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,8 +24,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="info" type="{http://service.example.com/paymentOrder}T_string255"/>
- *         &lt;element name="accountNumber" type="{http://service.example.com/paymentOrder}T_accountNumber"/>
+ *         &lt;element name="info" type="{http://service.example.com/mt103}T_string255"/>
+ *         &lt;element name="accountNumber" type="{http://service.example.com/mt103}T_accountNumber"/>
  *         &lt;element name="referenceNumber">
  *           &lt;simpleType>
  *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">

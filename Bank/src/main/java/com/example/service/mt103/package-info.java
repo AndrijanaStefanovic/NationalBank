@@ -5,5 +5,5 @@
 // Generated on: 2017.06.05 at 04:22:51 PM CEST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://service.example.com/paymentOrder", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package com.example.service.paymentorder;
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://service.example.com/mt103", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+package com.example.service.mt103;

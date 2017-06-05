@@ -6,7 +6,7 @@
 //
 
 
-package com.example.service.paymentorder;
+package com.example.service.mt103;
 
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,12 +36,21 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *             &lt;/restriction>
  *           &lt;/simpleType>
  *         &lt;/element>
- *         &lt;element name="creditor" type="{http://service.example.com/paymentOrder}T_companyData"/>
- *         &lt;element name="debtor" type="{http://service.example.com/paymentOrder}T_companyData"/>
+ *         &lt;element name="creditorsBank" type="{http://service.example.com/mt103}T_bankData"/>
+ *         &lt;element name="debtorsBank" type="{http://service.example.com/mt103}T_bankData"/>
+ *         &lt;element name="creditor" type="{http://service.example.com/mt103}T_companyData"/>
+ *         &lt;element name="debtor" type="{http://service.example.com/mt103}T_companyData"/>
+ *         &lt;element name="paymentPurpose" type="{http://service.example.com/mt103}T_string255"/>
  *         &lt;element name="dateOfValue" type="{http://www.w3.org/2001/XMLSchema}date"/>
  *         &lt;element name="dateOfPayment" type="{http://www.w3.org/2001/XMLSchema}date"/>
- *         &lt;element name="paymentPurpose" type="{http://service.example.com/paymentOrder}T_string255"/>
- *         &lt;element name="amount" type="{http://service.example.com/paymentOrder}T_decimal152"/>
+ *         &lt;element name="total">
+ *           &lt;simpleType>
+ *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}decimal">
+ *               &lt;totalDigits value="17"/>
+ *               &lt;fractionDigits value="2"/>
+ *             &lt;/restriction>
+ *           &lt;/simpleType>
+ *         &lt;/element>
  *         &lt;element name="currency">
  *           &lt;simpleType>
  *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -49,7 +58,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *             &lt;/restriction>
  *           &lt;/simpleType>
  *         &lt;/element>
- *         &lt;element name="urgent" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -61,24 +69,31 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "messageId",
+    "creditorsBank",
+    "debtorsBank",
     "creditor",
     "debtor",
+    "paymentPurpose",
     "dateOfValue",
     "dateOfPayment",
-    "paymentPurpose",
-    "amount",
-    "currency",
-    "urgent"
+    "total",
+    "currency"
 })
-@XmlRootElement(name = "paymentOrder")
-public class PaymentOrder {
+@XmlRootElement(name = "mt103")
+public class Mt103 {
 
     @XmlElement(required = true)
     protected String messageId;
     @XmlElement(required = true)
+    protected TBankData creditorsBank;
+    @XmlElement(required = true)
+    protected TBankData debtorsBank;
+    @XmlElement(required = true)
     protected TCompanyData creditor;
     @XmlElement(required = true)
     protected TCompanyData debtor;
+    @XmlElement(required = true)
+    protected String paymentPurpose;
     @XmlElement(required = true)
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar dateOfValue;
@@ -86,12 +101,9 @@ public class PaymentOrder {
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar dateOfPayment;
     @XmlElement(required = true)
-    protected String paymentPurpose;
-    @XmlElement(required = true)
-    protected BigDecimal amount;
+    protected BigDecimal total;
     @XmlElement(required = true)
     protected String currency;
-    protected boolean urgent;
 
     /**
      * Gets the value of the messageId property.
@@ -115,6 +127,54 @@ public class PaymentOrder {
      */
     public void setMessageId(String value) {
         this.messageId = value;
+    }
+
+    /**
+     * Gets the value of the creditorsBank property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link TBankData }
+     *     
+     */
+    public TBankData getCreditorsBank() {
+        return creditorsBank;
+    }
+
+    /**
+     * Sets the value of the creditorsBank property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link TBankData }
+     *     
+     */
+    public void setCreditorsBank(TBankData value) {
+        this.creditorsBank = value;
+    }
+
+    /**
+     * Gets the value of the debtorsBank property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link TBankData }
+     *     
+     */
+    public TBankData getDebtorsBank() {
+        return debtorsBank;
+    }
+
+    /**
+     * Sets the value of the debtorsBank property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link TBankData }
+     *     
+     */
+    public void setDebtorsBank(TBankData value) {
+        this.debtorsBank = value;
     }
 
     /**
@@ -166,6 +226,30 @@ public class PaymentOrder {
     }
 
     /**
+     * Gets the value of the paymentPurpose property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPaymentPurpose() {
+        return paymentPurpose;
+    }
+
+    /**
+     * Sets the value of the paymentPurpose property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPaymentPurpose(String value) {
+        this.paymentPurpose = value;
+    }
+
+    /**
      * Gets the value of the dateOfValue property.
      * 
      * @return
@@ -214,51 +298,27 @@ public class PaymentOrder {
     }
 
     /**
-     * Gets the value of the paymentPurpose property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPaymentPurpose() {
-        return paymentPurpose;
-    }
-
-    /**
-     * Sets the value of the paymentPurpose property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPaymentPurpose(String value) {
-        this.paymentPurpose = value;
-    }
-
-    /**
-     * Gets the value of the amount property.
+     * Gets the value of the total property.
      * 
      * @return
      *     possible object is
      *     {@link BigDecimal }
      *     
      */
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getTotal() {
+        return total;
     }
 
     /**
-     * Sets the value of the amount property.
+     * Sets the value of the total property.
      * 
      * @param value
      *     allowed object is
      *     {@link BigDecimal }
      *     
      */
-    public void setAmount(BigDecimal value) {
-        this.amount = value;
+    public void setTotal(BigDecimal value) {
+        this.total = value;
     }
 
     /**
@@ -283,22 +343,6 @@ public class PaymentOrder {
      */
     public void setCurrency(String value) {
         this.currency = value;
-    }
-
-    /**
-     * Gets the value of the urgent property.
-     * 
-     */
-    public boolean isUrgent() {
-        return urgent;
-    }
-
-    /**
-     * Sets the value of the urgent property.
-     * 
-     */
-    public void setUrgent(boolean value) {
-        this.urgent = value;
     }
 
 }
