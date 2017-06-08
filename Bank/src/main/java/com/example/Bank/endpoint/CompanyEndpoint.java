@@ -25,6 +25,7 @@ public class CompanyEndpoint {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processBankStatementRequest")
 	@ResponsePayload
 	public ProcessBankStatementRequestResponse processBankStatementRequest(@RequestPayload ProcessBankStatementRequest request) {
+		System.out.println("*********************stiglo***********************************");
 		ProcessBankStatementRequestResponse response = new ProcessBankStatementRequestResponse();
 		BankStatement bs = new BankStatement();
 		bs.setAccountNumber("1234");
