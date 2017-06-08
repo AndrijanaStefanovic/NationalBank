@@ -1,5 +1,5 @@
 
-package com.example.service.jaxws;
+package com.example.Bank.service.jaxws;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "processPaymentOrderResponse", namespace = "http://service.example.com/")
+@XmlRootElement(name = "processPaymentOrderResponse", namespace = "http://service.Bank.example.com/")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "processPaymentOrderResponse", namespace = "http://service.example.com/")
+@XmlType(name = "processPaymentOrderResponse", namespace = "http://service.Bank.example.com/")
 public class ProcessPaymentOrderResponse {
 
     @XmlElement(name = "return", namespace = "")
