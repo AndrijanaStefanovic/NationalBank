@@ -11,7 +11,7 @@ import com.example.Company.model.BusinessPartner;
 import com.example.Company.repository.BusinessPartnerRepository;
 
 @Service
-public class BusinessPartnerIml implements BusinessPartnerService {
+public class BusinessPartnerServiceIml implements BusinessPartnerService {
 
 	@Autowired
 	private BusinessPartnerRepository businessPartnerRepostory;
