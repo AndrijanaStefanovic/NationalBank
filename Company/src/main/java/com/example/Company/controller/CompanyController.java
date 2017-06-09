@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.Company.model.BusinessPartner;
 import com.example.Company.model.Company;
-import com.example.Company.service.BusinessPartnerService;
 import com.example.Company.service.CompanyService;
 
 @RestController
