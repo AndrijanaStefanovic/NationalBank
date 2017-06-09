@@ -21,14 +21,20 @@ public class BusinessPartner {
 	@Column(length = 20, nullable = false)
 	private String kind;
 	
-	@Column(length = 55)
-	private String partnerAddress;
-	
 	@Column(length = 11, nullable = false)
 	private String partnerPIB;
 	
 	@Column(length = 18, nullable = false)
 	private String partnerAccount;	
+
+	@Column(length = 20, nullable = false)
+	private String referenceNumber;
+	
+	@Column(length = 2, nullable = false)
+	private String model;
+	
+	@Column(length = 55)
+	private String partnerAddress;
 	
 	@Column(length = 30)
 	private String email;	
@@ -38,17 +44,21 @@ public class BusinessPartner {
 
 	public BusinessPartner(String name, 
 						   String kind, 
-						   String partnerAddress, 
-						   String partnerPIB,
+						   String partnerPIB, 
 						   String partnerAccount, 
+						   String referenceNumber,
+						   String model, 
+						   String partnerAddress, 
 						   String email, 
 						   Company company) {
 		super();
 		this.name = name;
 		this.kind = kind;
-		this.partnerAddress = partnerAddress;
 		this.partnerPIB = partnerPIB;
 		this.partnerAccount = partnerAccount;
+		this.referenceNumber = referenceNumber;
+		this.model = model;
+		this.partnerAddress = partnerAddress;
 		this.email = email;
 		this.company = company;
 	}
@@ -77,14 +87,6 @@ public class BusinessPartner {
 		this.kind = kind;
 	}
 
-	public String getPartnerAddress() {
-		return partnerAddress;
-	}
-
-	public void setPartnerAddress(String partnerAddress) {
-		this.partnerAddress = partnerAddress;
-	}
-
 	public String getPartnerPIB() {
 		return partnerPIB;
 	}
@@ -99,6 +101,30 @@ public class BusinessPartner {
 
 	public void setPartnerAccount(String partnerAccount) {
 		this.partnerAccount = partnerAccount;
+	}
+
+	public String getReferenceNumber() {
+		return referenceNumber;
+	}
+
+	public void setReferenceNumber(String referenceNumber) {
+		this.referenceNumber = referenceNumber;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public String getPartnerAddress() {
+		return partnerAddress;
+	}
+
+	public void setPartnerAddress(String partnerAddress) {
+		this.partnerAddress = partnerAddress;
 	}
 
 	public String getEmail() {
@@ -116,5 +142,5 @@ public class BusinessPartner {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-
+	
 }
