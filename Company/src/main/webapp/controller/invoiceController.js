@@ -5,11 +5,17 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
   	function ($scope, $window, $location, $http, $stateParams) {
 
 	angular.element(document).ready(function () {
-			$http.get('/invoice/getAllInvoices').then(function(response) {
-			   $scope.invoices = response.data;
+			$http.get('/invoice/getSentInvoices').then(function(response) {
+			   $scope.sentInvoices = response.data;
 			}, function(response) {
 				alert(response.statusText);
 		    });
+			
+			$http.get('/invoice/getReceivedInvoices').then(function(response) {
+				   $scope.receivedInvoices = response.data;
+				}, function(response) {
+					alert(response.statusText);
+			    });
 			
 			$http.get('/company/getAllCompanies').then(function(response) {
 			   $scope.companies = response.data;
@@ -48,8 +54,27 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	    	} else {
 	    		$window.location.reload();
 	    	}
-    }, function myError(response) {
-    	alert(response.statusText);
-    });
+		}, function myError(response) {
+			alert(response.statusText);
+		});
+	}
+	
+	$scope.payInvoice = function(id){
+		$scope.payInvoiceId = id;
+		$("#payInvoiceButton").click();
+	}
+	
+	$scope.submitPaymentOrder = function(){
+		$scope.paymentOrder.invoiceId = $scope.payInvoiceId;
+		if(document.getElementById('paymentOrderUrgent').checked){
+			$scope.paymentOrder.urgent = "true";
+		} else {
+			$scope.paymentOrder.urgent = "false";
+		}  
+		$http.post('invoice/pay', $scope.paymentOrder).then(function mySuccess(response) {
+			
+		}, function myError(response) {
+			alert(response.statusText);
+		});
 	}
 }]);

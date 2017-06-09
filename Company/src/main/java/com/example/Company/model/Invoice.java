@@ -73,6 +73,9 @@ public class Invoice {
 	@Column
 	private Date dateOfValue;
 	
+	@Column
+	private boolean received; //in or out
+	
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invoice")
 	private List<InvoiceItem> invoiceItems;
@@ -82,7 +85,7 @@ public class Invoice {
 	public Invoice(String messageId, String supplierName, String supplierAdress, String supplierPIB, String buyerName,
 			String buyerAdress, String buyerPIB, int accountNumber, Date dateOfInvoice, double merchandiseValue,
 			double servicesValue, double totalValue, double totalDiscount, double totalTax, String currency,
-			double totalDue, double billingAccountNumber, Date dateOfValue) {
+			double totalDue, double billingAccountNumber, Date dateOfValue, boolean received) {
 		super();
 		this.messageId = messageId;
 		this.supplierName = supplierName;
@@ -102,6 +105,7 @@ public class Invoice {
 		this.totalDue = totalDue;
 		this.billingAccountNumber = billingAccountNumber;
 		this.dateOfValue = dateOfValue;
+		this.received = received;
 	}
 
 	public Long getId() {
@@ -263,4 +267,13 @@ public class Invoice {
 	public void setInvoiceItems(List<InvoiceItem> invoiceItems) {
 		this.invoiceItems = invoiceItems;
 	}
+
+	public boolean isReceived() {
+		return received;
+	}
+
+	public void setReceived(boolean in) {
+		this.received = in;
+	}
+
 }

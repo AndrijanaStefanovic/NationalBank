@@ -39,7 +39,7 @@ public class CompanyEndpoint {
 	@ResponsePayload
 	public ProcessPaymentOrderResponse processPaymentOrder(@RequestPayload ProcessPaymentOrder paymentOrder){
 		ProcessPaymentOrderResponse response = new ProcessPaymentOrderResponse();
-		response.setReturn("return test");
+		response.setReturn(paymentOrder.getArg0().getPaymentPurpose());
 		System.out.println("this is soap: "+paymentOrder.getArg0().getMessageId());
 		return response;
 	}
