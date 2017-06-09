@@ -1,11 +1,11 @@
 package com.example.Company.service;
 
-import java.awt.print.Pageable;
-
 import org.apache.cxf.common.i18n.Exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import com.example.Company.model.Company;
 import com.example.Company.repository.CompanyRepository;
 
@@ -17,7 +17,7 @@ public class CompanyServiceImp implements CompanyService {
 	
 	@Override
 	public Company add(Company company) {
-		return companyRepository.add(company);
+		return companyRepository.save(company);
 	}
 
 	@Override

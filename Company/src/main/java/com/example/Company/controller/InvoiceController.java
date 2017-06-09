@@ -36,4 +36,14 @@ public class InvoiceController {
 	public Collection<Invoice> getAllInvoices() {
 		return invoiceService.getAllInvoices();
 	}
+	
+	@RequestMapping(
+			value = "/invoice/delete",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
+	public String deleteInvoice(@RequestBody Long id) {
+		return invoiceService.deleteInvoice(id);
+	}
 }

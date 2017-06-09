@@ -13,4 +13,6 @@ public interface InvoiceRepository extends Repository<Invoice, Long>{
 	public Invoice findOne(long id);
 	
 	public Page<Invoice> findAll(Pageable pageable);
+	
+	public void delete(Invoice entity);
 }

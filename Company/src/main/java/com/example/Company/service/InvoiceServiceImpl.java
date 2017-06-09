@@ -24,6 +24,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Collection<Invoice> getAllInvoices() {
 		return invoiceRepository.findAll(null).getContent();
 	}
+
+	@Override
+	public String deleteInvoice(Long id) {
+		Invoice invoice = invoiceRepository.findOne(id);
+		if(invoice.getInvoiceItems() != null && !invoice.getInvoiceItems().isEmpty()) {
+			return "HasItems";
+		}
+		invoiceRepository.delete(invoice);
+		return "200";
+	}
 	
 	
 }

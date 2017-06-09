@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Company {
 	
@@ -32,6 +34,7 @@ public class Company {
 	@Column(length = 30)
 	private String mobile;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "company")
 	private List<BusinessPartner> businessPartners;
 

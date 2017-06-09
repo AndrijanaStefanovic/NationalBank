@@ -1,10 +1,11 @@
 package com.example.Company.service;
 
-import java.awt.print.Pageable;
+
 
 import org.apache.cxf.common.i18n.Exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.Company.model.BusinessPartner;
@@ -18,7 +19,7 @@ public class BusinessPartnerServiceIml implements BusinessPartnerService {
 	
 	@Override
 	public BusinessPartner add(BusinessPartner businessPartner) {
-		return businessPartnerRepostory.add(businessPartner);
+		return businessPartnerRepostory.save(businessPartner);
 	}
 
 	@Override

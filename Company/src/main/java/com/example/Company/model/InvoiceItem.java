@@ -2,8 +2,10 @@ package com.example.Company.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -42,14 +44,18 @@ public class InvoiceItem {
 	
 	@Column
 	private double totalTax;
+	
+	@Column
+	private String kind; //merchandise or service
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "invoice_id", nullable = false)
 	private Invoice invoice;
 	
 	public InvoiceItem(){}
 	
 	public InvoiceItem(int number, String name, double amount, String measurmentUnit, double unitPrice, double value,
-			double discountPercent, double totalDiscount, double subtractedDiscount, double totalTax) {
+			double discountPercent, double totalDiscount, double subtractedDiscount, double totalTax, String kind) {
 		super();
 		this.number = number;
 		this.name = name;
@@ -61,6 +67,7 @@ public class InvoiceItem {
 		this.totalDiscount = totalDiscount;
 		this.subtractedDiscount = subtractedDiscount;
 		this.totalTax = totalTax;
+		this.kind = kind;
 	}
 
 	public Long getId() {
@@ -157,6 +164,14 @@ public class InvoiceItem {
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
+	}
+
+	public String getKind() {
+		return kind;
+	}
+
+	public void setKind(String kind) {
+		this.kind = kind;
 	}
 	
 	

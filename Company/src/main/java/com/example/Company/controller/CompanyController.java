@@ -1,11 +1,14 @@
 package com.example.Company.controller;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.example.Company.model.Company;
 import com.example.Company.service.CompanyService;
 
@@ -24,6 +27,16 @@ public class CompanyController {
 	
 	public Company add(@RequestBody Company company) {
 		return companyService.add(company);
+	}
+	
+	@RequestMapping(
+			value = "/company/getAllCompanies",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+			)
+	
+	public Collection<Company> getAllCompanies() {
+		return companyService.findAll(null).getContent();
 	}
 	
 	

@@ -10,4 +10,6 @@ public interface InvoiceService {
 
 	public Collection<Invoice> getAllInvoices();
 	
+	public String deleteInvoice(Long id);
+	
 }
