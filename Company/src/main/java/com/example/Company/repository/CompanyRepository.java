@@ -8,11 +8,11 @@ import com.example.Company.model.Company;
 
 public interface CompanyRepository extends Repository<Company, Long> {
 
-	public Company findById(Long id);
+	public Company findOne(Long id);
 	
-	public Company save(Company company);
+	public Company save(Company entity);
 	
-	public void delete(Long id);
+	public void delete(Company entity);
 	
 	public Page<Company> findAll(Pageable pageable);
 

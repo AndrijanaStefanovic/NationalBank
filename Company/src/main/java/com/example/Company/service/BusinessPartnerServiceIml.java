@@ -1,13 +1,8 @@
 package com.example.Company.service;
 
-
-
-import org.apache.cxf.common.i18n.Exception;
+import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.example.Company.model.BusinessPartner;
 import com.example.Company.repository.BusinessPartnerRepository;
 
@@ -18,35 +13,27 @@ public class BusinessPartnerServiceIml implements BusinessPartnerService {
 	private BusinessPartnerRepository businessPartnerRepostory;
 	
 	@Override
-	public BusinessPartner add(BusinessPartner businessPartner) {
+	public BusinessPartner create(BusinessPartner businessPartner) {
 		return businessPartnerRepostory.save(businessPartner);
 	}
 
 	@Override
-	public BusinessPartner findById(Long id) {
-		return businessPartnerRepostory.findById(id);
+	public BusinessPartner findOne(Long id) {
+		return businessPartnerRepostory.findOne(id);
 	}
 
 	@Override
-	public void delete(Long id) {
-		BusinessPartner businessPartner = businessPartnerRepostory.findById(id);
-		
-		if (businessPartner != null) {
-			businessPartnerRepostory.delete(id);
-		} else {
-			try {
-				throw new java.lang.Exception("Business Partner can not be find!");
-			} catch (Exception e) {
-				e.printStackTrace();
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-			}
-		}		
+	public String delete(Long id) {
+		if (id != null) {
+			BusinessPartner businessPartner = businessPartnerRepostory.findOne(id);
+			businessPartnerRepostory.delete(businessPartner);
+			return "200";
+		} else 
+			return "500";		
 	}
 
 	@Override
-	public Page<BusinessPartner> findAll(Pageable pageable) {
-		return businessPartnerRepostory.findAll(pageable);
+	public Collection<BusinessPartner> getAllBusinessPartners() {
+		return businessPartnerRepostory.findAll(null).getContent();
 	}
-
 }

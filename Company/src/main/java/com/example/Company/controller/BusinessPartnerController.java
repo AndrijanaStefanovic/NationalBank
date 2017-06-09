@@ -19,24 +19,31 @@ public class BusinessPartnerController {
 	private BusinessPartnerService partnerService;
 	
 	@RequestMapping(
-			value = "/businesspartner/add",
+			value = "/businesspartner/create",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
-			)
-	
-	public BusinessPartner add(@RequestBody BusinessPartner partner) {
-		return partnerService.add(partner);
+			)	
+	public BusinessPartner create(@RequestBody BusinessPartner partner) {
+		return partnerService.create(partner);
 	}
 	
 	@RequestMapping(
 			value = "/businesspartner/getAllBusinessPartners",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE
-			)
-	
+			)	
 	public Collection<BusinessPartner> getAllBusinessPartners() {
-		return partnerService.findAll(null).getContent();
+		return partnerService.getAllBusinessPartners();
 	}
-
+	
+	@RequestMapping(
+			value = "/businesspartner/delete",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)	
+	public String delete(@RequestBody Long id) {
+		return partnerService.delete(id);
+	}
 }
