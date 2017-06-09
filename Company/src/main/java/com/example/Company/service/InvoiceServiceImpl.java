@@ -1,5 +1,7 @@
 package com.example.Company.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public String createInvoice(Invoice invoice) {
 		invoiceRepository.save(invoice);
 		return "200";
+	}
+
+	@Override
+	public Collection<Invoice> getAllInvoices() {
+		return invoiceRepository.findAll(null).getContent();
 	}
 	
 	

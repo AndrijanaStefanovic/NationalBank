@@ -1,9 +1,121 @@
 <h1>Invoices</h1>
 
-<div>
-	<input type="text" placeholder="Message id" data-ng-model="invoice.messageId">
-	<input type="text" placeholder="Supplier name" data-ng-model="invoice.supplierName"><br>
-	<br>
-	<button data-ng-click="submitInvoice()" class="btn btn-primary center-block">Create</button>
-	
+
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<td><a data-ng-click="sortType = 'messageId'"> Message Id <span
+					data-ng-show="sortType == 'messageId'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'supplierName'"> Supplier name <span
+					data-ng-show="sortType == 'supplierName'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'supplierAddress'"> Supplier address <span
+					data-ng-show="sortType == 'supplierAddress'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'supplierPIB'"> Supplier PIB <span
+					data-ng-show="sortType == 'supplierPIB'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'buyerName'"> Buyer name <span
+					data-ng-show="sortType == 'buyerName'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'buyerAddress'"> Buyer address <span
+					data-ng-show="sortType == 'buyerAddress'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'buyerPIB'"> Buyer PIB <span
+					data-ng-show="sortType == 'buyerPIB'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'accountNumber'"> Account number <span
+					data-ng-show="sortType == 'accountNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'dateOfInvoice'"> Date of invoice <span
+					data-ng-show="sortType == 'dateOfInvoice'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'merchandiseValue'"> Merchandise value <span
+					data-ng-show="sortType == 'merchandiseValue'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'servicesValue'"> Services value <span
+					data-ng-show="sortType == 'servicesValue'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'totalValue'"> Total value <span
+					data-ng-show="sortType == 'totalValue'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'totalDiscount'"> Total discount <span
+					data-ng-show="sortType == 'totalDiscount'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'totalTax'"> Total tax <span
+					data-ng-show="sortType == 'totalTax'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'currency'"> Currency <span
+					data-ng-show="sortType == 'currency'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'totalDue'"> Total due <span
+					data-ng-show="sortType == 'totalDue'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'billingAccountNumber'"> Billing account number <span
+					data-ng-show="sortType == 'billingAccountNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'dateOfValue'"> Date of value <span
+					data-ng-show="sortType == 'dateOfValue'" class="fa fa-caret-down"></span>
+			</a></td>
+		</tr>
+	</thead>
+
+	<tbody>
+
+		<tr data-ng-repeat="x in invoices | orderBy:sortType:sortReverse">
+			<td>{{x.messageId}}</td>
+			<td>{{x.supplierName}}</td>
+			<td>{{x.supplierAddress}}</td>
+			<td>{{x.supplierPIB}}</td>
+			<td>{{x.buyerName}}</td>
+			<td>{{x.buyerAddress}}</td>
+			<td>{{x.buyerPIB}}</td>
+			<td>{{x.accountNumber}}</td>
+			<td>{{x.dateOfInvoice}}</td>
+			<td>{{x.merchandiseValue}}</td>
+			<td>{{x.servicesValue}}</td>
+			<td>{{x.totalValue}}</td>
+			<td>{{x.totalDiscount}}</td>
+			<td>{{x.totalTax}}</td>
+			<td>{{x.currency}}</td>
+			<td>{{x.totalDue}}</td>
+			<td>{{x.billingAccountNumber}}</td>
+			<td>{{x.dateOfValue}}</td>
+			<td>
+				<button type="button" class="btn btn-info" data-ng-click="showInvoiceItems(x.id)">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#newInvoiceModal">New invoice</button>
+
+<div id="newInvoiceModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">New invoice header</h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" placeholder="Message id" data-ng-model="invoice.messageId"><br>
+				<input type="text" placeholder="Supplier name" data-ng-model="invoice.supplierName"><br>
+				<input type="text" placeholder="Buyer name" data-ng-model="invoice.buyerName"><br>
+				<input type="date" placeholder="Date of invoice" data-ng-model="invoice.dateOfInvoice"><br>
+				<input type="date" placeholder="Date of value" data-ng-model="invoice.dateOfValue"><br>
+				<input type="text" placeholder="Currency" data-ng-model="invoice.currency"><br>
+				<input type="text" placeholder="Billing account number" data-ng-model="invoice.billingAccountNumber"><br>
+				<br>
+			</div>
+			<div class="modal-footer">
+				<button data-ng-click="submitInvoice()" class="btn btn-primary">Create</button>
+				<input type="button" class="btn btn-primary" value="Cancel" data-dismiss="modal">
+			</div>
+		</div>
+	</div>
 </div>

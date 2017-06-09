@@ -4,6 +4,13 @@ var invoiceModule = angular.module('invoice.controller', []);
 invoiceModule.controller('invoiceController', ['$scope','$location', '$http', '$stateParams',
   	function ($scope, $location, $http, $stateParams) {
 
+	angular.element(document).ready(function () {
+			$http.get('/invoice/getAllInvoices').then(function(response) {
+			   $scope.invoices = response.data;
+			}, function(response) {
+				alert(response.statusText);
+		    });
+	});
 	
 	$scope.submitInvoice = function () { 
 		
@@ -15,6 +22,9 @@ invoiceModule.controller('invoiceController', ['$scope','$location', '$http', '$
 	    }, function myError(response) {
 	    	alert(response.statusText);
 	    });
-		
+	}
+	
+	$scope.showInvoiceItems = function(id){
+		toastr.info(id);
 	}
 }]);
