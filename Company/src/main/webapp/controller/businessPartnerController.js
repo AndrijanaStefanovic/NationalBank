@@ -12,7 +12,7 @@ businessPartnerModule.controller('businessPartnerController', ['$scope', '$windo
 	  });
 
 	  $scope.submitBusinessPartner = function () {
-		    $http.post('businesspartner/create/'+$stateParams.companyId, $scope.businessPartner).then(function mySuccess(response) {
+		    $http.post('businessPartner/create/'+$stateParams.companyId, $scope.businessPartner).then(function mySuccess(response) {
 		      if(response.data == "200") {
 		        toastr.success("Created!");
 		      }
