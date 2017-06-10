@@ -19,25 +19,31 @@ public class CompanyController {
 	private CompanyService companyService;
 	
 	@RequestMapping(
-			value = "/company/add",
+			value = "/company/create",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
-			)
-	
-	public Company add(@RequestBody Company company) {
-		return companyService.add(company);
+			)	
+	public String create(@RequestBody Company company) {
+		return companyService.create(company);
 	}
 	
 	@RequestMapping(
 			value = "/company/getAllCompanies",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE
-			)
-	
+			)	
 	public Collection<Company> getAllCompanies() {
-		return companyService.findAll(null).getContent();
+		return companyService.getAllCompanies();
 	}
 	
-	
+	@RequestMapping(
+			value = "/company/delete",
+			method = RequestMethod.POST, 
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
+	public String delete(@RequestBody Long id) {
+		return companyService.delete(id);
+	}	
 }

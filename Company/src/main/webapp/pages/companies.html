@@ -1,0 +1,85 @@
+<h1>Companies</h1>
+
+
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<td><a data-ng-click="sortType = 'name'">Company name<span
+					data-ng-show="sortType == 'name'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'companyPIB'"> Company PIB <span
+					data-ng-show="sortType == 'companyPIB'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'companyAccount'"> Company account <span
+					data-ng-show="sortType == 'companyAccount'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'referenceNumber'"> Reference Number <span
+					data-ng-show="sortType == 'referenceNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'model'"> Model <span
+					data-ng-show="sortType == 'model'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'companyAddress'"> Company address <span
+					data-ng-show="sortType == 'companyAddress'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'companyMBR'"> Company MBR <span
+					data-ng-show="sortType == 'companyMBR'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'mobile'"> Mobile <span
+					data-ng-show="sortType == 'mobile'" class="fa fa-caret-down"></span>
+			</a></td>			
+		</tr>
+	</thead>
+
+	<tbody>
+
+		<tr data-ng-repeat="x in companies | orderBy:sortType:sortReverse">
+			<td>{{x.name}}</td>
+			<td>{{x.companyPIB}}</td>
+			<td>{{x.companyAccount}}</td>
+			<td>{{x.referenceNumber}}</td>
+			<td>{{x.model}}</td>
+			<td>{{x.companyAddress}}</td>
+			<td>{{x.companyMBR}}</td>
+			<td>{{x.mobile}}</td>
+			<td>
+				<button type="button" class="btn btn-info" data-ng-click="showCompanies(x.id)">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+				<button type="button" class="btn btn-danger" data-ng-click="deleteCompany(x.id)">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#newCompanyModel">New company</button>
+
+<div id="newCompanyModel" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">New company header</h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" placeholder="Name" data-ng-model="company.name"><br>
+				<input type="text" placeholder="Company PIB" data-ng-model="company.companyPIB"><br>
+				<input type="text" placeholder="Company Account" data-ng-model="company.companyAccount"><br>
+				<input type="text" placeholder="Reference Number" data-ng-model="company.referenceNumber"><br>
+				<input type="text" placeholder="Model" data-ng-model="company.model"><br>
+				<input type="text" placeholder="Company Address" data-ng-model="company.companyAddress"><br>
+				<input type="text" placeholder="Company MBR" data-ng-model="company.companyMBR"><br>
+				<input type="text" placeholder="Mobile" data-ng-model="company.mobile"><br>
+				<br>
+			</div>
+			<div class="modal-footer">
+				<button data-ng-click="submitCompany()" class="btn btn-primary">Create</button>
+				<input type="button" class="btn btn-primary" value="Cancel" data-dismiss="modal">
+			</div>
+		</div>
+	</div>
+</div>
