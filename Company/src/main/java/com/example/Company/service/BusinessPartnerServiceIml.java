@@ -4,7 +4,9 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.Company.model.BusinessPartner;
+import com.example.Company.model.Company;
 import com.example.Company.repository.BusinessPartnerRepository;
+import com.example.Company.repository.CompanyRepository;
 
 @Service
 public class BusinessPartnerServiceIml implements BusinessPartnerService {
@@ -12,8 +14,13 @@ public class BusinessPartnerServiceIml implements BusinessPartnerService {
 	@Autowired
 	private BusinessPartnerRepository businessPartnerRepostory;
 	
+	@Autowired
+	private CompanyRepository companyRepository;
+	
 	@Override
-	public String create(BusinessPartner businessPartner) {
+	public String create(Long companyId, BusinessPartner businessPartner) {
+		Company company = companyRepository.findOne(companyId);
+		businessPartner.setCompany(company);
 		businessPartnerRepostory.save(businessPartner);
 		return "200";
 	}
@@ -34,7 +41,8 @@ public class BusinessPartnerServiceIml implements BusinessPartnerService {
 	}
 
 	@Override
-	public Collection<BusinessPartner> getAllBusinessPartners() {
-		return businessPartnerRepostory.findAll(null).getContent();
+	public Collection<BusinessPartner> getAllBusinessPartners(Long companyId) {
+		Company company = companyRepository.findOne(companyId);
+		return businessPartnerRepostory.findByCompany(company);
 	}
 }
