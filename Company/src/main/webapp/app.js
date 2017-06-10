@@ -1,7 +1,7 @@
 'use-strict';
 
 
-angular.module('company', [ 'ui.router','invoice.controller', 'invoiceItem.controller'])
+angular.module('company', [ 'ui.router','invoice.controller', 'invoiceItem.controller', 'company.controller'])
 
    
 	.config(function($stateProvider, $urlRouterProvider) {
@@ -22,6 +22,10 @@ angular.module('company', [ 'ui.router','invoice.controller', 'invoiceItem.contr
 				controller : 'invoiceItemController'
 		})
 		
+		.state('companies', {
+				url : '/companies',
+				templateUrl : 'pages/companies.html',
+				controller : 'companyController'
+		})		
 		
-
 });
