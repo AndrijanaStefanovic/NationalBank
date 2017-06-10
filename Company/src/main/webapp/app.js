@@ -5,7 +5,8 @@ angular.module('company', [ 'ui.router','invoice.controller', 'invoiceItem.contr
 
 	.config(function($stateProvider, $urlRouterProvider) {
 
-
+		$urlRouterProvider.otherwise('/invoices');
+		
 		$stateProvider
 
 		.state('invoices', {
