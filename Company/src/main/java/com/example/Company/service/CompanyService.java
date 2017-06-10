@@ -6,7 +6,7 @@ import com.example.Company.model.Company;
 
 public interface CompanyService {
 	
-	public Company create(Company entity);
+	public String create(Company entity);
 	
 	public Company findOne(Long id);
 	

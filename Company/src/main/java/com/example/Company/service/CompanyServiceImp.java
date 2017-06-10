@@ -13,8 +13,9 @@ public class CompanyServiceImp implements CompanyService {
 	private CompanyRepository companyRepository;
 	
 	@Override
-	public Company create(Company company) {
-		return companyRepository.save(company);
+	public String create(Company company) {
+		companyRepository.save(company);
+		return "200";
 	}
 	
 	@Override

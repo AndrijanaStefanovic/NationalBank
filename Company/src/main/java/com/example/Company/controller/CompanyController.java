@@ -24,7 +24,7 @@ public class CompanyController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
 			)	
-	public Company create(@RequestBody Company company) {
+	public String create(@RequestBody Company company) {
 		return companyService.create(company);
 	}
 	
