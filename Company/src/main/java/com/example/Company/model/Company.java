@@ -34,7 +34,7 @@ public class Company {
 	@Column(length = 2, nullable = false)
 	private String model;
 
-	@Column(length = 55)
+	@Column(length = 255)
 	private String companyAddress;
 
 	@Column(length = 8, nullable = false)

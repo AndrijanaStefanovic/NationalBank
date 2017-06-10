@@ -19,7 +19,7 @@ public class BusinessPartner {
 	private String name;
 	
 	@Column(length = 20, nullable = false)
-	private String kind;
+	private String kind; // customer or supplier
 	
 	@Column(length = 11, nullable = false)
 	private String partnerPIB;
