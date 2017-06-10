@@ -1,11 +1,16 @@
 package com.example.Company.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Invoice {
@@ -21,7 +26,7 @@ public class Invoice {
 	private String supplierName;
 	
 	@Column
-	private String supplierAdress;
+	private String supplierAddress;
 	
 	@Column
 	private String supplierPIB;
@@ -30,7 +35,7 @@ public class Invoice {
 	private String buyerName;
 	
 	@Column
-	private String buyerAdress;
+	private String buyerAddress;
 	
 	@Column
 	private String buyerPIB;
@@ -68,19 +73,26 @@ public class Invoice {
 	@Column
 	private Date dateOfValue;
 	
+	@Column
+	private boolean received; //in or out
+	
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invoice")
+	private List<InvoiceItem> invoiceItems;
+	
 	public Invoice(){}
 	
 	public Invoice(String messageId, String supplierName, String supplierAdress, String supplierPIB, String buyerName,
 			String buyerAdress, String buyerPIB, int accountNumber, Date dateOfInvoice, double merchandiseValue,
 			double servicesValue, double totalValue, double totalDiscount, double totalTax, String currency,
-			double totalDue, double billingAccountNumber, Date dateOfValue) {
+			double totalDue, double billingAccountNumber, Date dateOfValue, boolean received) {
 		super();
 		this.messageId = messageId;
 		this.supplierName = supplierName;
-		this.supplierAdress = supplierAdress;
+		this.supplierAddress = supplierAdress;
 		this.supplierPIB = supplierPIB;
 		this.buyerName = buyerName;
-		this.buyerAdress = buyerAdress;
+		this.buyerAddress = buyerAdress;
 		this.buyerPIB = buyerPIB;
 		this.accountNumber = accountNumber;
 		this.dateOfInvoice = dateOfInvoice;
@@ -93,6 +105,7 @@ public class Invoice {
 		this.totalDue = totalDue;
 		this.billingAccountNumber = billingAccountNumber;
 		this.dateOfValue = dateOfValue;
+		this.received = received;
 	}
 
 	public Long getId() {
@@ -119,12 +132,12 @@ public class Invoice {
 		this.supplierName = supplierName;
 	}
 
-	public String getSupplierAdress() {
-		return supplierAdress;
+	public String getSupplierAddress() {
+		return supplierAddress;
 	}
 
-	public void setSupplierAdress(String supplierAdress) {
-		this.supplierAdress = supplierAdress;
+	public void setSupplierAddress(String supplierAdress) {
+		this.supplierAddress = supplierAdress;
 	}
 
 	public String getSupplierPIB() {
@@ -143,12 +156,12 @@ public class Invoice {
 		this.buyerName = buyerName;
 	}
 
-	public String getBuyerAdress() {
-		return buyerAdress;
+	public String getBuyerAddress() {
+		return buyerAddress;
 	}
 
-	public void setBuyerAdress(String buyerAdress) {
-		this.buyerAdress = buyerAdress;
+	public void setBuyerAddress(String buyerAdress) {
+		this.buyerAddress = buyerAdress;
 	}
 
 	public String getBuyerPIB() {
@@ -246,4 +259,21 @@ public class Invoice {
 	public void setDateOfValue(Date dateOfValue) {
 		this.dateOfValue = dateOfValue;
 	}
+
+	public List<InvoiceItem> getInvoiceItems() {
+		return invoiceItems;
+	}
+
+	public void setInvoiceItems(List<InvoiceItem> invoiceItems) {
+		this.invoiceItems = invoiceItems;
+	}
+
+	public boolean isReceived() {
+		return received;
+	}
+
+	public void setReceived(boolean in) {
+		this.received = in;
+	}
+
 }
