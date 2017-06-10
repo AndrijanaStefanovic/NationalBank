@@ -13,8 +13,9 @@ public class BusinessPartnerServiceIml implements BusinessPartnerService {
 	private BusinessPartnerRepository businessPartnerRepostory;
 	
 	@Override
-	public BusinessPartner create(BusinessPartner businessPartner) {
-		return businessPartnerRepostory.save(businessPartner);
+	public String create(BusinessPartner businessPartner) {
+		businessPartnerRepostory.save(businessPartner);
+		return "200";
 	}
 
 	@Override

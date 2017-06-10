@@ -24,7 +24,7 @@ public class BusinessPartnerController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
 			)	
-	public BusinessPartner create(@RequestBody BusinessPartner partner) {
+	public String create(@RequestBody BusinessPartner partner) {
 		return partnerService.create(partner);
 	}
 	

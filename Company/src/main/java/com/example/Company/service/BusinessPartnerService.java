@@ -5,7 +5,7 @@ import com.example.Company.model.BusinessPartner;
 
 public interface BusinessPartnerService {
 	
-	public BusinessPartner create(BusinessPartner entity);
+	public String create(BusinessPartner entity);
 	
 	public BusinessPartner findOne(Long id);	
 	
