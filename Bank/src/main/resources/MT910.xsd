@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
+    vc:minVersion="1.1" targetNamespace="http://service.example.com/mt910"
+    xmlns:mt910="http://service.example.com/mt910">
+    <xs:element name="mt910">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="messageId">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="50"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="creditorsBank" type="mt910:T_bankData"/>
+                <xs:element name="orderMessageId">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="50"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="dateOfValue" type="xs:date"/>
+                <xs:element name="total">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:totalDigits value="17"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="currency">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="3"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="T_accountNumber">
+        <xs:restriction base="xs:string">
+            <xs:length value="18"/>
+            <xs:pattern value="\d{3}-\d{13}-\d{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="T_SWIFT">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="8"/>
+            <xs:maxLength value="11"/>
+            <xs:pattern value="([A-Z]){6}([A-Z1-9]){2}(([A-Z1-9]){3})?"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="T_bankData">
+        <xs:sequence>
+            <xs:element name="SWIFT" type="mt910:T_SWIFT"/>
+            <xs:element name="accountNumber" type="mt910:T_accountNumber"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
