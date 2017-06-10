@@ -1,0 +1,92 @@
+<h1>Bank statements</h1>
+
+
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<td><a data-ng-click="sortType = 'id'"> Bank statetement id <span
+					data-ng-show="sortType == 'id'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'accountNumber'"> Account number <span
+					data-ng-show="sortType == 'accountNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'sectionNumber'"> Section number <span
+					data-ng-show="sortType == 'sectionNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'date'"> Date <span
+					data-ng-show="sortType == 'date'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'previousBalance'"> Previous balance <span
+					data-ng-show="sortType == 'previousBalance'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'numberOfDeposits'"> Number of deposits <span
+					data-ng-show="sortType == 'numberOfDeposits'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'totalDeposited'"> Total deposited <span
+					data-ng-show="sortType == 'totalDeposited'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'numberOfWithdrawals'"> Number of withdrawals <span
+					data-ng-show="sortType == 'numberOfWithdrawals'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'totalWithdrawn'"> Total withdrawn <span
+					data-ng-show="sortType == 'totalWithdrawn'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'newBalance'"> New balance <span
+					data-ng-show="sortType == 'newBalance'" class="fa fa-caret-down"></span>
+			</a></td>
+			
+		</tr>
+	</thead>
+
+	<tbody>
+
+		<tr data-ng-repeat="x in bankStatements | orderBy:sortType:sortReverse">
+			<td>{{x.id}}</td>
+			<td>{{x.accountNumber}}</td>
+			<td>{{x.sectionNumber}}</td>
+			<td>{{x.date}}</td>
+			<td>{{x.previousBalance}}</td>
+			<td>{{x.numberOfDeposits}}</td>
+			<td>{{x.totalDeposited}}</td>
+			<td>{{x.numberOfWithdrawals}}</td>
+			<td>{{x.totalWithdrawn}}</td>
+			<td>{{x.newBalance}}</td>
+			<td>
+				<button type="button" class="btn btn-info" data-ng-click="showBankStatementItems(x.id)">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#newBankStatementModal">New bank statement</button>
+
+<div id="newBankStatementModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">New bank statement header</h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" placeholder="Account number" data-ng-model="bankStatement.accountNumber"><br>
+				<input type="text" placeholder="Section number" data-ng-model="bankStatement.sectionNumber"><br>
+				<input type="date" placeholder="Date" data-ng-model="bankStatement.date"><br>
+				<input type="text" placeholder="Previous balance" data-ng-model="bankStatement.previousBalance"><br>
+				<input type="text" placeholder="Number of deposits" data-ng-model="bankStatement.numberOfDeposits"><br>
+				<input type="text" placeholder="Total deposited" data-ng-model="bankStatement.totalDeposited"><br>
+				<input type="text" placeholder="Number of withdrawals" data-ng-model="bankStatement.numberOfWithdrawals"><br>
+				<input type="text" placeholder="Total withdrawn" data-ng-model="bankStatement.totalWithdrawn"><br>
+				<input type="text" placeholder="New balance" data-ng-model="bankStatement.newBalance"><br>
+				<br>
+			</div>
+			<div class="modal-footer">
+				<button data-ng-click="submitBankStatement()" class="btn btn-primary">Create</button>
+				<input type="button" class="btn btn-primary" value="Cancel" data-dismiss="modal">
+			</div>
+		</div>
+	</div>
+</div>
