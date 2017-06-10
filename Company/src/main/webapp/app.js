@@ -1,12 +1,11 @@
 'use-strict';
 
 
-angular.module('company', [ 'ui.router','invoice.controller'])
+angular.module('company', [ 'ui.router','invoice.controller', 'bankStatement.controller'])
 
    
 	.config(function($stateProvider, $urlRouterProvider) {
 
-		$urlRouterProvider.otherwise('/invoices');
 
 		$stateProvider
 			
@@ -14,6 +13,12 @@ angular.module('company', [ 'ui.router','invoice.controller'])
 				url : '/invoices',
 				templateUrl : 'pages/invoices.html',
 				controller : 'invoiceController'
+		})
+		
+		.state('bankStatements', {
+				url : '/bankStatements',
+				templateUrl : 'pages/bankStatements.html',
+				controller : 'bankStatementController'
 		})
 		
 		
