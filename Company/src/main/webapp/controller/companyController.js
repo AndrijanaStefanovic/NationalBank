@@ -15,8 +15,9 @@ companyModule.controller('companyController', ['$scope', '$window', '$location',
 		$http.post('company/create', $scope.company).then(function mySuccess(response) {
 			if(response.data == "200") {
 				toastr.success("Created!");
+			} else {
+				$window.location.reload();
 			}
-			$window.location.reload();
 		}, function myError(response) {
 			alert(response.statusText);
 		});
@@ -25,13 +26,14 @@ companyModule.controller('companyController', ['$scope', '$window', '$location',
 	$scope.showCompanies = function(id) {
 		$location.path("/businessPartners/"+id);
 	}
-
+	
 	$scope.deleteCompany = function(id) {
 		$http.post('company/delete', id).then(function mySuccess(response) {
 			if(response.data == "200"){
 				toastr.success("Company deleted!");
+			} else {
+				$window.location.reload();
 			}
-			$window.location.reload();
 		}, function myError(response) {
 			alert(response.statusText);
 		});

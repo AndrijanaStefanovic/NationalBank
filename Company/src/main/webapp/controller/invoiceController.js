@@ -23,11 +23,11 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 				alert(response.statusText);
 			});
 			
-			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
-			   $scope.businessPartners = response.data;
-			}, function(response) {
-				alert(response.statusText);
-			});
+//			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
+//			   $scope.businessPartners = response.data;
+//			}, function(response) {
+//				alert(response.statusText);
+//			});
 	});
 	
 	$scope.submitInvoice = function () { 
@@ -64,6 +64,18 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 			alert(response.statusText);
 		});
 	}
+	
+	$scope.exportInvoice = function(id) {
+	$http.post('invoice/export', id).then(function mySuccess(response) {
+		if(response.data == "200"){
+			toastr.success("Invoice exported!");
+		} else {
+			$window.location.reload();
+		}
+	}, function myError(response) {
+		alert(response.statusText);
+	});
+}
 	
 	$scope.payInvoice = function(id){
 		$scope.payInvoiceId = id;
