@@ -22,10 +22,6 @@ businessPartnerModule.controller('businessPartnerController', ['$scope', '$windo
 		    });
 	  }
 	
-	  $scope.showBusinessPartners = function(id) {
-		  $location.path("/businessPartners/"+id);
-	  }
-	
 	  $scope.deleteBusinessPartner = function(id) {
 		    $http.post('businessPartner/delete', id).then(function mySuccess(response) {
 		      if(response.data == "200") {

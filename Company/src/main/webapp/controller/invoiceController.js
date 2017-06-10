@@ -23,7 +23,7 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 				alert(response.statusText);
 			});
 			
-			$http.get('/businessPartner/getAllBusinessPartners/1').then(function(response) {
+			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
 			   $scope.businessPartners = response.data;
 			}, function(response) {
 				alert(response.statusText);

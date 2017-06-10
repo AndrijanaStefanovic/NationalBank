@@ -23,7 +23,7 @@ companyModule.controller('companyController', ['$scope', '$window', '$location',
 	}
 
 	$scope.showCompanies = function(id) {
-		$location.path("/companies/"+id);
+		$location.path("/businessPartners/"+id);
 	}
 
 	$scope.deleteCompany = function(id) {
