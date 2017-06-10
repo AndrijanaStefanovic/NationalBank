@@ -25,7 +25,6 @@ public class CompanyEndpoint {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processBankStatementRequest")
 	@ResponsePayload
 	public ProcessBankStatementRequestResponse processBankStatementRequest(@RequestPayload ProcessBankStatementRequest request) {
-		System.out.println("*********************stiglo***********************************");
 		ProcessBankStatementRequestResponse response = new ProcessBankStatementRequestResponse();
 		BankStatement bs = new BankStatement();
 		bs.setAccountNumber("1234");
@@ -40,7 +39,8 @@ public class CompanyEndpoint {
 	public ProcessPaymentOrderResponse processPaymentOrder(@RequestPayload ProcessPaymentOrder paymentOrder){
 		ProcessPaymentOrderResponse response = new ProcessPaymentOrderResponse();
 		response.setReturn(paymentOrder.getArg0().getPaymentPurpose());
-		System.out.println("this is soap: "+paymentOrder.getArg0().getMessageId());
+		System.out.println("placa se njemu : "+paymentOrder.getArg0().getCreditor().getInfo());
+		System.out.println("placa on :"+ paymentOrder.getArg0().getDebtor().getInfo());
 		return response;
 	}
 	

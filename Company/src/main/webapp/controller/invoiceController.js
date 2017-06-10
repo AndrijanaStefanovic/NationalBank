@@ -33,6 +33,12 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	$scope.submitInvoice = function () { 
 		//toastr.info($scope.busPar.name);
 		//toastr.info($scope.cmpId);
+		$scope.invoice.supplierName = $scope.comp.name;
+		$scope.invoice.supplierAddress = $scope.comp.companyAddress;
+		$scope.invoice.supplierPIB = $scope.comp.companyPIB;
+		$scope.invoice.buyerName = $scope.busPar.name;
+		$scope.invoice.buyerAddress = $scope.busPar.partnerAddress;
+		$scope.invoice.buyerPIB = $scope.busPar.partnerPIB;
 		$http.post('invoice/create', $scope.invoice).then(function mySuccess(response) {
 	    		if(response.data == "200"){
 		    		toastr.success("Created!");
