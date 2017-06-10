@@ -24,8 +24,17 @@ public class Company {
 	
 	@Column(length = 11, nullable = false)
 	private String companyPIB;
+	
+	@Column(length = 18, nullable = false)
+	private String companyAccount; 
+	
+	@Column(length = 20, nullable = false)
+	private String referenceNumber;
+	
+	@Column(length = 2, nullable = false)
+	private String model;
 
-	@Column(length = 55)
+	@Column(length = 255)
 	private String companyAddress;
 
 	@Column(length = 8, nullable = false)
@@ -40,13 +49,19 @@ public class Company {
 
 	public Company(String name, 
 				   String companyPIB, 
+				   String companyAccount, 
+				   String referenceNumber, 
+				   String model,
 				   String companyAddress, 
 				   String companyMBR, 
-				   String mobile,
+				   String mobile, 
 				   List<BusinessPartner> businessPartners) {
 		super();
 		this.name = name;
 		this.companyPIB = companyPIB;
+		this.companyAccount = companyAccount;
+		this.referenceNumber = referenceNumber;
+		this.model = model;
 		this.companyAddress = companyAddress;
 		this.companyMBR = companyMBR;
 		this.mobile = mobile;
@@ -75,6 +90,30 @@ public class Company {
 
 	public void setCompanyPIB(String companyPIB) {
 		this.companyPIB = companyPIB;
+	}
+
+	public String getCompanyAccount() {
+		return companyAccount;
+	}
+
+	public void setCompanyAccount(String companyAccount) {
+		this.companyAccount = companyAccount;
+	}
+
+	public String getReferenceNumber() {
+		return referenceNumber;
+	}
+
+	public void setReferenceNumber(String referenceNumber) {
+		this.referenceNumber = referenceNumber;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 
 	public String getCompanyAddress() {
@@ -108,5 +147,5 @@ public class Company {
 	public void setBusinessPartners(List<BusinessPartner> businessPartners) {
 		this.businessPartners = businessPartners;
 	}
-	
+
 }

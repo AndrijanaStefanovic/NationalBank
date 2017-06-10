@@ -35,8 +35,9 @@ invoiceItemModule.controller('invoiceItemController', ['$scope', '$window', '$lo
 	    		toastr.success("Deleted!");
 	    	}
     		$window.location.reload();
-    }, function myError(response) {
+    	}, function myError(response) {
     	alert(response.statusText);
-    });
+    	});
 	}
-}]);
+	}
+]);

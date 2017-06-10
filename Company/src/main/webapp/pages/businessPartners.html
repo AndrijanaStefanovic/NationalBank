@@ -1,0 +1,85 @@
+<h1>Business Partners</h1>
+
+
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<td><a data-ng-click="sortType = 'email'"> Email <span
+					data-ng-show="sortType == 'email'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'kind'"> Kind <span
+					data-ng-show="sortType == 'kind'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'model'"> Model <span
+					data-ng-show="sortType == 'model'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'name'"> Name <span
+					data-ng-show="sortType == 'name'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'partnerAccount'"> Partner Account <span
+					data-ng-show="sortType == 'partnerAccount'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'partnerAddress'"> Partner Address <span
+					data-ng-show="sortType == 'partnerAddress'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'partnerPIB'"> Partner PIB <span
+					data-ng-show="sortType == 'partnerPIB'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'referenceNumber'"> Reference Number <span
+					data-ng-show="sortType == 'referenceNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+		</tr>
+	</thead>
+
+	<tbody>
+
+		<tr data-ng-repeat="x in businessPartners | orderBy:sortType:sortReverse">
+			<td>{{x.email}}</td>
+			<td>{{x.kind}}</td>
+			<td>{{x.model}}</td>
+			<td>{{x.name}}</td>
+			<td>{{x.partnerAccount}}</td>
+			<td>{{x.partnerAddress}}</td>
+			<td>{{x.partnerPIB}}</td>
+			<td>{{x.referenceNumber}}</td>
+			<td>
+				<button type="button" class="btn btn-info" data-ng-click="showBusinessPartners(x.id)">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+				<button type="button" class="btn btn-danger" data-ng-click="deleteBusinessPartner(x.id)">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#newBusinessPartnerModel">New Business Partner</button>
+
+<div id="newBusinessPartnerModel" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">New Business Partner header</h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" placeholder="Email" data-ng-model="businessPartner.email"><br>
+				<input type="text" placeholder="Kind" data-ng-model="businessPartner.kind"><br>
+				<input type="text" placeholder="Model" data-ng-model="businessPartner.model"><br>
+				<input type="text" placeholder="Name" data-ng-model="businessPartner.name"><br>
+				<input type="text" placeholder="Partner Account" data-ng-model="businessPartner.partnerAccount"><br>
+				<input type="text" placeholder="Partner Address" data-ng-model="businessPartner.partnerAddress"><br>
+				<input type="text" placeholder="Partner PIB" data-ng-model="businessPartner.partnerPIB"><br>
+				<input type="text" placeholder="Reference Number" data-ng-model="businessPartner.referenceNumber"><br>
+				<br>
+			</div>
+			<div class="modal-footer">
+				<button data-ng-click="submitBusinessPartner()" class="btn btn-primary">Create</button>
+				<input type="button" class="btn btn-primary" value="Cancel" data-dismiss="modal">
+			</div>
+		</div>
+	</div>
+</div>
