@@ -20,4 +20,6 @@ public interface BusinessPartnerRepository extends Repository<BusinessPartner, L
 	public void delete(BusinessPartner entity);
 	
 	public Page<BusinessPartner> findAll(Pageable pageable);
+	
+	public List<BusinessPartner> findByPartnerPIB(String partnerPIB);
 }

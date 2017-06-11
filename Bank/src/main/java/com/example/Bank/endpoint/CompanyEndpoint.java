@@ -1,5 +1,7 @@
 package com.example.Bank.endpoint;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -7,11 +9,13 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import com.example.Bank.service.PaymentService;
+import com.example.Bank.service.SOAPClientService;
 import com.example.Bank.service.jaxws.ProcessBankStatementRequest;
 import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
 import com.example.Bank.service.jaxws.ProcessPaymentOrder;
 import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatement.BankStatement;
+import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
 @Endpoint
@@ -20,6 +24,9 @@ public class CompanyEndpoint {
 	
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	private SOAPClientService clientService;
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processBankStatementRequest")
 	@ResponsePayload
@@ -36,8 +43,25 @@ public class CompanyEndpoint {
 	public ProcessPaymentOrderResponse processPaymentOrder(@RequestPayload ProcessPaymentOrder processPaymentOrder){
 		ProcessPaymentOrderResponse response = new ProcessPaymentOrderResponse();
 		PaymentOrder paymentOrder = processPaymentOrder.getArg0();
+		
 		//Funkcija ce zaduziti racun onog koji je poslao nalog, i kreirace analitiku izvoda i azurirati dnevni balans racuna
-		String code = paymentService.createAccountAnalytics(paymentOrder);
+		String code = paymentService.createDebtorAccountAnalytics(paymentOrder);
+		
+		if(paymentService.checkIfClient(paymentOrder.getCreditor().getAccountNumber())){
+			//oba u istoj banci, mozemo prebaciti sredstva na racun creditora
+			paymentService.createCreditorAccountAnalytics(paymentOrder);
+		} else {
+			//prosledi centralnoj banci
+			
+			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
+				//Salji na RTGS
+				Mt103 mt103 = paymentService.createMT103(paymentOrder);
+				System.out.println(clientService.sendMt103(mt103));
+				
+			} else {
+				//Salji na Clearing
+			}
+		}
 		response.setReturn(code);
 		return response;
 	}

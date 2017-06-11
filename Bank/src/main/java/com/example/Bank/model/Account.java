@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -24,6 +25,9 @@ public class Account {
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="account")
 	private List<DailyAccountBalance> dailyAccountBalances;
+	
+	@ManyToOne
+	private Bank bank;
 	
 	public Account(){}
 	
@@ -62,6 +66,14 @@ public class Account {
 
 	public void setBalance(Double balance) {
 		this.balance = balance;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
 	}
 	
 	

@@ -22,6 +22,14 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
 	@Override
 	public String createInvoiceItem(Long invoiceId, InvoiceItem invoiceItem) {
 		Invoice invoice = invoiceRepository.findOne(invoiceId);
+		
+		int number = 1;
+		for(InvoiceItem ii : invoice.getInvoiceItems()){
+			if(ii.getNumber() > number){
+				number = ii.getNumber();
+			}
+		}
+		invoiceItem.setNumber(++number);
 		invoiceItem.setInvoice(invoice);
 		invoiceItem.setValue(invoiceItem.getAmount() * invoiceItem.getUnitPrice());
 		invoiceItem.setTotalDiscount(invoiceItem.getDiscountPercent() / 100.0 * invoiceItem.getValue());

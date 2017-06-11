@@ -3,7 +3,6 @@ package com.example.Company.service;
 import java.util.Collection;
 
 import com.example.Company.model.Invoice;
-import com.example.Company.model.pojo.PaymentOrderModel;
 
 public interface InvoiceService {
 

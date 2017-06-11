@@ -1,16 +1,12 @@
 package com.example.Company.service;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.Company.model.Invoice;
-import com.example.Company.model.pojo.PaymentOrderModel;
 import com.example.Company.repository.InvoiceRepository;
-import com.example.Company.service.jaxws.ProcessPaymentOrder;
-import com.example.service.paymentorder.PaymentOrder;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService{

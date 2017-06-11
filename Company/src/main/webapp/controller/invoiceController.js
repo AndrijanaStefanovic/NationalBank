@@ -84,6 +84,7 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 				$window.location.reload();
 				toastr.success("Payed!");
 			}
+			toastr.info(response.data);
 		}, function myError(response) {
 			alert(response.statusText);
 		});
