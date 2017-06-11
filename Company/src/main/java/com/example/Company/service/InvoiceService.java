@@ -3,7 +3,6 @@ package com.example.Company.service;
 import java.util.Collection;
 
 import com.example.Company.model.Invoice;
-import com.example.Company.model.pojo.PaymentOrderModel;
 
 public interface InvoiceService {
 
@@ -18,5 +17,7 @@ public interface InvoiceService {
 	public Collection<Invoice> getSentInvoices();
 
 	public String export(Long id);
+	
+	public String getBody(String response);
 	
 }

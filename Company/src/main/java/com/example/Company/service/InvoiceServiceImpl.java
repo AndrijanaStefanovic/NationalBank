@@ -60,6 +60,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 		} else 
 			return "500";
 	}
-	
+
+	@Override
+	public String getBody(String response) {
+		System.out.println("-------------------------------");
+		System.out.println("Resenjeeeee ISI: " + response);
+		System.out.println("-------------------------------");
+		return "200";
+	}
 	
 }

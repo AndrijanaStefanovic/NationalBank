@@ -1,16 +1,33 @@
 package com.example.Company.service;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import com.example.Company.model.Invoice;
 import com.example.Company.model.InvoiceItem;
 
@@ -156,11 +173,78 @@ public abstract class SaveToXml {
 	         TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	         Transformer transformer = transformerFactory.newTransformer();
 	         DOMSource source = new DOMSource(doc);
-	         StreamResult result = new StreamResult(new File("invoice.xml"));     
+	         
+	         StringWriter writer = new StringWriter();
+	         StreamResult res = new StreamResult(writer);
 
-	         transformer.transform(source, result);	        
+	         transformer.transform(source, res);	
+	         sendPost(writer.toString());	         
+	      	      
 	      } catch (Exception e) {
 	         e.printStackTrace();
 	      }
+	}
+	
+	private static void sendPost(String urlParametars) throws Exception {
+		String url = "https://localhost:8444/invoice/getBody";
+		URL obj = new URL(url);
+		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+		
+		con.setRequestMethod("POST");
+		con.setRequestProperty("Content-Type", "application/xml");
+		con.setDoOutput(true);
+		DataOutputStream outputStream = new DataOutputStream(con.getOutputStream());
+		outputStream.writeBytes(urlParametars);
+		outputStream.flush();
+		outputStream.close();
+		
+		
+		int responseCode = con.getResponseCode();
+		System.out.println("\nSending 'POST' xml document over URL: " + url );
+		System.out.println("Post parameters: " + urlParametars);
+		System.out.println("Response code: " + responseCode);
+		
+		BufferedReader in = new BufferedReader (new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+		
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+		System.out.println(response.toString());
+		
+	}
+	
+	public static void disableSslVerification() {
+	    try
+	    {
+	        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+	            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                return null;
+	            }
+	            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	            }
+	            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	            }
+	        }
+	        };
+
+	        SSLContext sc = SSLContext.getInstance("SSL");
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+	        HostnameVerifier allHostsValid = new HostnameVerifier() {
+	            public boolean verify(String hostname, SSLSession session) {
+	                return true;
+	            }
+	        };
+
+	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+	    } catch (NoSuchAlgorithmException e) {
+	        e.printStackTrace();
+	    } catch (KeyManagementException e) {
+	        e.printStackTrace();
+	    }
 	}
 }
