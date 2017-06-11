@@ -59,7 +59,6 @@ public class InvoiceController {
 			produces = MediaType.TEXT_PLAIN_VALUE
 			)
 	public String export(@RequestBody Long id) {
-		System.out.println("U Controleleru");
 		return invoiceService.export(id);
 	}
 

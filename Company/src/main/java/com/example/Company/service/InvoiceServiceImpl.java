@@ -55,7 +55,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if (id != null) {
 			Invoice invoice = invoiceRepository.findOne(id);
 			List<InvoiceItem> invoiceItems = ivoiceItemRepository.findByInvoice(invoice);
-			System.out.println("Usaaooaoo");
 			SaveToXml.saveToXML(invoice, invoiceItems);
 			return "200";
 		} else 
