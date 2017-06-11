@@ -13,9 +13,14 @@ import com.example.Company.model.Invoice;
 import com.example.Company.model.pojo.PaymentOrderModel;
 import com.example.Company.service.InvoiceService;
 import com.example.Company.service.SOAPClientService;
+import com.example.Company.service.SaveToXml;
 
 @RestController
 public class InvoiceController {
+	
+	static {
+	    SaveToXml.disableSslVerification();
+	}
 
 	@Autowired
 	private InvoiceService invoiceService;
@@ -40,6 +45,17 @@ public class InvoiceController {
 			)
 	public Collection<Invoice> getAllInvoices() {
 		return invoiceService.getAllInvoices();
+	}
+	
+	@RequestMapping(
+			value = "/invoice/getBody",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_XML_VALUE,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
+	public String getBody(@RequestBody String params) {
+		System.out.println("Usaooo");
+		return params;
 	}
 	
 	@RequestMapping(
