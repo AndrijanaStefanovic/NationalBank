@@ -17,4 +17,6 @@ public interface InvoiceService {
 	
 	public Collection<Invoice> getSentInvoices();
 	
+	public Invoice getInvoice(Long id);
+	
 }

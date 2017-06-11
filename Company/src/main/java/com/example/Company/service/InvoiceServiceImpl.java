@@ -49,6 +49,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Collection<Invoice> getSentInvoices() {
 		return invoiceRepository.findByReceived(false);
 	}
+
+	@Override
+	public Invoice getInvoice(Long id) {
+		return invoiceRepository.findOne(id);
+	}
 	
 	
 }

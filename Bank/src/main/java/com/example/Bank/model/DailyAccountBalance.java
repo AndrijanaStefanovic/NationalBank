@@ -1,12 +1,15 @@
 package com.example.Bank.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class DailyAccountBalance {
@@ -31,12 +34,15 @@ public class DailyAccountBalance {
 	private int numberOfDeposits;
 
 	@ManyToOne
-	private AccountModel account;
+	private Account account;
+	
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="dailyAccountBalance")
+	private List<AccountAnalytics> accountAnalytics;
 	
 	public DailyAccountBalance(){}
 	
 	public DailyAccountBalance(Date date, double previousBalance, int numberOfWithdrawals, double newBalance,
-			int numberOfDeposits, AccountModel account) {
+			int numberOfDeposits, Account account) {
 		super();
 		this.date = date;
 		this.previousBalance = previousBalance;
@@ -96,14 +102,22 @@ public class DailyAccountBalance {
 
 
 
-	public AccountModel getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
 
 
-	public void setAccount(AccountModel account) {
+	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public List<AccountAnalytics> getAccountAnalytics() {
+		return accountAnalytics;
+	}
+
+	public void setAccountAnalytics(List<AccountAnalytics> accountAnalytics) {
+		this.accountAnalytics = accountAnalytics;
 	}
 	
 	

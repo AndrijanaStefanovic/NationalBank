@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class AccountModel {
+public class Account {
 	
 	@Id
 	@GeneratedValue
@@ -18,13 +18,16 @@ public class AccountModel {
 	
 	@Column
 	private String accountNumber;
+	
+	@Column
+	private Double balance;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="account")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="account")
 	private List<DailyAccountBalance> dailyAccountBalances;
 	
-	public AccountModel(){}
+	public Account(){}
 	
-	public AccountModel(String accountNumber) {
+	public Account(String accountNumber) {
 		super();
 		this.accountNumber = accountNumber;
 	}
@@ -51,6 +54,14 @@ public class AccountModel {
 
 	public void setDailyAccountBalances(List<DailyAccountBalance> dailyAccountBalances) {
 		this.dailyAccountBalances = dailyAccountBalances;
+	}
+
+	public Double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
 	}
 	
 	

@@ -20,9 +20,6 @@ public class Invoice {
 	private Long id;
 	
 	@Column
-	private String messageId;
-	
-	@Column
 	private String supplierName;
 	
 	@Column
@@ -68,7 +65,7 @@ public class Invoice {
 	private double totalDue;
 	
 	@Column
-	private double billingAccountNumber;
+	private String billingAccountNumber;
 	
 	@Column
 	private Date dateOfValue;
@@ -82,12 +79,11 @@ public class Invoice {
 	
 	public Invoice(){}
 	
-	public Invoice(String messageId, String supplierName, String supplierAdress, String supplierPIB, String buyerName,
+	public Invoice(String supplierName, String supplierAdress, String supplierPIB, String buyerName,
 			String buyerAdress, String buyerPIB, int accountNumber, Date dateOfInvoice, double merchandiseValue,
 			double servicesValue, double totalValue, double totalDiscount, double totalTax, String currency,
-			double totalDue, double billingAccountNumber, Date dateOfValue, boolean received) {
+			double totalDue, String billingAccountNumber, Date dateOfValue, boolean received) {
 		super();
-		this.messageId = messageId;
 		this.supplierName = supplierName;
 		this.supplierAddress = supplierAdress;
 		this.supplierPIB = supplierPIB;
@@ -114,14 +110,6 @@ public class Invoice {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getMessageId() {
-		return messageId;
-	}
-
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
 	}
 
 	public String getSupplierName() {
@@ -244,11 +232,11 @@ public class Invoice {
 		this.totalDue = totalDue;
 	}
 
-	public double getBillingAccountNumber() {
+	public String getBillingAccountNumber() {
 		return billingAccountNumber;
 	}
 
-	public void setBillingAccountNumber(double billingAccountNumber) {
+	public void setBillingAccountNumber(String billingAccountNumber) {
 		this.billingAccountNumber = billingAccountNumber;
 	}
 

@@ -4,9 +4,6 @@
 <table class="table table-hover">
 	<thead>
 		<tr>
-			<td><a data-ng-click="sortType = 'messageId2'"> Message Id <span
-					data-ng-show="sortType == 'messageId2'" class="fa fa-caret-down"></span>
-			</a></td>
 			<td><a data-ng-click="sortType = 'supplierName2'"> Supplier name <span
 					data-ng-show="sortType == 'supplierName2'" class="fa fa-caret-down"></span>
 			</a></td>
@@ -64,7 +61,6 @@
 	<tbody>
 
 		<tr data-ng-repeat="x in receivedInvoices | orderBy:sortType:sortReverse">
-			<td>{{x.messageId}}</td>
 			<td>{{x.supplierName}}</td>
 			<td>{{x.supplierAddress}}</td>
 			<td>{{x.supplierPIB}}</td>
@@ -86,11 +82,12 @@
 				<button type="button" class="btn btn-info" data-ng-click="showInvoiceItems(x.id)">
 					<span class="glyphicon glyphicon-search"></span>
 				</button>
+				<button type="button" class="btn btn-info" data-ng-click="payInvoice(x.id)">
+					<span class="glyphicon glyphicon-euro"></span>
+				</button>
 			</td>
 			<td>
-				<button type="button" class="btn btn-danger" data-ng-click="deleteInvoice(x.id)">
-					<span class="glyphicon glyphicon-remove"></span>
-				</button>
+
 			</td>
 		</tr>
 	</tbody>
@@ -102,9 +99,6 @@
 <table class="table table-hover">
 	<thead>
 		<tr>
-			<td><a data-ng-click="sortType = 'messageId'"> Message Id <span
-					data-ng-show="sortType == 'messageId'" class="fa fa-caret-down"></span>
-			</a></td>
 			<td><a data-ng-click="sortType = 'supplierName'"> Supplier name <span
 					data-ng-show="sortType == 'supplierName'" class="fa fa-caret-down"></span>
 			</a></td>
@@ -162,7 +156,6 @@
 	<tbody>
 
 		<tr data-ng-repeat="x in sentInvoices | orderBy:sortType:sortReverse">
-			<td>{{x.messageId}}</td>
 			<td>{{x.supplierName}}</td>
 			<td>{{x.supplierAddress}}</td>
 			<td>{{x.supplierPIB}}</td>
@@ -186,8 +179,8 @@
 				</button>
 			</td>
 			<td>
-				<button type="button" class="btn btn-info" data-ng-click="payInvoice(x.id)">
-					<span class="glyphicon glyphicon-euro"></span>
+				<button type="button" class="btn btn-danger" data-ng-click="deleteInvoice(x.id)">
+					<span class="glyphicon glyphicon-remove"></span>
 				</button>
 			</td>
 		</tr>
@@ -204,18 +197,14 @@
 				<h4 class="modal-title">New invoice header</h4>
 			</div>
 			<div class="modal-body">
-				<input type="text" placeholder="Message id" data-ng-model="invoice.messageId"><br>
 				Supplier: <select data-ng-model="comp" data-ng-options="c.name for c in companies">
 				</select>
 				Buyer: <select data-ng-model="busPar" data-ng-options="bp.name for bp in businessPartners">
 					
 				</select>
-				<input type="text" placeholder="Supplier name" data-ng-model="invoice.supplierName"><br>
-				<input type="text" placeholder="Buyer name" data-ng-model="invoice.buyerName"><br>
 				<input type="date" placeholder="Date of invoice" data-ng-model="invoice.dateOfInvoice"><br>
 				<input type="date" placeholder="Date of value" data-ng-model="invoice.dateOfValue"><br>
 				<input type="text" placeholder="Currency" data-ng-model="invoice.currency"><br>
-				<input type="text" placeholder="Billing account number" data-ng-model="invoice.billingAccountNumber"><br>
 				<br>
 			</div>
 			<div class="modal-footer">

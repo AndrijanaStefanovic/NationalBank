@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -74,9 +75,19 @@ public class InvoiceController {
 	@RequestMapping(
 			value = "/invoice/pay",
 			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
 			)
 	public String createPaymentOrder(@RequestBody PaymentOrderModel paymentOrderModel) {
 		return SOAPClientService.sendPaymentOrder(paymentOrderModel);
+	}
+	
+	@RequestMapping(
+			value = "/invoice/get/{invoiceId}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+			)
+	public Invoice getInvoice(@PathVariable("invoiceId") Long invoiceId) {
+		return invoiceService.getInvoice(invoiceId);
 	}
 }

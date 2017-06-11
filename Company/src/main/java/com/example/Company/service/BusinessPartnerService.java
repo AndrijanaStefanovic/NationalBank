@@ -12,4 +12,6 @@ public interface BusinessPartnerService {
 	public Collection<BusinessPartner> getAllBusinessPartners(Long companyId);
 	
 	public String delete(Long id);
+
+	public Collection<BusinessPartner> getBusinessPartners();
 }

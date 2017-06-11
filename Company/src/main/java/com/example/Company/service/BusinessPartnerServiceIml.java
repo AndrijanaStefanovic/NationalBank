@@ -45,4 +45,9 @@ public class BusinessPartnerServiceIml implements BusinessPartnerService {
 		Company company = companyRepository.findOne(companyId);
 		return businessPartnerRepostory.findByCompany(company);
 	}
+
+	@Override
+	public Collection<BusinessPartner> getBusinessPartners() {
+		return businessPartnerRepostory.findAll(null).getContent();
+	}
 }

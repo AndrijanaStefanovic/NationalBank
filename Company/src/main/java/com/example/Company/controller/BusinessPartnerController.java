@@ -47,4 +47,14 @@ public class BusinessPartnerController {
 	public String delete(@RequestBody Long id) {
 		return partnerService.delete(id);
 	}
+	
+	@RequestMapping(
+			value = "/businesspartner/getBusinessPartners",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+			)	
+	public Collection<BusinessPartner> getBusinessPartners() {
+		return partnerService.getBusinessPartners();
+	}
 }
+

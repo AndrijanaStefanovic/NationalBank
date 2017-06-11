@@ -11,6 +11,15 @@ invoiceItemModule.controller('invoiceItemController', ['$scope', '$window', '$lo
 			}, function(response) {
 					alert(response.statusText);
 			});
+			
+			$http.get('/invoice/get/'+$stateParams.invoiceId).then(function(response) {
+				   $scope.invoice = response.data;
+				   if($scope.invoice.received){
+					   $("#newInvoiceItemButton").hide();
+				   }
+			}, function(response) {
+					alert(response.statusText);
+			});
 	});
 	
 	$scope.submitInvoiceItem = function () { 

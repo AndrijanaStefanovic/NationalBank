@@ -23,7 +23,7 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 				alert(response.statusText);
 			});
 			
-			$http.get('/businesspartner/getAllBusinessPartners').then(function(response) {
+			$http.get('/businesspartner/getBusinessPartners').then(function(response) {
 			   $scope.businessPartners = response.data;
 			}, function(response) {
 				alert(response.statusText);
@@ -31,11 +31,11 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	});
 	
 	$scope.submitInvoice = function () { 
-		//toastr.info($scope.busPar.name);
-		//toastr.info($scope.cmpId);
+		//mi pravimo fakturu, mi smo supplieri
 		$scope.invoice.supplierName = $scope.comp.name;
 		$scope.invoice.supplierAddress = $scope.comp.companyAddress;
 		$scope.invoice.supplierPIB = $scope.comp.companyPIB;
+		$scope.invoice.billingAccountNumber = $scope.comp.companyAccount;
 		$scope.invoice.buyerName = $scope.busPar.name;
 		$scope.invoice.buyerAddress = $scope.busPar.partnerAddress;
 		$scope.invoice.buyerPIB = $scope.busPar.partnerPIB;
@@ -77,8 +77,13 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 		} else {
 			$scope.paymentOrder.urgent = "false";
 		}  
+		$('#payInvoiceModal').modal('toggle');
+		toastr.info("Payment order is being sent...");
 		$http.post('invoice/pay', $scope.paymentOrder).then(function mySuccess(response) {
-			
+			if(response.data == "OK") {
+				$window.location.reload();
+				toastr.success("Payed!");
+			}
 		}, function myError(response) {
 			alert(response.statusText);
 		});
