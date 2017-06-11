@@ -6,7 +6,7 @@
 //
 
 
-package com.example.service.paymentorder;
+package com.example.service.invoice;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the com.example.service.paymentorder package. 
+ * generated in the com.example.service.invoice package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -30,26 +30,26 @@ public class ObjectFactory {
 
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.example.service.paymentorder
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.example.service.invoice
      * 
      */
     public ObjectFactory() {
     }
 
     /**
-     * Create an instance of {@link PaymentOrder }
+     * Create an instance of {@link Invoice }
      * 
      */
-    public PaymentOrder createPaymentOrder() {
-        return new PaymentOrder();
+    public Invoice createInvoice() {
+        return new Invoice();
     }
 
     /**
-     * Create an instance of {@link TCompanyData }
+     * Create an instance of {@link Invoice.InvoiceItem }
      * 
      */
-    public TCompanyData createTCompanyData() {
-        return new TCompanyData();
+    public Invoice.InvoiceItem createInvoiceInvoiceItem() {
+        return new Invoice.InvoiceItem();
     }
 
 }
