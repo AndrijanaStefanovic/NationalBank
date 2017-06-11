@@ -18,6 +18,6 @@ public interface InvoiceService {
 
 	public String export(Long id);
 	
-	public String getBody(String response);
+	public void getBody(String response);
 	
 }

@@ -1,9 +1,17 @@
 package com.example.Company.service;
 
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 import com.example.Company.model.Invoice;
 import com.example.Company.model.InvoiceItem;
 import com.example.Company.repository.InvoiceItemRepository;
@@ -62,11 +70,27 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
-	public String getBody(String response) {
+	public void getBody(String response) {
 		System.out.println("-------------------------------");
 		System.out.println("Resenjeeeee ISI: " + response);
 		System.out.println("-------------------------------");
-		return "200";
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();    
+        factory.setNamespaceAware(true);
+        factory.setIgnoringElementContentWhitespace(true);
+		DocumentBuilder builder; 
+        Document doc = null;
+        try  
+        {  
+            builder = factory.newDocumentBuilder();  
+            InputSource iSource = new InputSource();
+            iSource.setCharacterStream(new StringReader(response));            
+            doc = builder.parse(iSource); 
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }
+        
+        SaveToXml.saveXMltoDB(doc);
+       
 	}
-	
 }

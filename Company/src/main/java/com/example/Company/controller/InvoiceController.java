@@ -50,12 +50,10 @@ public class InvoiceController {
 	@RequestMapping(
 			value = "/invoice/getBody",
 			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_XML_VALUE,
-			produces = MediaType.TEXT_PLAIN_VALUE
+			consumes = MediaType.APPLICATION_XML_VALUE
 			)
-	public String getBody(@RequestBody String params) {
-		System.out.println("Usaooo");
-		return params;
+	public void getBody(@RequestBody String params) {
+		invoiceService.getBody(params);
 	}
 	
 	@RequestMapping(
