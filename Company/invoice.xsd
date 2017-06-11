@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
+    vc:minVersion="1.1" targetNamespace="http://service.example.com/invoice"
+    xmlns:inv="http://service.example.com/invoice">
+    <xs:simpleType name="decimal152">
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="17"/>
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="decimal122">
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="14"/>
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="string255">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="PIB">
+        <xs:restriction base="xs:string">
+            <xs:length value="11"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="invoice">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="messageId">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="50"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="buyerName" type="inv:string255"/>
+                <xs:element name="buyerAddress" type="inv:string255"/>
+                <xs:element name="buyerPIB" type="inv:PIB"/>
+                <xs:element name="supplierName" type="inv:string255"/>
+                <xs:element name="supplierAddress" type="inv:string255"/>
+                <xs:element name="supplierPIB" type="inv:PIB"/>
+                <xs:element name="accountNumber">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:int">
+                            <xs:totalDigits value="6"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="dateOfInvoice" type="xs:date"/>
+                <xs:element name="merchandiseValue" type="inv:decimal152"/>
+                <xs:element name="servicesValue" type="inv:decimal152"/>
+                <xs:element name="totalValue" type="inv:decimal152"/>
+                <xs:element name="totalDiscount" type="inv:decimal152"/>
+                <xs:element name="totalTax" type="inv:decimal152"/>
+                <xs:element name="totalDue" type="inv:decimal152"/>
+                <xs:element name="currency">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="3"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="billingAccountNumber">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:totalDigits value="12"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="dateOfValue" type="xs:date"/>
+                <xs:element maxOccurs="unbounded" minOccurs="1" name="invoiceItem">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="number">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:int">
+                                        <xs:totalDigits value="3"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="name">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                        <xs:maxLength value="120"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="amount">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:decimal">
+                                        <xs:totalDigits value="12"/>
+                                        <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="measurementUnit">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                        <xs:maxLength value="6"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="unitPrice">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:decimal">
+                                        <xs:totalDigits value="12"/>
+                                        <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="value" type="inv:decimal122"/>
+                            <xs:element name="discountPercent">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:decimal">
+                                        <xs:totalDigits value="7"/>
+                                        <xs:fractionDigits value="2"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="discountTotal" type="inv:decimal122"/>
+                            <xs:element name="subtractedDiscount" type="inv:decimal122"/>
+                            <xs:element name="taxTotal" type="inv:decimal122"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
