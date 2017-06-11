@@ -16,5 +16,7 @@ public interface InvoiceService {
 	public Collection<Invoice> getReceivedInvoices();
 	
 	public Collection<Invoice> getSentInvoices();
+
+	public String export(Long id);
 	
 }

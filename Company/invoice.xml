@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<invoices>
+    <invoices_data>
+        <messageId>1</messageId>
+        <supplierName>Olja</supplierName>
+        <supplierAddress>adadasd</supplierAddress>
+        <supplierPIB>3123213</supplierPIB>
+        <buyerName>Misa</buyerName>
+        <buyerAddress>adasda</buyerAddress>
+        <buyerPIB>123123</buyerPIB>
+        <accountNumber>213132132</accountNumber>
+        <dateOfInvoice>2017-05-09</dateOfInvoice>
+        <merchandiseValue>23213.0</merchandiseValue>
+        <servicesValue>1231.0</servicesValue>
+        <totalValue>31231.0</totalValue>
+        <totalTax>11.0</totalTax>
+        <currency>eur</currency>
+        <totalDue>22.0</totalDue>
+        <billingAccountNumber>2.3132132E7</billingAccountNumber>
+        <dateOfValue>2017-05-11</dateOfValue>
+    </invoices_data>
+    <item_list>
+        <itemNumber>2</itemNumber>
+        <itemName>dsa</itemName>
+        <itemAmount>1231.0</itemAmount>
+        <measurmentUnit>din</measurmentUnit>
+        <unitPrice>112.0</unitPrice>
+        <value>2313.0</value>
+        <discountPercent>12.0</discountPercent>
+        <totalDiscount>12.0</totalDiscount>
+        <subtractedDiscount>13.0</subtractedDiscount>
+        <totalTax>23213.0</totalTax>
+    </item_list>
+</invoices>

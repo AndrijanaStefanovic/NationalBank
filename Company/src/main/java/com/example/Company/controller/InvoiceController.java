@@ -51,6 +51,17 @@ public class InvoiceController {
 	public String deleteInvoice(@RequestBody Long id) {
 		return invoiceService.deleteInvoice(id);
 	}
+	
+	@RequestMapping(
+			value = "/invoice/export",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
+	public String export(@RequestBody Long id) {
+		System.out.println("U Controleleru");
+		return invoiceService.export(id);
+	}
 
 	
 	@RequestMapping(
