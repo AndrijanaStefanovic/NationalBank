@@ -72,7 +72,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public void getBody(String response) {
 		System.out.println("-------------------------------");
-		System.out.println("Resenjeeeee ISI: " + response);
+		System.out.println("Result of response: " + response);
 		System.out.println("-------------------------------");
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();    
@@ -86,11 +86,11 @@ public class InvoiceServiceImpl implements InvoiceService{
             InputSource iSource = new InputSource();
             iSource.setCharacterStream(new StringReader(response));            
             doc = builder.parse(iSource); 
+
         } catch (Exception e) {  
             e.printStackTrace();  
         }
         
         SaveToXml.saveXMltoDB(doc);
-       
 	}
 }

@@ -193,11 +193,10 @@ public abstract class SaveToXml {
 					 topElement.appendChild(invoice_element);
 				 }
 	         }
-	         
+	        
+	        XMLEncryptionUtility encUtility = new XMLEncryptionUtility();
+	        XMLSigningUtility sigUtility = new XMLSigningUtility();
 	        KeyStoreReader ksReader = new KeyStoreReader();
-	 		XMLEncryptionUtility encUtility = new XMLEncryptionUtility();
-	 		XMLSigningUtility sigUtility = new XMLSigningUtility();
-	 			 		
 	 		SecretKey secretKey = encUtility.generateDataEncryptionKey();
 	 		System.out.println("*************Generate Key: *************" 
 	 						+ new BASE64Encoder().encode(secretKey.getEncoded()));
@@ -208,50 +207,48 @@ public abstract class SaveToXml {
 	 		PrivateKey privateKey = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
 	 		doc = sigUtility.signDocument(doc, privateKey, cert);
 	 		
-	 		boolean res = sigUtility.verifySignature(doc);
-	 		if(res) {
-	 			System.out.println("\n Verifyed signature!");
-	 			doc = encUtility.decrypt(doc, privateKey);
-	 			System.out.println("\n Decryption is completed! Company B has reveived XML. ");
-	 		} else {
-	 			System.out.println("\n Signature is invalid! ");
-	 		}
-	 		  		  		
-	         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	         Transformer transformer = transformerFactory.newTransformer();
-	         DOMSource source = new DOMSource(doc);
-         
-	         StringWriter writer = new StringWriter();
-	         StreamResult resw = new StreamResult(writer);
-
-	         transformer.transform(source, resw);	
-	         sendPost(writer.toString());	         
+	 		sendPost(doc, privateKey);	         
 	      	      
 	      } catch (Exception e) {
 	         e.printStackTrace();
 	      }
 	}
 	
-	private static void sendPost(String urlParametars) throws Exception {
+	private static PrivateKey readPrivateKey() {
+		KeyStoreReader ksReader = new KeyStoreReader();
+		
+		return ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
+	}
+	
+	private static void sendPost(Document doc, 
+								 PrivateKey privateKey) throws Exception {	
+		
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+    
+        StringWriter writer = new StringWriter();
+        StreamResult resw = new StreamResult(writer);
+        transformer.transform(source, resw);	
+        
 		String url = "https://localhost:8444/invoice/getBody";
 		URL obj = new URL(url);
-		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+		HttpsURLConnection connection = (HttpsURLConnection) obj.openConnection();
 		
-		con.setRequestMethod("POST");
-		con.setRequestProperty("Content-Type", "application/xml");
-		con.setDoOutput(true);
-		DataOutputStream outputStream = new DataOutputStream(con.getOutputStream());
-		outputStream.writeBytes(urlParametars);
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Content-Type", "application/xml");
+		connection.setDoOutput(true);
+		DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+		outputStream.writeBytes(writer.toString());
 		outputStream.flush();
 		outputStream.close();
 		
-		
-		int responseCode = con.getResponseCode();
+		int responseCode = connection.getResponseCode();
 		System.out.println("\nSending 'POST' xml document over URL: " + url );
-		System.out.println("Post parameters: " + urlParametars);
+		System.out.println("Post parameters: " + writer.toString());
 		System.out.println("Response code: " + responseCode);
 		
-		BufferedReader in = new BufferedReader (new InputStreamReader(con.getInputStream()));
+		BufferedReader in = new BufferedReader (new InputStreamReader(connection.getInputStream()));
 		String inputLine;
 		StringBuffer response = new StringBuffer();
 		
@@ -259,8 +256,6 @@ public abstract class SaveToXml {
 			response.append(inputLine);
 		}
 		in.close();
-		System.out.println(response.toString());
-		
 	}
 	
 	public static void disableSslVerification() {
@@ -295,7 +290,20 @@ public abstract class SaveToXml {
 	    }
 	}
 	
-	public static void saveXMltoDB(Document doc) {
+	public static void saveXMltoDB(Document doc) {      
+		PrivateKey privateKey = readPrivateKey();
+		XMLEncryptionUtility encUtility = new XMLEncryptionUtility();
+		XMLSigningUtility sigUtility = new XMLSigningUtility();
+		
+		boolean res = sigUtility.verifySignature(doc);
+ 		if (res) {
+ 			System.out.println("\n Verifyed signature!");
+ 			doc = encUtility.decrypt(doc, privateKey);
+ 			System.out.println("\n Decryption is completed! Company B has reveived XML. ");
+ 		} else {
+ 			System.out.println("\n Signature is invalid! ");
+ 		}
+		
 		File schemaFile = new File("invoice.xsd"); 
 		SchemaFactory schemaFactory = SchemaFactory
 				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -403,4 +411,5 @@ public abstract class SaveToXml {
 			e1.printStackTrace();
 		}
 	}
+	
 }
