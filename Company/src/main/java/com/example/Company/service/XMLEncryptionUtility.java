@@ -24,12 +24,10 @@ public class XMLEncryptionUtility {
         org.apache.xml.security.Init.init();
     }
 	
-	/**
-	 * Generise tajni kljuc
-	 */
 	public SecretKey generateDataEncryptionKey() {
         try {
-			KeyGenerator keyGenerator = KeyGenerator.getInstance("DESede"); //Triple DES
+			KeyGenerator keyGenerator = KeyGenerator.
+					getInstance("DESede");
 			return keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -37,37 +35,25 @@ public class XMLEncryptionUtility {
         return null;
     }
 	
-	/**
-	 * Sifruje sadrzaj prvog elementa odsek
-	 */
 	public Document encrypt(Document doc, SecretKey key, Certificate certificate) {
 		try {
-		    //Sifra koja ce se koristiti za sifrovanje XML-a u ovom slucaju je 3DES
 		    XMLCipher xmlCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
-		    //Inicijalizacija za kriptovanje
 		    xmlCipher.init(XMLCipher.ENCRYPT_MODE, key);
 		    
-		    //Sadrzaj XMLa se sifruje tajnim kljucem, putem simetricne sifre (3DES)
-		    //Tajni kljuc se potom sifruje javnim kljucem koji se preuzima sa sertifikata putem asimetricne sifre (RSA)
 			XMLCipher keyCipher = XMLCipher.getInstance(XMLCipher.RSA_v1dot5);
-		    //Inicijalizacija za kriptovanje tajnog kljuca javnim RSA kljucem
 		    keyCipher.init(XMLCipher.WRAP_MODE, certificate.getPublicKey());
 		    EncryptedKey encryptedKey = keyCipher.encryptKey(doc, key);
 		    
-		    //U EncryptedData elementa koji se sifruje kao KeyInfo stavljamo sifrovan tajni kljuc
 		    EncryptedData encryptedData = xmlCipher.getEncryptedData();
-	        //kreira se KeyInfo
 		    KeyInfo keyInfo = new KeyInfo(doc);
 		    keyInfo.addKeyName("Sifrovan tajni kljuc");
 		    keyInfo.add(encryptedKey);
-		    //postavljamo KeyInfo za element koji se sifruje
 	        encryptedData.setKeyInfo(keyInfo);
 			
-			//Trazi se element ciji sadrzaj se sifruje
-			NodeList odseci = doc.getElementsByTagName("odsek");
+			NodeList odseci = doc.getElementsByTagName("invoice");
 			Element odsek = (Element) odseci.item(0);
 			
-			xmlCipher.doFinal(doc, odsek, true); //Sifruje sa sadrzaj
+			xmlCipher.doFinal(doc, odsek, true);
 			
 			return doc;
 		} catch (XMLEncryptionException e) {
@@ -78,22 +64,16 @@ public class XMLEncryptionUtility {
 		return null;
 	}
 	
-	/**
-	 * Kriptuje sadrzaj prvog elementa odsek
-	 */
 	public Document decrypt(Document doc, PrivateKey privateKey) {
 		try {
 			XMLCipher xmlCipher = XMLCipher.getInstance();
-			//Inicijalizacija za desifrovanje
 			xmlCipher.init(XMLCipher.DECRYPT_MODE, null);
-			//Postavlja se kljuc za desifrovanje tajnog kljuca
 			xmlCipher.setKEK(privateKey);
 			
-			//Trazi se prvi EncryptedData element
-			NodeList encDataList = doc.getElementsByTagNameNS("http://www.w3.org/2001/04/xmlenc#", "EncryptedData");
+			NodeList encDataList = doc.getElementsByTagNameNS(
+					"http://www.w3.org/2001/04/xmlenc#", 
+					"EncryptedData");
 			Element encData = (Element) encDataList.item(0);
-			
-			//Desifruje se tajni kljuc, koji se onda koristi za desifrovanje podataka
 			xmlCipher.doFinal(doc, encData); 
 			return doc;
 		} catch (XMLEncryptionException e) {

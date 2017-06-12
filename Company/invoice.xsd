@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
-    vc:minVersion="1.1" targetNamespace="http://service.example.com/invoice"
-    xmlns:inv="http://service.example.com/invoice">
+           xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" 
+           elementFormDefault="qualified"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           vc:minVersion="1.1" 
+           targetNamespace="http://service.example.com/invoice"
+           xmlns:inv="http://service.example.com/invoice">
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" 
+        schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"/>
     <xs:simpleType name="decimal152">
         <xs:restriction base="xs:decimal">
             <xs:totalDigits value="17"/>
@@ -130,6 +135,7 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+                <xs:element ref="ds:Signature" minOccurs="0" maxOccurs="1" />  
             </xs:sequence>
         </xs:complexType>
     </xs:element>

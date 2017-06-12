@@ -47,8 +47,11 @@ import org.xml.sax.SAXException;
 import com.example.Company.model.Invoice;
 import com.example.Company.model.InvoiceItem;
 
+import sun.misc.BASE64Encoder;
+
 public abstract class SaveToXml {
 	
+	@SuppressWarnings("restriction")
 	static void saveToXML(Invoice invoice, List<InvoiceItem> items) {
 		String messageId= invoice.getMessageId();
 		String supplierName = invoice.getSupplierName();
@@ -188,48 +191,39 @@ public abstract class SaveToXml {
 				 }
 	         }
 	         
-	        Document docc = doc; 
 	        KeyStoreReader ksReader = new KeyStoreReader();
 	 		XMLEncryptionUtility encUtility = new XMLEncryptionUtility();
 	 		XMLSigningUtility sigUtility = new XMLSigningUtility();
-	 		
-	 		System.out.println("===== Primer izvrsavanja XML Encryption & Signature algoritma =====");
+	 			 		
 	 		SecretKey secretKey = encUtility.generateDataEncryptionKey();
-	 		System.out.println("\n===== Generisan kljuc =====");
-	 		System.out.println(Base64Utility.encode(secretKey.getEncoded()));
+	 		System.out.println("*************Generate Key: *************" 
+	 						+ new BASE64Encoder().encode(secretKey.getEncoded()));
 	 		
 	 		Certificate cert = ksReader.readCertificate("primer.jks", "primer", "primer");
-	 		System.out.println("\n===== Sifrovanje XML dokumenta =====");
-	 		doc = encUtility.encrypt(docc, secretKey, cert);
+	 		doc = encUtility.encrypt(doc, secretKey, cert);
 	 		
-	 		System.out.println("\n===== Potpisivanje XML dokumenta =====");
 	 		PrivateKey privateKey = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
-	 		docc = sigUtility.signDocument(docc, privateKey, cert);
+	 		doc = sigUtility.signDocument(doc, privateKey, cert);
 	 		
-	 		System.out.println("\n===== Transfer XML dokumenta od tacke A do tacke B =====");
-	 		
-	 		System.out.println("\n===== Provera validnosti digitalnog potpisa =====");
-	 		boolean res = sigUtility.verifySignature(docc);
+	 		boolean res = sigUtility.verifySignature(doc);
 	 		if(res) {
-	 			System.out.println("\n===== Potpis je validan, dokument se desifruje =====");
-	 			docc = encUtility.decrypt(docc, privateKey);
-	 			System.out.println("\n===== Desifrovanje zavrseno, tacka B je primila dokument =====");
-	 			System.out.println("===== Za pregled rezultujucih dokumenata otvoriti files/data/xml folder =====");
+	 			System.out.println("\n Verifyed signature!");
+	 			doc = encUtility.decrypt(doc, privateKey);
+	 			System.out.println("\n Decryption is completed! Company B has reveived XML. ");
 	 		} else {
-	 			System.out.println("\n===== Potpis nije validan, dokument se odbacuje =====");
+	 			System.out.println("\n Signature is invalid! ");
 	 		}
 	 		  		  		
 	         TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	         Transformer transformer = transformerFactory.newTransformer();
 	         DOMSource source = new DOMSource(doc);
-//	         DOMSource sourcee = new DOMSource(docc);
-	         
+
 	         StreamResult resFile = new StreamResult(new File("invoices.xml"));
+	         transformer.transform(source, resFile);	         
 	         
 	         StringWriter writer = new StringWriter();
 	         StreamResult resw = new StreamResult(writer);
 
-//	         transformer.transform(sourcee, resFile);
 	         transformer.transform(source, resw);	
 	         sendPost(writer.toString());	         
 	      	      
