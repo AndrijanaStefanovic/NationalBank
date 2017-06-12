@@ -300,27 +300,26 @@ public abstract class SaveToXml {
  			System.out.println("\n Verifyed signature!");
  			doc = encUtility.decrypt(doc, privateKey);
  			System.out.println("\n Decryption is completed! Company B has reveived XML. ");
+ 			File schemaFile = new File("invoice.xsd"); 
+ 			SchemaFactory schemaFactory = SchemaFactory
+ 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+ 			
+ 	  	    Source xmlFile = new DOMSource(doc);
+ 	  	    xmlFile.setSystemId("invoice");
+ 			try {
+ 				Schema schema = schemaFactory.newSchema(schemaFile);
+ 				Validator validator = schema.newValidator();
+ 				validator.validate(xmlFile);
+ 				validateXML(doc);
+ 				System.out.println(xmlFile.getSystemId() + " is valid");
+ 			} catch (SAXException e) {
+ 				System.out.println(xmlFile.getSystemId() + " is NOT valid reason:" + e);
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}
  		} else {
  			System.out.println("\n Signature is invalid! ");
- 		}
-		
-		File schemaFile = new File("invoice.xsd"); 
-		SchemaFactory schemaFactory = SchemaFactory
-				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		
-  	    Source xmlFile = new DOMSource(doc);
-  	    xmlFile.setSystemId("invoice");
-		try {
-			Schema schema = schemaFactory.newSchema(schemaFile);
-			Validator validator = schema.newValidator();
-			validator.validate(xmlFile);
-			validateXML(doc);
-			System.out.println(xmlFile.getSystemId() + " is valid");
-		} catch (SAXException e) {
-			System.out.println(xmlFile.getSystemId() + " is NOT valid reason:" + e);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+ 		}		
 	}
 	
 	public static void validateXML(Document doc) {
