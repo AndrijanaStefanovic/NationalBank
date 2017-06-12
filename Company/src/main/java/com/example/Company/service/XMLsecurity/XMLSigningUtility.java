@@ -74,7 +74,6 @@ public class XMLSigningUtility {
 			        Certificate cert = keyInfo.itemX509Data(0).itemCertificate(0).getX509Certificate();
 			        if (cert != null) 
 			        	return true;
-//			        	return signature.checkSignatureValue((X509Certificate) cert);
 			    }
 			}
 		} catch (XMLSignatureException e) {
