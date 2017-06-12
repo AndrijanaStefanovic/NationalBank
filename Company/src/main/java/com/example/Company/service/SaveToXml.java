@@ -46,6 +46,9 @@ import org.xml.sax.SAXException;
 
 import com.example.Company.model.Invoice;
 import com.example.Company.model.InvoiceItem;
+import com.example.Company.service.XMLsecurity.KeyStoreReader;
+import com.example.Company.service.XMLsecurity.XMLEncryptionUtility;
+import com.example.Company.service.XMLsecurity.XMLSigningUtility;
 
 import sun.misc.BASE64Encoder;
 
@@ -217,10 +220,7 @@ public abstract class SaveToXml {
 	         TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	         Transformer transformer = transformerFactory.newTransformer();
 	         DOMSource source = new DOMSource(doc);
-
-	         StreamResult resFile = new StreamResult(new File("invoices.xml"));
-	         transformer.transform(source, resFile);	         
-	         
+         
 	         StringWriter writer = new StringWriter();
 	         StreamResult resw = new StreamResult(writer);
 
