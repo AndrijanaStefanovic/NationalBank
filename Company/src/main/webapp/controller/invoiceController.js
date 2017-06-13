@@ -22,21 +22,18 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 			}, function(response) {
 				alert(response.statusText);
 			});
-<<<<<<< HEAD
 			
 			$http.get('/businesspartner/getBusinessPartners').then(function(response) {
 			   $scope.businessPartners = response.data;
 			}, function(response) {
 				alert(response.statusText);
 			});
-=======
 						
-//			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
-//			   $scope.businessPartners = response.data;
-//			}, function(response) {
-//				alert(response.statusText);
-//			});
->>>>>>> XML-between-companies
+			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
+			   $scope.businessPartners = response.data;
+			}, function(response) {
+				alert(response.statusText);
+			});
 	});
 	
 	$scope.submitInvoice = function () { 
