@@ -55,8 +55,7 @@ public class XMLSigningUtility {
         return null;
 	}
 	
-	public boolean verifySignature(Document doc) {
-		
+	public boolean verifySignature(Document doc) {		
 		try {
 			NodeList signatures = doc.getElementsByTagNameNS(
 					"http://www.w3.org/2000/09/xmldsig#", 

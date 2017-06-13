@@ -50,10 +50,10 @@ public class XMLEncryptionUtility {
 		    keyInfo.add(encryptedKey);
 	        encryptedData.setKeyInfo(keyInfo);
 			
-			NodeList odseci = doc.getElementsByTagName("invoice");
-			Element odsek = (Element) odseci.item(0);
+			NodeList invoices = doc.getElementsByTagName("invoice");
+			Element invoice = (Element) invoices.item(0);
 			
-			xmlCipher.doFinal(doc, odsek, true);
+			xmlCipher.doFinal(doc, invoice, true);
 			
 			return doc;
 		} catch (XMLEncryptionException e) {
