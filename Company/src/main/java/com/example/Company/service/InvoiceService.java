@@ -1,6 +1,7 @@
 package com.example.Company.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.example.Company.model.Invoice;
 
@@ -19,5 +20,7 @@ public interface InvoiceService {
 	public String export(Long id);
 	
 	public void getBody(String response);
+
+	public List<String> getXML();
 	
 }

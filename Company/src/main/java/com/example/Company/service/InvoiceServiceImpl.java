@@ -1,6 +1,12 @@
 package com.example.Company.service;
 
 import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -93,4 +99,39 @@ public class InvoiceServiceImpl implements InvoiceService{
         
         SaveToXml.saveXMltoDB(doc);
 	}
+
+	@Override
+	public List<String> getXML() {
+		Connection conn = null;
+		List<String> results = null;
+  	  	try {
+			Class.forName("com.mysql.jdbc.Driver") ;
+		
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/companyxml?useSSL=false&createDatabaseIfNotExist=true", 
+		  			"root", "tasha1994") ;
+		  	Statement stmt = conn.createStatement() ;
+		  	String query = "SELECT * FROM companyxml.invoice ORDER BY id DESC LIMIT 1";
+		  	ResultSet resultSet = stmt.executeQuery(query);
+		  	results = new ArrayList<String>();
+		  	results.add("Invoice: ");
+		  	while(resultSet.next()) {
+		  		for (int i = 2; i < 20; i++)
+		  			results.add(resultSet.getString(i));	  	    
+		  	}
+		  	String queryItems = "SELECT * FROM companyxml.invoiceItem ORDER BY id DESC LIMIT 1";
+		  	ResultSet resultSetItem = stmt.executeQuery(queryItems);
+		  	results.add("InvoiceItems: ");
+		  	while(resultSetItem.next()) {
+		  		for (int i = 2; i < 12; i++)
+		  			results.add(resultSetItem.getString(i));	  	    
+		  	}		  	
+  	  	} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	  return results;
+	}
+
+
 }

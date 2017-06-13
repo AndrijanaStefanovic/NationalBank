@@ -1,6 +1,7 @@
 package com.example.Company.controller;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -45,6 +46,16 @@ public class InvoiceController {
 			)
 	public Collection<Invoice> getAllInvoices() {
 		return invoiceService.getAllInvoices();
+	}
+	
+	@RequestMapping(
+			value = "/invoice/getXML",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+			)
+	public List<String> getXML() {
+		System.out.println("Usaooo");
+		return invoiceService.getXML();
 	}
 	
 	@RequestMapping(

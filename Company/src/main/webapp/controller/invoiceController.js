@@ -53,6 +53,14 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 		$location.path("/invoiceItems/"+id);
 	}
 	
+	$scope.showXML = function(){
+		$http.get('/invoice/getXML').then(function(response) {
+			   $scope.xmlresult = response.data;
+			}, function(response) {
+				alert(response.statusText);
+			});
+	}
+	
 	$scope.deleteInvoice = function(id){
 		$http.post('invoice/delete', id).then(function mySuccess(response) {
 			if(response.data == "HasItems"){
