@@ -326,7 +326,7 @@ public abstract class SaveToXml {
 		NodeList nodeList = doc.getElementsByTagName("invoice");
   	  	String url = "jdbc:mysql://localhost/companyxml?useSSL=false&createDatabaseIfNotExist=true";
   	  	String user = "root";
-  	  	String password = "tasha1994";
+  	  	String password = "root";
   	  	Connection con = null;
   	  	
   	  	PreparedStatement preparedStatement = null;

@@ -108,7 +108,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			Class.forName("com.mysql.jdbc.Driver") ;
 		
 		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/companyxml?useSSL=false&createDatabaseIfNotExist=true", 
-		  			"root", "tasha1994") ;
+		  			"root", "root") ;
 		  	Statement stmt = conn.createStatement() ;
 		  	String query = "SELECT * FROM companyxml.invoice ORDER BY id DESC LIMIT 1";
 		  	ResultSet resultSet = stmt.executeQuery(query);
