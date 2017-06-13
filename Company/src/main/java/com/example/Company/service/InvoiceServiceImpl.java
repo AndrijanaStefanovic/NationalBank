@@ -116,14 +116,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 		  	String query = "SELECT * FROM companyxml.invoice ORDER BY id DESC LIMIT 1";
 		  	ResultSet resultSet = stmt.executeQuery(query);
 		  	results = new ArrayList<String>();
-		  	results.add("Invoice: ");
 		  	while(resultSet.next()) {
 		  		for (int i = 2; i < 20; i++)
 		  			results.add(resultSet.getString(i));	  	    
 		  	}
 		  	String queryItems = "SELECT * FROM companyxml.invoiceItem ORDER BY id DESC LIMIT 1";
 		  	ResultSet resultSetItem = stmt.executeQuery(queryItems);
-		  	results.add("InvoiceItems: ");
 		  	while(resultSetItem.next()) {
 		  		for (int i = 2; i < 12; i++)
 		  			results.add(resultSetItem.getString(i));	  	    
