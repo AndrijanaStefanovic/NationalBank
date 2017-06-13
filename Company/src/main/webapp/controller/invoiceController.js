@@ -22,12 +22,21 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 			}, function(response) {
 				alert(response.statusText);
 			});
+<<<<<<< HEAD
 			
 			$http.get('/businesspartner/getBusinessPartners').then(function(response) {
 			   $scope.businessPartners = response.data;
 			}, function(response) {
 				alert(response.statusText);
 			});
+=======
+						
+//			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
+//			   $scope.businessPartners = response.data;
+//			}, function(response) {
+//				alert(response.statusText);
+//			});
+>>>>>>> XML-between-companies
 	});
 	
 	$scope.submitInvoice = function () { 
@@ -53,6 +62,14 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 		$location.path("/invoiceItems/"+id);
 	}
 	
+	$scope.showXML = function(){
+		$http.get('/invoice/getXML').then(function(response) {
+			   $scope.xmlresult = response.data;
+			}, function(response) {
+				alert(response.statusText);
+			});
+	}
+	
 	$scope.deleteInvoice = function(id){
 		$http.post('invoice/delete', id).then(function mySuccess(response) {
 			if(response.data == "HasItems"){
@@ -60,6 +77,19 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	    	} else {
 	    		$window.location.reload();
 	    	}
+		}, function myError(response) {
+			alert(response.statusText);
+		});
+	}
+	
+	$scope.exportInvoice = function(id) {
+		console.log(id);
+		$http.post('invoice/export/', id).then(function mySuccess(response) {
+			if(response.data == "200"){
+				toastr.success("Invoice exported!");
+			} else {
+				$window.location.reload();
+			}
 		}, function myError(response) {
 			alert(response.statusText);
 		});

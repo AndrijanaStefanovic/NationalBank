@@ -12,26 +12,24 @@ businessPartnerModule.controller('businessPartnerController', ['$scope', '$windo
 	  });
 
 	  $scope.submitBusinessPartner = function () {
-		    $http.post('businesspartner/create/'+$stateParams.companyId, $scope.businessPartner).then(function mySuccess(response) {
+		    $http.post('businessPartner/create/'+$stateParams.companyId, $scope.businessPartner).then(function mySuccess(response) {
 		      if(response.data == "200") {
 		        toastr.success("Created!");
+		      } else {
+					$window.location.reload();
 		      }
-		      $window.location.reload();
 		    }, function myError(response) {
 		      alert(response.statusText);
 		    });
-	  }
-	
-	  $scope.showBusinessPartners = function(id) {
-		  $location.path("/businessPartners/"+id);
 	  }
 	
 	  $scope.deleteBusinessPartner = function(id) {
 		    $http.post('businessPartner/delete', id).then(function mySuccess(response) {
 		      if(response.data == "200") {
 		        toastr.success("Business Partner deleted!");
-		      }
-		      $window.location.reload();
+		      }	else {
+					$window.location.reload();
+				}
 		    }, function myError(response) {
 		      alert(response.statusText);
 		    });

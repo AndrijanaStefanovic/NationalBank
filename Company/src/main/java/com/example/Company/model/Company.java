@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -44,7 +45,7 @@ public class Company {
 	private String mobile;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "company")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
 	private List<BusinessPartner> businessPartners;
 
 	public Company(String name, 

@@ -2,8 +2,10 @@ package com.example.Company.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -39,7 +41,8 @@ public class BusinessPartner {
 	@Column(length = 30)
 	private String email;	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "company_id", nullable = false)
 	private Company company;
 
 	public BusinessPartner(String name, 

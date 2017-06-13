@@ -20,7 +20,7 @@ public class BusinessPartnerController {
 	private BusinessPartnerService partnerService;
 	
 	@RequestMapping(
-			value = "/businesspartner/create/{companyId}",
+			value = "/businessPartner/create/{companyId}",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
@@ -30,7 +30,7 @@ public class BusinessPartnerController {
 	}
 	
 	@RequestMapping(
-			value = "/businesspartner/getAllBusinessPartners/{companyId}",
+			value = "/businessPartner/getAllBusinessPartners/{companyId}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE
 			)	
@@ -39,7 +39,7 @@ public class BusinessPartnerController {
 	}
 	
 	@RequestMapping(
-			value = "/businesspartner/delete",
+			value = "/businessPartner/delete",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
