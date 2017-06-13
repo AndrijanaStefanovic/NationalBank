@@ -197,6 +197,7 @@ public abstract class SaveToXml {
 	        XMLEncryptionUtility encUtility = new XMLEncryptionUtility();
 	        XMLSigningUtility sigUtility = new XMLSigningUtility();
 	        KeyStoreReader ksReader = new KeyStoreReader();
+	        
 	 		SecretKey secretKey = encUtility.generateDataEncryptionKey();
 	 		System.out.println("*************Generate Key: *************" 
 	 						+ new BASE64Encoder().encode(secretKey.getEncoded()));
@@ -207,22 +208,14 @@ public abstract class SaveToXml {
 	 		PrivateKey privateKey = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
 	 		doc = sigUtility.signDocument(doc, privateKey, cert);
 	 		
-	 		sendPost(doc, privateKey);	         
+	 		sendPost(doc);	         
 	      	      
 	      } catch (Exception e) {
 	         e.printStackTrace();
 	      }
 	}
-	
-	private static PrivateKey readPrivateKey() {
-		KeyStoreReader ksReader = new KeyStoreReader();
 		
-		return ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
-	}
-	
-	private static void sendPost(Document doc, 
-								 PrivateKey privateKey) throws Exception {	
-		
+	private static void sendPost(Document doc) throws Exception {			
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
@@ -258,38 +251,11 @@ public abstract class SaveToXml {
 		in.close();
 	}
 	
-	public static void disableSslVerification() {
-	    try
-	    {
-	        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-	            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-	                return null;
-	            }
-	            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-	            }
-	            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-	            }
-	        }
-	        };
-
-	        SSLContext sc = SSLContext.getInstance("SSL");
-	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-	        HostnameVerifier allHostsValid = new HostnameVerifier() {
-	            public boolean verify(String hostname, SSLSession session) {
-	                return true;
-	            }
-	        };
-
-	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-	    } catch (NoSuchAlgorithmException e) {
-	        e.printStackTrace();
-	    } catch (KeyManagementException e) {
-	        e.printStackTrace();
-	    }
+	private static PrivateKey readPrivateKey() {
+		KeyStoreReader ksReader = new KeyStoreReader();		
+		return ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
 	}
-	
+		
 	public static void saveXMltoDB(Document doc) {      
 		PrivateKey privateKey = readPrivateKey();
 		XMLEncryptionUtility encUtility = new XMLEncryptionUtility();
@@ -409,5 +375,37 @@ public abstract class SaveToXml {
   	  	} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	public static void disableSslVerification() {
+	    try
+	    {
+	        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+	            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                return null;
+	            }
+	            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	            }
+	            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	            }
+	        }
+	        };
+
+	        SSLContext sc = SSLContext.getInstance("SSL");
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+	        HostnameVerifier allHostsValid = new HostnameVerifier() {
+	            public boolean verify(String hostname, SSLSession session) {
+	                return true;
+	            }
+	        };
+
+	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+	    } catch (NoSuchAlgorithmException e) {
+	        e.printStackTrace();
+	    } catch (KeyManagementException e) {
+	        e.printStackTrace();
+	    }
 	}
 }
