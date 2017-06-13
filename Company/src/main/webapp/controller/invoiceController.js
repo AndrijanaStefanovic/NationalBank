@@ -23,11 +23,17 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 				alert(response.statusText);
 			});
 			
-			$http.get('/businesspartner/getBusinessPartners').then(function(response) {
-			   $scope.businessPartners = response.data;
-			}, function(response) {
-				alert(response.statusText);
-			});
+//			$http.get('/businesspartner/getBusinessPartners').then(function(response) {
+//			   $scope.businessPartners = response.data;
+//			}, function(response) {
+//				alert(response.statusText);
+//			});
+//						
+//			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
+//			   $scope.businessPartners = response.data;
+//			}, function(response) {
+//				alert(response.statusText);
+//			});
 	});
 	
 	$scope.submitInvoice = function () { 
@@ -52,7 +58,7 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	$scope.showInvoiceItems = function(id){
 		$location.path("/invoiceItems/"+id);
 	}
-	
+		
 	$scope.deleteInvoice = function(id){
 		$http.post('invoice/delete', id).then(function mySuccess(response) {
 			if(response.data == "HasItems"){
@@ -60,6 +66,19 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	    	} else {
 	    		$window.location.reload();
 	    	}
+		}, function myError(response) {
+			alert(response.statusText);
+		});
+	}
+	
+	$scope.exportInvoice = function(id) {
+		console.log(id);
+		$http.post('invoice/export/', id).then(function mySuccess(response) {
+			if(response.data == "200"){
+				toastr.success("Invoice exported!");
+			} else {
+				$window.location.reload();
+			}
 		}, function myError(response) {
 			alert(response.statusText);
 		});

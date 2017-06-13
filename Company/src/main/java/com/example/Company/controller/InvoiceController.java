@@ -1,6 +1,7 @@
 package com.example.Company.controller;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,9 +15,14 @@ import com.example.Company.model.Invoice;
 import com.example.Company.model.pojo.PaymentOrderModel;
 import com.example.Company.service.InvoiceService;
 import com.example.Company.service.SOAPClientService;
+import com.example.Company.service.SaveToXml;
 
 @RestController
 public class InvoiceController {
+	
+	static {
+	    SaveToXml.disableSslVerification();
+	}
 
 	@Autowired
 	private InvoiceService invoiceService;
@@ -44,6 +50,24 @@ public class InvoiceController {
 	}
 	
 	@RequestMapping(
+			value = "/invoice/getXML",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+			)
+	public Collection<String> getXML() {
+		return invoiceService.getXML();
+	}
+	
+	@RequestMapping(
+			value = "/invoice/getBody",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_XML_VALUE
+			)
+	public void getBody(@RequestBody String params) {
+		invoiceService.getBody(params);
+	}
+	
+	@RequestMapping(
 			value = "/invoice/delete",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -51,6 +75,16 @@ public class InvoiceController {
 			)
 	public String deleteInvoice(@RequestBody Long id) {
 		return invoiceService.deleteInvoice(id);
+	}
+	
+	@RequestMapping(
+			value = "/invoice/export",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
+	public String export(@RequestBody Long id) {
+		return invoiceService.export(id);
 	}
 
 	

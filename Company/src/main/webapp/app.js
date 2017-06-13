@@ -1,11 +1,12 @@
 'use-strict';
 
-angular.module('company', [ 'ui.router','invoice.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller'])
+angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller'])
 
 
 	.config(function($stateProvider, $urlRouterProvider) {
 
-
+		$urlRouterProvider.otherwise('/invoices');
+		
 		$stateProvider
 
 		.state('invoices', {
@@ -13,7 +14,13 @@ angular.module('company', [ 'ui.router','invoice.controller', 'invoiceItem.contr
 				templateUrl : 'pages/invoices.html',
 				controller : 'invoiceController'
 		})
-
+		
+		.state('invoices/getXML', {
+				url : '/invoices/getXML',
+				templateUrl : 'pages/getXML.html',
+				controller : 'getXMLController'
+		})
+		
 		.state('invoiceItems', {
 				url : '/invoiceItems/:invoiceId',
 				templateUrl : 'pages/invoiceItems.html',

@@ -45,5 +45,5 @@ public class CompanyController {
 			)
 	public String delete(@RequestBody Long id) {
 		return companyService.delete(id);
-	}	
+	}
 }
