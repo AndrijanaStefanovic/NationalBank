@@ -56,6 +56,7 @@ public abstract class SaveToXml {
 	
 	@SuppressWarnings("restriction")
 	static void saveToXML(Invoice invoice, List<InvoiceItem> items) {
+		String messageId = invoice.getMessageId();
 		String supplierName = invoice.getSupplierName();
 		String supplierAddress = invoice.getSupplierAddress();
 	    String supplierPIB = invoice.getSupplierPIB();
@@ -83,6 +84,9 @@ public abstract class SaveToXml {
 	         topElement.setAttribute("xmlns", "http://service.example.com/invoice");
 	         doc.appendChild(topElement);
                   	         	         
+	         Element messageIdEl = doc.createElement("messageId");
+	         messageIdEl.appendChild(doc.createTextNode(messageId));
+	         
 	         Element buyerNameEl = doc.createElement("buyerName");
 	         buyerNameEl.appendChild(doc.createTextNode(buyerName));
 	         
@@ -134,6 +138,7 @@ public abstract class SaveToXml {
 	         Element dateOfValueEl= doc.createElement("dateOfValue");
 	         dateOfValueEl.appendChild(doc.createTextNode(dateOfValue));
 	         
+	         topElement.appendChild(messageIdEl);
 	         topElement.appendChild(buyerNameEl);
 	         topElement.appendChild(buyerAddressEl);
 	         topElement.appendChild(buyerPIBEl);
@@ -337,30 +342,31 @@ public abstract class SaveToXml {
 	  	  		if (nNode.getNodeType() == Node.ELEMENT_NODE) 
 	  	  		{
 	  	  			Element element = (Element) nNode; 
-	  	  			String query = " insert into invoice (supplierName, supplierAddress, supplierPIB, "
+	  	  			String query = " insert into invoice (messageId, supplierName, supplierAddress, supplierPIB, "
 				  					+ "buyerName, buyerAddress, buyerPIB, accountNumber, dateOfInvoice, "
 				  					+ "merchandiseValue, servicesValue, totalValue, totalTax, currency, "
 				  					+ "totalDue, billingAccountNumber, dateOfValue, totalDiscount)"
-				  					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				  					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	  	  			try {
 						preparedStatement = con.prepareStatement(query);
-						preparedStatement.setString(1, element.getElementsByTagName("supplierName").item(0).getTextContent());
-						preparedStatement.setString(2, element.getElementsByTagName("supplierAddress").item(0).getTextContent());
-						preparedStatement.setString(3, element.getElementsByTagName("supplierPIB").item(0).getTextContent());
-						preparedStatement.setString(4, element.getElementsByTagName("buyerName").item(0).getTextContent());
-						preparedStatement.setString(5, element.getElementsByTagName("buyerAddress").item(0).getTextContent());
-						preparedStatement.setString(6, element.getElementsByTagName("buyerPIB").item(0).getTextContent());
-						preparedStatement.setString(7, element.getElementsByTagName("accountNumber").item(0).getTextContent());
-						preparedStatement.setString(8, element.getElementsByTagName("dateOfInvoice").item(0).getTextContent());
-						preparedStatement.setString(9, element.getElementsByTagName("merchandiseValue").item(0).getTextContent());
-						preparedStatement.setString(10, element.getElementsByTagName("servicesValue").item(0).getTextContent());
-						preparedStatement.setString(11, element.getElementsByTagName("totalValue").item(0).getTextContent());
-						preparedStatement.setString(12, element.getElementsByTagName("totalTax").item(0).getTextContent());
-						preparedStatement.setString(13, element.getElementsByTagName("currency").item(0).getTextContent());
-						preparedStatement.setString(14, element.getElementsByTagName("totalDue").item(0).getTextContent());
-						preparedStatement.setString(15, element.getElementsByTagName("billingAccountNumber").item(0).getTextContent());
-						preparedStatement.setString(16, element.getElementsByTagName("dateOfValue").item(0).getTextContent());
-						preparedStatement.setString(17, element.getElementsByTagName("totalDiscount").item(0).getTextContent());
+						preparedStatement.setString(1, element.getElementsByTagName("messageId").item(0).getTextContent());
+						preparedStatement.setString(2, element.getElementsByTagName("supplierName").item(0).getTextContent());
+						preparedStatement.setString(3, element.getElementsByTagName("supplierAddress").item(0).getTextContent());
+						preparedStatement.setString(4, element.getElementsByTagName("supplierPIB").item(0).getTextContent());
+						preparedStatement.setString(5, element.getElementsByTagName("buyerName").item(0).getTextContent());
+						preparedStatement.setString(6, element.getElementsByTagName("buyerAddress").item(0).getTextContent());
+						preparedStatement.setString(7, element.getElementsByTagName("buyerPIB").item(0).getTextContent());
+						preparedStatement.setString(8, element.getElementsByTagName("accountNumber").item(0).getTextContent());
+						preparedStatement.setString(9, element.getElementsByTagName("dateOfInvoice").item(0).getTextContent());
+						preparedStatement.setString(10, element.getElementsByTagName("merchandiseValue").item(0).getTextContent());
+						preparedStatement.setString(11, element.getElementsByTagName("servicesValue").item(0).getTextContent());
+						preparedStatement.setString(12, element.getElementsByTagName("totalValue").item(0).getTextContent());
+						preparedStatement.setString(13, element.getElementsByTagName("totalTax").item(0).getTextContent());
+						preparedStatement.setString(14, element.getElementsByTagName("currency").item(0).getTextContent());
+						preparedStatement.setString(15, element.getElementsByTagName("totalDue").item(0).getTextContent());
+						preparedStatement.setString(16, element.getElementsByTagName("billingAccountNumber").item(0).getTextContent());
+						preparedStatement.setString(17, element.getElementsByTagName("dateOfValue").item(0).getTextContent());
+						preparedStatement.setString(18, element.getElementsByTagName("totalDiscount").item(0).getTextContent());
 						preparedStatement.execute();
 					} catch (SQLException e) {					
 						System.out.println("Exception with Prepared Statement" + e.getMessage());
