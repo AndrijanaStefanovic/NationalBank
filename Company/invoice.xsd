@@ -60,7 +60,6 @@
                 <xs:element name="totalDiscount" type="inv:decimal152"/>
                 <xs:element name="totalTax" type="inv:decimal152"/>
                 <xs:element name="totalDue" type="inv:decimal152"/>
-                <xs:element name="billingAccountNumber" type="inv:string18"/>
                 <xs:element name="currency">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -68,6 +67,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
+                <xs:element name="billingAccountNumber" type="inv:string18"/>
                 <xs:element name="dateOfValue" type="xs:date"/>
                 <xs:element maxOccurs="unbounded" minOccurs="1" name="invoiceItem">
                     <xs:complexType>
