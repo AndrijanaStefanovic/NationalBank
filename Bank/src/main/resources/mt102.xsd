@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
+    vc:minVersion="1.1" targetNamespace="http://service.example.com/mt102"
+    xmlns:mt102="http://service.example.com/mt102">
+    <xs:simpleType name="T_SWIFT">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="8"/>
+            <xs:maxLength value="11"/>
+            <xs:pattern value="([A-Z]){6}([A-Z1-9]){2}(([A-Z1-9]){3})?"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="T_string255">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="T_accountNumber">
+        <xs:restriction base="xs:string">
+            <xs:length value="18"/>
+            <xs:pattern value="\d{3}-\d{13}-\d{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="mt102">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="messageId">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="50"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="creditorSwift" type="mt102:T_SWIFT"/>
+                <xs:element name="creditorAccountNumber" type="mt102:T_accountNumber"/>
+                <xs:element name="debtorSwift" type="mt102:T_SWIFT"/>
+                <xs:element name="debtorAccountNumber" type="mt102:T_accountNumber"/>
+                <xs:element name="total">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="currency">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="3"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="dateOfValue" type="xs:date"/>
+                <xs:element name="dateOfPayment" type="xs:date"/>
+                <xs:element maxOccurs="unbounded" ref="mt102:singlePayment"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_companyData">
+        <xs:sequence>
+            <xs:element name="info" type="mt102:T_string255"/>
+            <xs:element name="accountNumber" type="mt102:T_accountNumber"/>
+            <xs:element name="referenceNumber">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="20"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="model">
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:totalDigits value="2"/>
+                        <xs:minExclusive value="9"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="singlePayment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="paymentId">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="16"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="paymentPurpose" type="mt102:T_string255"/>
+                <xs:element name="creditor" type="mt102:T_companyData"/>
+                <xs:element name="debtor" type="mt102:T_companyData"/>
+                <xs:element name="dateOfOrder" type="xs:date"/>
+                <xs:element name="total">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:decimal">
+                            <xs:totalDigits value="15"/>
+                            <xs:fractionDigits value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="currency">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:length value="3"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

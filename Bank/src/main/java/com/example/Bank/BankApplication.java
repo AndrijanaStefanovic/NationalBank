@@ -10,9 +10,11 @@ public class BankApplication {
 	
 	public static void main(String[] args) throws MalformedURLException {
 		SpringApplication.run(BankApplication.class, args);
-		//Client c = new Client();
-		//c.testProcessBankStatementRequest();
-		//c.testProcessPaymentOrder();
-		//c.testProcessMT103();
+		Client c = new Client();
+		System.out.println("Started processing 1st one");
+		c.testProcessBankStatementRequest();
+		System.out.println("Processed first one");
+//		c.testProcessPaymentOrder();
+//		c.testProcessMT103();
 	}
 }
