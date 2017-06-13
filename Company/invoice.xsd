@@ -40,6 +40,14 @@
     <xs:element name="invoice">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="messageId">
+                    <xs:simpleType>
+                         <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="50"/>
+                          </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
                 <xs:element name="buyerName" type="inv:string255"/>
                 <xs:element name="buyerAddress" type="inv:string255"/>
                 <xs:element name="buyerPIB" type="inv:PIB"/>
