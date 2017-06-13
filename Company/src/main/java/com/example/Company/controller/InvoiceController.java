@@ -54,8 +54,7 @@ public class InvoiceController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE
 			)
-	public List<String> getXML() {
-		System.out.println("Usaooo");
+	public Collection<String> getXML() {
 		return invoiceService.getXML();
 	}
 	
