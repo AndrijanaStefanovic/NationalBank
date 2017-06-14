@@ -16,12 +16,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -169,6 +173,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 		i.setSupplierAddress(invoice.getSupplierAddress());
 		i.setSupplierPIB(invoice.getSupplierPIB());
 		i.setCurrency(invoice.getCurrency());
+		
+		i.setDateOfInvoice(invoice.getDateOfInvoice().toGregorianCalendar().getTime());
+		i.setDateOfValue(invoice.getDateOfValue().toGregorianCalendar().getTime());
+		
+		i.setMerchandiseValue(invoice.getMerchandiseValue().doubleValue());
+		i.setServicesValue(invoice.getServicesValue().doubleValue());
+		i.setTotalValue(invoice.getTotalValue().doubleValue());
+		i.setTotalDue(invoice.getTotalDue().doubleValue());
+		i.setTotalTax(invoice.getTotalTax().doubleValue());
+		i.setTotalDiscount(invoice.getTotalDiscount().doubleValue());
 		invoiceRepository.save(i);
 		
 		ArrayList<InvoiceItem> list = new ArrayList<InvoiceItem>();
@@ -205,7 +219,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		invoiceItemXML.setMeasurementUnit("TESSTTTTT");
 		invoiceXML.getInvoiceItem().add(invoiceItemXML);
 		//otkomentarisati na kraju
-		/*try {
+		try {
 			GregorianCalendar c = new GregorianCalendar();
 			c.setTime(invoiceToSend.getDateOfInvoice());
 			XMLGregorianCalendar dateOfInvoice = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
@@ -216,7 +230,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoiceXML.setDateOfValue(dateOfValue);
 		} catch (DatatypeConfigurationException e1) {
 			e1.printStackTrace();
-		}*/
+		}
 		invoiceXML.setMessageId("generisati random broj");
 		
 		invoiceXML.setMerchandiseValue(new BigDecimal(invoiceToSend.getMerchandiseValue()));
