@@ -3,6 +3,8 @@ package com.example.Company.controller;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -123,5 +125,20 @@ public class InvoiceController {
 			)
 	public Invoice getInvoice(@PathVariable("invoiceId") Long invoiceId) {
 		return invoiceService.getInvoice(invoiceId);
+	}
+	
+	@RequestMapping(value = "/invoice/receive",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_XML_VALUE)
+	public Response receiveInvoice(@RequestBody com.example.service.invoice.Invoice invoice) {
+		invoiceService.receiveInvoice(invoice);
+		return Response.status(201).entity("ok").build();
+	}
+	
+	@RequestMapping(value = "/invoice/send/{invoiceId}",
+			method = RequestMethod.GET,
+			produces = MediaType.TEXT_PLAIN_VALUE)
+	public String sendInvoice(@PathVariable("invoiceId") Long invoiceId){
+		 return invoiceService.sendInvoice(invoiceId);
 	}
 }

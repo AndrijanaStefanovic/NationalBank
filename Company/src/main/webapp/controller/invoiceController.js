@@ -108,4 +108,18 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 			alert(response.statusText);
 		});
 	}
+	
+	$scope.sendInvoice = function(id){
+		toastr.info(id);
+		 
+		$http.get('invoice/send/'+id).then(function mySuccess(response) {
+			if(response.data == "OK") {
+				$window.location.reload();
+				toastr.success("Payed!");
+			}
+			toastr.info(response.data);
+		}, function myError(response) {
+			alert(response.statusText);
+		});
+	}
 }]);
