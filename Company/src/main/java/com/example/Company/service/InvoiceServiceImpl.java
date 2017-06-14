@@ -110,20 +110,20 @@ public class InvoiceServiceImpl implements InvoiceService{
   	  	try {
 			Class.forName("com.mysql.jdbc.Driver") ;
 		
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/companyxml?useSSL=false&createDatabaseIfNotExist=true", 
+		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/company2?useSSL=false&createDatabaseIfNotExist=true", 
 		  			"root", "root") ;
 		  	Statement stmt = conn.createStatement() ;
-		  	String query = "SELECT * FROM companyxml.invoice ORDER BY id DESC LIMIT 1";
+		  	String query = "SELECT * FROM company2.invoice ORDER BY id DESC LIMIT 1";
 		  	ResultSet resultSet = stmt.executeQuery(query);
 		  	results = new ArrayList<String>();
 		  	while(resultSet.next()) {
-		  		for (int i = 2; i < 20; i++)
+		  		for (int i = 2; i < 21; i++)
 		  			results.add(resultSet.getString(i));	  	    
 		  	}
-		  	String queryItems = "SELECT * FROM companyxml.invoiceItem ORDER BY id DESC LIMIT 1";
+		  	String queryItems = "SELECT * FROM company2.invoice_item ORDER BY id DESC LIMIT 1";
 		  	ResultSet resultSetItem = stmt.executeQuery(queryItems);
 		  	while(resultSetItem.next()) {
-		  		for (int i = 2; i < 12; i++)
+		  		for (int i = 2; i < 14; i++)
 		  			results.add(resultSetItem.getString(i));	  	    
 		  	}		  	
   	  	} catch (ClassNotFoundException e) {
