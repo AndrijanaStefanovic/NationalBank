@@ -340,7 +340,7 @@ public class Mt102 {
      */
     public List<SinglePayment> getSinglePayment() {
         if (singlePayment == null) {
-            singlePayment = new ArrayList<SinglePayment>();
+            singlePayment = new ArrayList<>();
         }
         return this.singlePayment;
     }
