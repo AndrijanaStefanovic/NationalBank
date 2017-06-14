@@ -1,5 +1,6 @@
 package com.example.Bank.service;
 
+import com.example.service.mt102.Mt102;
 import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
@@ -24,4 +25,6 @@ public interface PaymentService {
 	
 	
 	public Mt103 createMT103(PaymentOrder paymentOrder);
+
+	public Mt102 createMT102(PaymentOrder paymentOrder);
 }

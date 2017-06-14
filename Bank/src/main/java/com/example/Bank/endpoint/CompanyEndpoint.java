@@ -2,6 +2,8 @@ package com.example.Bank.endpoint;
 
 import java.math.BigDecimal;
 
+import com.example.Bank.service.ClearingClientService;
+import com.example.service.mt102.Mt102;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -27,6 +29,9 @@ public class CompanyEndpoint {
 	
 	@Autowired
 	private SOAPClientService clientService;
+
+	@Autowired
+	private ClearingClientService clearingClientService;
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processBankStatementRequest")
 	@ResponsePayload
@@ -57,9 +62,10 @@ public class CompanyEndpoint {
 				//Salji na RTGS
 				Mt103 mt103 = paymentService.createMT103(paymentOrder);
 				System.out.println(clientService.sendMt103(mt103));
-				
 			} else {
 				//Salji na Clearing
+				Mt102 mt102 = paymentService.createMT102(paymentOrder);
+				System.out.println(clearingClientService.sendMt102(mt102));
 			}
 		}
 		response.setReturn(code);

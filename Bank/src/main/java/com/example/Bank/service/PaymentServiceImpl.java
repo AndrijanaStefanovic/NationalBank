@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.example.service.mt102.Mt102;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -250,6 +251,11 @@ public class PaymentServiceImpl implements PaymentService {
 		mt103.setPaymentPurpose(paymentOrder.getPaymentPurpose());
 		mt103.setTotal(paymentOrder.getAmount());
 		return mt103;
+	}
+
+	@Override
+	public Mt102 createMT102(PaymentOrder paymentOrder) {
+		return null;
 	}
 
 }

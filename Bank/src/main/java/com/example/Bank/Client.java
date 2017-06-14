@@ -1,14 +1,10 @@
 package com.example.Bank;
 
+import com.example.Bank.service.jaxws.*;
+import com.example.service.mt102.Mt102;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
-import com.example.Bank.service.jaxws.ProcessBankStatementRequest;
-import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
-import com.example.Bank.service.jaxws.ProcessMT103;
-import com.example.Bank.service.jaxws.ProcessMT103Response;
-import com.example.Bank.service.jaxws.ProcessPaymentOrder;
-import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatementrequest.BankStatementRequest;
 import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
@@ -62,9 +58,27 @@ public class Client extends WebServiceGatewaySupport {
         m.setMessageId("testiram soap cb");
         p.setArg0(m);
 
-        String uri = "http://localhost:8080/ws/mt103";
+        String uri = "http://localhost:8090/ws/mt103";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
         ProcessMT103Response response = (ProcessMT103Response) o;
+        System.out.println("**************************************");
+        System.out.println(response.getReturn());
+    }
+
+    public void testProcessMT102() {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setClassesToBeBound(ProcessMT102.class, ProcessMT102Response.class);
+        setMarshaller(marshaller);
+        setUnmarshaller(marshaller);
+
+        ProcessMT102 p = new ProcessMT102();
+        Mt102 m = new Mt102();
+        m.setMessageId("testiram soap za mt102 clearing");
+        p.setArg0(m);
+
+        String uri = "http://localhost:8090/ws/mt102";
+        Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
+        ProcessMT102Response response = (ProcessMT102Response) o;
         System.out.println("**************************************");
         System.out.println(response.getReturn());
     }
