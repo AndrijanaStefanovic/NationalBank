@@ -1,7 +1,6 @@
 package com.example.Company.controller;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.ws.rs.core.Response;
 
