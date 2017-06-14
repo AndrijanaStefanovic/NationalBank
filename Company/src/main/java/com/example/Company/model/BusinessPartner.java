@@ -45,6 +45,17 @@ public class BusinessPartner {
 	@JoinColumn(name = "company_id", nullable = false)
 	private Company company;
 
+	@Column
+	private String url;
+	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	public BusinessPartner(String name, 
 						   String kind, 
 						   String partnerPIB, 
