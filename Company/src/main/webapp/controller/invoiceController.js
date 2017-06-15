@@ -29,11 +29,6 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 				alert(response.statusText);
 			});
 						
-			$http.get('/businessPartner/getAllBusinessPartners').then(function(response) {
-			   $scope.businessPartners = response.data;
-			}, function(response) {
-				alert(response.statusText);
-			});
 	});
 	
 	$scope.submitInvoice = function () { 
@@ -58,15 +53,7 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	$scope.showInvoiceItems = function(id){
 		$location.path("/invoiceItems/"+id);
 	}
-	
-	$scope.showXML = function(){
-		$http.get('/invoice/getXML').then(function(response) {
-			   $scope.xmlresult = response.data;
-			}, function(response) {
-				alert(response.statusText);
-			});
-	}
-	
+		
 	$scope.deleteInvoice = function(id){
 		$http.post('invoice/delete', id).then(function mySuccess(response) {
 			if(response.data == "HasItems"){
@@ -107,6 +94,20 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 		$('#payInvoiceModal').modal('toggle');
 		toastr.info("Payment order is being sent...");
 		$http.post('invoice/pay', $scope.paymentOrder).then(function mySuccess(response) {
+			if(response.data == "OK") {
+				$window.location.reload();
+				toastr.success("Payed!");
+			}
+			toastr.info(response.data);
+		}, function myError(response) {
+			alert(response.statusText);
+		});
+	}
+	
+	$scope.sendInvoice = function(id){
+		toastr.info(id);
+		 
+		$http.get('invoice/send/'+id).then(function mySuccess(response) {
 			if(response.data == "OK") {
 				$window.location.reload();
 				toastr.success("Payed!");

@@ -36,6 +36,7 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 	@ResponsePayload
 	public ProcessBankStatementRequestResponse processBankStatementRequest(@RequestPayload ProcessBankStatementRequest request) {
 		ProcessBankStatementRequestResponse response = new ProcessBankStatementRequestResponse();
+		request.getArg0();
 		BankStatement bs = new BankStatement();
 		bs.setAccountNumber("1234");
 		response.setReturn(bs);
@@ -59,6 +60,7 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 			
 			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
 				//Salji na RTGS
+				System.out.println("****************rtgs******************");
 				Mt103 mt103 = paymentService.createMT103(paymentOrder);
 				System.out.println(clientService.sendMt103(mt103));
 			} else {

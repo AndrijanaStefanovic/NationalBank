@@ -1,7 +1,5 @@
 <h1>Invoices</h1>
 
-<input type="button" class="btn btn-primary" value="ShowXML" style="float: right;" data-ng-click="showXML()">
-
 <h2>Received invoices</h2>
 <table class="table table-hover">
 	<thead>
@@ -86,9 +84,6 @@
 				</button>
 				<button type="button" class="btn btn-info" data-ng-click="payInvoice(x.id)">
 					<span class="glyphicon glyphicon-euro"></span>
-				</button>
-				<button type="button" class="btn btn-success" data-ng-click="exportInvoice(x.id)">
-					<span class="glyphicon glyphicon-file"></span>
 				</button>
 			</td>
 			<td>
@@ -182,10 +177,14 @@
 				<button type="button" class="btn btn-info" data-ng-click="showInvoiceItems(x.id)">
 					<span class="glyphicon glyphicon-search"></span>
 				</button>
-			</td>
-			<td>
 				<button type="button" class="btn btn-danger" data-ng-click="deleteInvoice(x.id)">
 					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+				<button type="button" class="btn btn-success" data-ng-click="exportInvoice(x.id)">
+					<span class="glyphicon glyphicon-file"></span>
+				</button>
+				<button type="button" class="btn btn-success" data-ng-click="sendInvoice(x.id)">
+					<span class="glyphicon glyphicon-file"></span>
 				</button>
 			</td>
 		</tr>
@@ -243,6 +242,3 @@
 	</div>
 </div>
 
-<div style="position: absolute; bottom: 20px; width: 60%; height: 60px; overflow-wrap: break-word;">
-   ResultXML: {{xmlresult}}
-</div>

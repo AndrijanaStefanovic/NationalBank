@@ -25,4 +25,8 @@ public interface InvoiceService {
 	
 	public Invoice getInvoice(Long id);
 	
+	public String receiveInvoice(com.example.service.invoice.Invoice invoice);
+	
+	public String sendInvoice(Long id);
+	
 }
