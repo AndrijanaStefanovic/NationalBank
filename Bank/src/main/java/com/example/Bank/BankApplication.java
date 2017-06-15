@@ -17,6 +17,8 @@ public class BankApplication {
 		System.out.println("Processed first one");
 //		c.testProcessPaymentOrder();
 //		c.testProcessMT103();
+		c.testProcessMT900();
+		c.testProcessMT910();
 		c.testProcessMT102();
 	}
 }

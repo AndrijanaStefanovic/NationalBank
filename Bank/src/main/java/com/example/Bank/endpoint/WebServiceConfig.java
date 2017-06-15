@@ -83,4 +83,34 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     public XsdSchema MT102Schema() {
         return new SimpleXsdSchema(new ClassPathResource("mt102.xsd"));
     }
+
+    @Bean(name = "mt900")
+    public DefaultWsdl11Definition MT900SchemaDefinition(XsdSchema MT900Schema) {
+        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+        wsdl11Definition.setPortTypeName("MT900Port");
+        wsdl11Definition.setLocationUri("/ws");
+        wsdl11Definition.setTargetNamespace("http://example.com/Bank/service");
+        wsdl11Definition.setSchema(MT900Schema);
+        return wsdl11Definition;
+    }
+
+    @Bean
+    public XsdSchema MT900Schema() {
+        return new SimpleXsdSchema(new ClassPathResource("mt900.xsd"));
+    }
+
+    @Bean(name = "mt910")
+    public DefaultWsdl11Definition MT910SchemaDefinition(XsdSchema MT910Schema) {
+        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+        wsdl11Definition.setPortTypeName("MT910Port");
+        wsdl11Definition.setLocationUri("/ws");
+        wsdl11Definition.setTargetNamespace("http://example.com/Bank/service");
+        wsdl11Definition.setSchema(MT910Schema);
+        return wsdl11Definition;
+    }
+
+    @Bean
+    public XsdSchema MT910Schema() {
+        return new SimpleXsdSchema(new ClassPathResource("MT910.xsd"));
+    }
 }
