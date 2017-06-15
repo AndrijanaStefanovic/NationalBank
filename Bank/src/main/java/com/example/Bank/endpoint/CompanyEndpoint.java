@@ -3,8 +3,11 @@ package com.example.Bank.endpoint;
 import java.math.BigDecimal;
 
 import com.example.Bank.service.ClearingClientService;
+import com.example.Bank.service.jaxws.*;
 import com.example.service.mt102.Mt102;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -12,16 +15,12 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import com.example.Bank.service.PaymentService;
 import com.example.Bank.service.SOAPClientService;
-import com.example.Bank.service.jaxws.ProcessBankStatementRequest;
-import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
-import com.example.Bank.service.jaxws.ProcessPaymentOrder;
-import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatement.BankStatement;
 import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
 @Endpoint
-public class CompanyEndpoint {
+public class CompanyEndpoint extends WebServiceGatewaySupport {
 	private static final String NAMESPACE_URI = "http://service.Bank.example.com/";
 	
 	@Autowired
@@ -71,6 +70,4 @@ public class CompanyEndpoint {
 		response.setReturn(code);
 		return response;
 	}
-	
-	
 }

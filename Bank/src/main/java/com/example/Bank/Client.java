@@ -1,7 +1,11 @@
 package com.example.Bank;
 
+import com.example.Bank.service.PaymentService;
 import com.example.Bank.service.jaxws.*;
 import com.example.service.mt102.Mt102;
+import com.example.service.mt102.SinglePayment;
+import com.example.service.paymentorder.TCompanyData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
@@ -9,8 +13,14 @@ import com.example.service.bankstatementrequest.BankStatementRequest;
 import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
 public class Client extends WebServiceGatewaySupport {
 
+    @Autowired
+    private PaymentService paymentService;
 
     public void testProcessBankStatementRequest() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -73,6 +83,10 @@ public class Client extends WebServiceGatewaySupport {
 
         ProcessMT102 p = new ProcessMT102();
         Mt102 m = new Mt102();
+        List<SinglePayment> singlePayments = m.getSinglePayment();
+        for (int i = 0; i < 5; i++) {
+            singlePayments.add(generateSinglePaymentForCurrentMT102(i));
+        }
         m.setMessageId("testiram soap za mt102 clearing");
         p.setArg0(m);
 
@@ -83,5 +97,20 @@ public class Client extends WebServiceGatewaySupport {
         System.out.println(response.getReturn());
     }
 
+    private SinglePayment generateSinglePaymentForCurrentMT102(int i) {
+        SinglePayment singlePayment = new SinglePayment();
 
+        //paymentID
+        singlePayment.setPaymentId(i+"ID"+ UUID.randomUUID().toString());
+
+        //creditor
+        com.example.service.mt102.TCompanyData creditorData = new com.example.service.mt102.TCompanyData();
+        singlePayment.setCreditor(creditorData);
+
+        //debtor
+        com.example.service.mt102.TCompanyData debtorData = new com.example.service.mt102.TCompanyData();
+        singlePayment.setCreditor(debtorData);
+
+        return  singlePayment;
+    }
 }
