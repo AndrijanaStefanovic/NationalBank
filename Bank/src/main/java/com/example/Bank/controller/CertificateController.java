@@ -15,6 +15,7 @@ public class CertificateController {
 	@Autowired
 	private CertificateService certificateService;
 	
+	//test for serial number: 2536812
 	@RequestMapping(
 			value = "/certificate/checkSerialNumber/{serialNumber}",
 			method = RequestMethod.GET,
