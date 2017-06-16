@@ -16,17 +16,19 @@ public interface InvoiceService {
 	public Collection<Invoice> getReceivedInvoices();
 	
 	public Collection<Invoice> getSentInvoices();
-
-	public String export(Long id);
 	
-	public void getBody(String response);
-
 	public List<String> getXML();
+	
+	public String exportInvoiceToXML(Long id);
 	
 	public Invoice getInvoice(Long id);
 	
 	public String receiveInvoice(com.example.service.invoice.Invoice invoice);
 	
 	public String sendInvoice(Long id);
+
+	public String receiveXML(String xmlParams);
+
+	public String checkSerialNumber(String serialNumber);
 	
 }

@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -37,6 +38,8 @@ import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.InvoiceItemRepository;
 import com.example.Company.repository.InvoiceRepository;
 
+import model.CertificateModel;
+
 @Service
 public class InvoiceServiceImpl implements InvoiceService{
 
@@ -45,7 +48,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private InvoiceItemRepository ivoiceItemRepository;
-
 	
 	@Autowired
 	private BusinessPartnerRepository businessPartnerRepository;
@@ -86,41 +88,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice getInvoice(Long id) {
 		return invoiceRepository.findOne(id);
 	}
-	
-	public String export(Long id) {
-		if (id != null) {
-			Invoice invoice = invoiceRepository.findOne(id);
-			List<InvoiceItem> invoiceItems = ivoiceItemRepository.findByInvoice(invoice);
-			SaveToXml.saveToXML(invoice, invoiceItems);
-			return "200";
-		} else 
-			return "500";
-	}
-
-	@Override
-	public void getBody(String response) {
-		System.out.println("-------------------------------");
-		System.out.println("Result of response: " + response);
-		System.out.println("-------------------------------");
-		
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();    
-        factory.setNamespaceAware(true);
-        factory.setIgnoringElementContentWhitespace(true);
-		DocumentBuilder builder; 
-        Document doc = null;
-        try  
-        {  
-            builder = factory.newDocumentBuilder();  
-            InputSource iSource = new InputSource();
-            iSource.setCharacterStream(new StringReader(response));            
-            doc = builder.parse(iSource); 
-
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }
-        
-        SaveToXml.saveXMltoDB(doc);
-	}
 
 	@Override
 	public List<String> getXML() {
@@ -131,7 +98,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/company2?"
 		  			+ "useSSL=false&createDatabaseIfNotExist=true", 
-		  			"root", "root") ;
+		  			"root", "tasha1994") ;
 		  	Statement stmt = conn.createStatement() ;
 		  	String query = "SELECT * FROM company2.invoice ORDER BY id DESC LIMIT 1";
 		  	ResultSet resultSet = stmt.executeQuery(query);
@@ -153,15 +120,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 	  return results;
 	}
-
+	
 	@Override
 	public String receiveInvoice(com.example.service.invoice.Invoice invoice) {
 		Invoice i = new Invoice();
 		i.setAccountNumber(invoice.getAccountNumber());
 		i.setReceived(true);
-		i.setBillingAccountNumber(invoice.getBillingAccountNumber());
-		i.setBuyerName(invoice.getBuyerName());
-		i.setAccountNumber(invoice.getAccountNumber());
 		i.setBillingAccountNumber(invoice.getBillingAccountNumber());
 		i.setBuyerName(invoice.getBuyerName());
 		i.setBuyerAddress(invoice.getBuyerAddress());
@@ -170,41 +134,93 @@ public class InvoiceServiceImpl implements InvoiceService{
 		i.setSupplierAddress(invoice.getSupplierAddress());
 		i.setSupplierPIB(invoice.getSupplierPIB());
 		i.setCurrency(invoice.getCurrency());
+		
+//		i.setDateOfInvoice(invoice.getDateOfInvoice().toGregorianCalendar().getTime());
+//		i.setDateOfValue(invoice.getDateOfValue().toGregorianCalendar().getTime());
+		
+		i.setMerchandiseValue(invoice.getMerchandiseValue().doubleValue());
+		i.setMessageId(invoice.getMessageId());
+		i.setServicesValue(invoice.getServicesValue().doubleValue());
+		i.setTotalValue(invoice.getTotalValue().doubleValue());
+		i.setTotalDue(invoice.getTotalDue().doubleValue());
+		i.setTotalTax(invoice.getTotalTax().doubleValue());
+		i.setTotalDiscount(invoice.getTotalDiscount().doubleValue());
 		invoiceRepository.save(i);
 		
 		ArrayList<InvoiceItem> list = new ArrayList<InvoiceItem>();
 		for(com.example.service.invoice.Invoice.InvoiceItem iiXML : invoice.getInvoiceItem()){
 			InvoiceItem ii = new InvoiceItem();
+			ii.setNumber(iiXML.getNumber());
+			ii.setAmount(iiXML.getAmount().doubleValue());
+			ii.setDiscountPercent(iiXML.getDiscountPercent().doubleValue());
+			ii.setKind(iiXML.getKind());
 			ii.setMeasurmentUnit(iiXML.getMeasurementUnit());
+			ii.setName(iiXML.getName());
+			ii.setSubtractedDiscount(iiXML.getSubtractedDiscount().doubleValue());
+			ii.setDiscountPercent(iiXML.getDiscountPercent().doubleValue());
+			ii.setTotalTax(iiXML.getTaxTotal().doubleValue());
+			ii.setUnitPrice(iiXML.getUnitPrice().doubleValue());
+			ii.setValue(iiXML.getValue().doubleValue());
 			list.add(ii);
 			ii.setInvoice(i);
 			ivoiceItemRepository.save(ii);
 		}
-		//postaviti ostale podatke...
+			
 		i.setInvoiceItems(list);
 		invoiceRepository.save(i);
 		return "OK";
 	}
 
 	@Override
+	public String exportInvoiceToXML(Long id) {
+		Invoice invoice = invoiceRepository.findOne(id);
+		List<InvoiceItem> items = ivoiceItemRepository.findByInvoice(invoice);
+		BusinessPartner bp = businessPartnerRepository.findByPartnerPIB(invoice.getBuyerPIB()).get(0);
+		SaveToXml.generateXMLDocument(invoice, items, bp);	         
+		return "OK";
+	}
+
+	@Override
+	public String receiveXML(String response) {
+		System.out.println("-------------------------------");
+		System.out.println("Result of response: " + response);
+		System.out.println("-------------------------------");
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();    
+        factory.setNamespaceAware(true);
+        factory.setIgnoringElementContentWhitespace(true);
+		DocumentBuilder builder; 
+        Document document = null;
+        try  
+        {  
+            builder = factory.newDocumentBuilder();  
+            InputSource iSource = new InputSource();
+            iSource.setCharacterStream(new StringReader(response));            
+            document = builder.parse(iSource); 
+
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }
+        
+        ValidateXMLAndSaveToDB.decryptXMLAndSaveToDB(document, invoiceRepository, ivoiceItemRepository);
+       
+ 		return "OK";
+	}
+	
+	@Override
 	public String sendInvoice(Long id){
 		Invoice invoiceToSend = invoiceRepository.findOne(id);
+		List<InvoiceItem> invoiceItems = ivoiceItemRepository.findByInvoice(invoiceToSend);
 		com.example.service.invoice.Invoice invoiceXML = new com.example.service.invoice.Invoice();
 		
 		BusinessPartner bp = businessPartnerRepository.findByPartnerPIB(invoiceToSend.getBuyerPIB()).get(0);
 		
 		invoiceXML.setAccountNumber(invoiceToSend.getAccountNumber());
 		invoiceXML.setBillingAccountNumber(invoiceToSend.getBillingAccountNumber());
-		invoiceXML.setBuyerName(invoiceToSend.getBuyerName());
 		invoiceXML.setBuyerAddress(invoiceToSend.getBuyerAddress());
+		invoiceXML.setBuyerName(invoiceToSend.getBuyerName());
 		invoiceXML.setBuyerPIB(invoiceToSend.getBuyerPIB());
-		invoiceXML.setSupplierName(invoiceToSend.getSupplierName());
-		invoiceXML.setSupplierAddress(invoiceToSend.getSupplierAddress());
-		invoiceXML.setSupplierPIB(invoiceToSend.getSupplierPIB());
 		invoiceXML.setCurrency(invoiceToSend.getCurrency());
-		com.example.service.invoice.Invoice.InvoiceItem invoiceItemXML = new  com.example.service.invoice.Invoice.InvoiceItem();
-		invoiceItemXML.setMeasurementUnit("TESSTTTTT");
-		invoiceXML.getInvoiceItem().add(invoiceItemXML);
 		//otkomentarisati na kraju
 		/*try {
 			GregorianCalendar c = new GregorianCalendar();
@@ -218,17 +234,34 @@ public class InvoiceServiceImpl implements InvoiceService{
 		} catch (DatatypeConfigurationException e1) {
 			e1.printStackTrace();
 		}*/
-		invoiceXML.setMessageId("generisati random broj");
-		
 		invoiceXML.setMerchandiseValue(new BigDecimal(invoiceToSend.getMerchandiseValue()));
+		invoiceXML.setMessageId(invoiceToSend.getMessageId());
 		invoiceXML.setServicesValue(new BigDecimal(invoiceToSend.getServicesValue()));
-		
-		invoiceXML.setTotalValue(new BigDecimal(invoiceToSend.getTotalValue()));
+		invoiceXML.setSupplierAddress(invoiceToSend.getSupplierAddress());
+		invoiceXML.setSupplierName(invoiceToSend.getSupplierName());
+		invoiceXML.setSupplierPIB(invoiceToSend.getSupplierPIB());
 		invoiceXML.setTotalDiscount(new BigDecimal(invoiceToSend.getTotalDiscount()));
-		invoiceXML.setTotalTax(new BigDecimal(invoiceToSend.getTotalTax()));
 		invoiceXML.setTotalDue(new BigDecimal(invoiceToSend.getTotalDue()));
+		invoiceXML.setTotalTax(new BigDecimal(invoiceToSend.getTotalTax()));
+		invoiceXML.setTotalValue(new BigDecimal(invoiceToSend.getTotalValue()));
+		
+		for (InvoiceItem invoiceItem : invoiceItems) {
+			com.example.service.invoice.Invoice.InvoiceItem invoiceItemXML = new  com.example.service.invoice.Invoice.InvoiceItem();
+			invoiceItemXML.setNumber(invoiceItem.getNumber());
+			invoiceItemXML.setAmount(new BigDecimal(invoiceItem.getAmount()));
+			invoiceItemXML.setDiscountPercent(new BigDecimal(invoiceItem.getDiscountPercent()));
+			invoiceItemXML.setKind(invoiceItem.getKind());
+			invoiceItemXML.setMeasurementUnit(invoiceItem.getMeasurmentUnit());
+			invoiceItemXML.setName(invoiceItem.getName());
+			invoiceItemXML.setSubtractedDiscount(new BigDecimal(invoiceItem.getSubtractedDiscount()));
+			invoiceItemXML.setDiscountTotal(new BigDecimal(invoiceItem.getTotalDiscount()));
+			invoiceItemXML.setTaxTotal(new BigDecimal(invoiceItem.getTotalTax()));
+			invoiceItemXML.setUnitPrice(new BigDecimal(invoiceItem.getUnitPrice()));
+			invoiceItemXML.setValue(new BigDecimal(invoiceItem.getValue()));
+			invoiceXML.getInvoiceItem().add(invoiceItemXML);
+		}		
+		
 		try {
-
 			URL url = new URL(bp.getUrl());
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -245,7 +278,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			OutputStream os = conn.getOutputStream();
 			jaxbMarshaller.marshal(invoiceXML, os);
 			os.flush();
-
+					
 			if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
@@ -268,9 +301,35 @@ public class InvoiceServiceImpl implements InvoiceService{
 			e.printStackTrace();
 		} catch (JAXBException e) {
 			e.printStackTrace();
-		}
+		} 
+		
 		return "OK";
 	}
 
+	@Override
+	public String checkSerialNumber(String serialNum) {
+		Integer serialNumber = Integer.parseInt(serialNum);
+		HashMap<String, CertificateModel> certificateModels = new HashMap<String, CertificateModel>();
+		CertificateModel helperCertificate = new CertificateModel();
+		boolean found = false;
+		String result = "";
+		
+		try {
+			certificateModels = helperCertificate.load();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		for (CertificateModel cm : certificateModels.values()) {
+			if(cm.getSerialNumber() == serialNumber) {
+				found = true;
+				result = "OK";
+			}
+		}
+		if(!found) 
+			result = "NOT FOUND";
+		
+		return result;
+	}
 
 }
