@@ -77,7 +77,6 @@
                 </xs:element>
                 <xs:element name="billingAccountNumber" type="inv:string18"/>
                 <xs:element name="dateOfValue" type="xs:date"/>
-                <xs:element name="received" type="xs:boolean"/>
                 <xs:element maxOccurs="unbounded" minOccurs="1" name="invoiceItem">
                     <xs:complexType>
                         <xs:sequence>
@@ -137,13 +136,6 @@
                                     <xs:restriction base="xs:string">
                                         <xs:minLength value="1"/>
                                         <xs:maxLength value="30"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
-                            <xs:element name="invoice_id">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:long">
-                                        <xs:totalDigits value="3"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
