@@ -161,12 +161,11 @@ public class CertificateModel implements Serializable {
 	}
 	
 	public void save(Map<String, CertificateModel> certificates) throws FileNotFoundException, IOException{
-		ObjectOutputStream out1 = new ObjectOutputStream(new FileOutputStream("./data/certificates.dat"));
+		ObjectOutputStream out1 = new ObjectOutputStream(new FileOutputStream("certificates.dat"));
 		out1.writeObject(certificates);
 		out1.flush();
 		out1.close();
 	}
-	
 	
 	@SuppressWarnings("unchecked")
 	public HashMap<String, CertificateModel> load() throws FileNotFoundException, IOException, ClassNotFoundException{
