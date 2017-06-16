@@ -1,7 +1,6 @@
 package com.example.Company.controller;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.ws.rs.core.Response;
 
@@ -61,14 +60,35 @@ public class InvoiceController {
 	}
 	
 	@RequestMapping(
-			value = "/invoice/getBody",
+			value = "/invoice/receiveXML",
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_XML_VALUE
 			)
-	public void getBody(@RequestBody String params) {
-		invoiceService.getBody(params);
+	public Response getBody(@RequestBody String xmlParams) {
+		System.out.println("Usaooo");
+		invoiceService.receiveXML(xmlParams);
+		return Response.status(201).entity("ok").build();
 	}
 	
+	@RequestMapping(
+			value = "/invoice/export/{invoiceId}",
+			method = RequestMethod.GET,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
+	public String export(@PathVariable("invoiceId") Long invoiceId) {
+		return invoiceService.exportInvoiceToXML(invoiceId);
+	}
+	
+	@RequestMapping(
+			value = "/invoice/checkSerialNumber/{serialNumber}",
+			method = RequestMethod.GET,
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
+	public String checkSerialNumber(@PathVariable("serialNumber") String serialNumber) {
+		System.out.println("Res: " + invoiceService.checkSerialNumber(serialNumber));
+		return invoiceService.checkSerialNumber(serialNumber);
+	}
+		
 	@RequestMapping(
 			value = "/invoice/delete",
 			method = RequestMethod.POST,
@@ -78,17 +98,6 @@ public class InvoiceController {
 	public String deleteInvoice(@RequestBody Long id) {
 		return invoiceService.deleteInvoice(id);
 	}
-	
-	@RequestMapping(
-			value = "/invoice/export",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.TEXT_PLAIN_VALUE
-			)
-	public String export(@RequestBody Long id) {
-		return invoiceService.export(id);
-	}
-
 	
 	@RequestMapping(
 			value = "/invoice/getReceivedInvoices",
@@ -127,17 +136,22 @@ public class InvoiceController {
 		return invoiceService.getInvoice(invoiceId);
 	}
 	
-	@RequestMapping(value = "/invoice/receive",
+	@RequestMapping(
+			value = "/invoice/receive",
 			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_XML_VALUE)
+			consumes = MediaType.APPLICATION_XML_VALUE
+			)
 	public Response receiveInvoice(@RequestBody com.example.service.invoice.Invoice invoice) {
+		System.out.println("Usaooooooooo");
 		invoiceService.receiveInvoice(invoice);
 		return Response.status(201).entity("ok").build();
 	}
 	
-	@RequestMapping(value = "/invoice/send/{invoiceId}",
+	@RequestMapping(
+			value = "/invoice/send/{invoiceId}",
 			method = RequestMethod.GET,
-			produces = MediaType.TEXT_PLAIN_VALUE)
+			produces = MediaType.TEXT_PLAIN_VALUE
+			)
 	public String sendInvoice(@PathVariable("invoiceId") Long invoiceId){
 		 return invoiceService.sendInvoice(invoiceId);
 	}
