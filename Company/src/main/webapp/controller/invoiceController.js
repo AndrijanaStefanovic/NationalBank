@@ -71,19 +71,6 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 		});
 	}
 	
-	$scope.exportInvoice = function(id) {
-		console.log(id);
-		$http.post('invoice/export/', id).then(function mySuccess(response) {
-			if(response.data == "200"){
-				toastr.success("Invoice exported!");
-			} else {
-				$window.location.reload();
-			}
-		}, function myError(response) {
-			alert(response.statusText);
-		});
-	}
-	
 	$scope.payInvoice = function(id){
 		$scope.payInvoiceId = id;
 		$("#payInvoiceButton").click();
@@ -109,13 +96,41 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 		});
 	}
 	
+	$scope.checkSerialNumber = function(){
+		$http.get('invoice/checkSerialNumber/'+$scope.serialNumber).then(function mySuccess(response) {
+			if(response.data == "OK") {
+				toastr.success("Serial Number is valid!")
+			} else {
+				toastr.error("Serial Number is NOT valid!")
+			}
+			$("#serialNumber").modal("toggle");
+			toastr.info(response.data);
+		}, function myError(response) {
+			alert(response.statusText);
+		});
+	}
+	
+	$scope.exportInvoice = function(id) {
+		toastr.info(id);
+		$http.get('invoice/export/'+id).then(function mySuccess(response) {
+			if(response.data == "OK"){
+				$window.location.reload();
+				toastr.success("Invoice exported!");
+			} else {
+				toastr.error("Error!Invoice is not exported!");
+			}
+			toastr.info(response.data);
+		}, function myError(response) {
+			alert(response.statusText);
+		});
+	}
+	
 	$scope.sendInvoice = function(id){
 		toastr.info(id);
-		 
 		$http.get('invoice/send/'+id).then(function mySuccess(response) {
 			if(response.data == "OK") {
 				$window.location.reload();
-				toastr.success("Payed!");
+				toastr.success("Send invoice!");
 			}
 			toastr.info(response.data);
 		}, function myError(response) {
