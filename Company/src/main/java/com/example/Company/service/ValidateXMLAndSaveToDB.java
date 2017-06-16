@@ -3,6 +3,8 @@ package com.example.Company.service;
 import java.io.File;
 import java.io.IOException;
 import java.security.PrivateKey;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.xml.XMLConstants;
@@ -84,6 +86,13 @@ public class ValidateXMLAndSaveToDB {
 	  			newInvoice.setBuyerName(element.getElementsByTagName("buyerName").item(0).getTextContent());
 	  			newInvoice.setBuyerPIB(element.getElementsByTagName("buyerPIB").item(0).getTextContent());
 	  			newInvoice.setCurrency(element.getElementsByTagName("currency").item(0).getTextContent());
+	  			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
+	  			LocalDate date1 = LocalDate.parse(element.getElementsByTagName("dateOfInvoice").item(0).getTextContent(), formatter);
+	  			java.sql.Date dateOfInvoice = java.sql.Date.valueOf(date1);
+	  			newInvoice.setDateOfInvoice(dateOfInvoice);
+	  			LocalDate date2 = LocalDate.parse(element.getElementsByTagName("dateOfValue").item(0).getTextContent(), formatter);
+	  			java.sql.Date dateOfValue = java.sql.Date.valueOf(date2);
+	  			newInvoice.setDateOfValue(dateOfValue);
 	  			newInvoice.setMerchandiseValue(Double.parseDouble(element.getElementsByTagName("merchandiseValue").item(0).getTextContent()));
 	  			newInvoice.setMessageId(element.getElementsByTagName("messageId").item(0).getTextContent());
 	  			newInvoice.setServicesValue(Double.parseDouble(element.getElementsByTagName("servicesValue").item(0).getTextContent()));
