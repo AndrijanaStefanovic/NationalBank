@@ -2,10 +2,10 @@ package com.example.Bank.service.jaxws;
 
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name = "processMT102Response", namespace = "http://service.Bank.example.com/")
+@XmlRootElement(name = "processMT102Response", namespace = "http://service.CentralBank.example.com/")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "processMT102Response", namespace = "http://service.Bank.example.com/")
-public class ProcessMT102Response {
+@XmlType(name = "processMT102Response", namespace = "http://service.CentralBank.example.com/")
+public class ProcessMT102ResponseCentral {
 
     @XmlElement(name = "return", namespace = "")
     private String _return;

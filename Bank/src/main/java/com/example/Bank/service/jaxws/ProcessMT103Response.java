@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "processMT103Response", namespace = "http://service.CentralBank.example.com/")
+@XmlRootElement(name = "processMT103Response", namespace = "http://service.Bank.example.com/")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "processMT103Response", namespace = "http://service.CentralBank.example.com/")
+@XmlType(name = "processMT103Response", namespace = "http://service.Bank.example.com/")
 public class ProcessMT103Response {
 
     @XmlElement(name = "return", namespace = "")

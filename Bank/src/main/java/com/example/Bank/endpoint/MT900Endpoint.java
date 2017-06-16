@@ -36,6 +36,12 @@ public class MT900Endpoint {
         }
 
         response.setReturn("test return mt900");
+
+        //TODO Ovde odraditi skidanje para sa racuna te banke
+        //Skini pare sa racuna (odraditi)
+
+        System.out.println("Treba skinuti pare sa racuna");
+
         return response;
     }
 }

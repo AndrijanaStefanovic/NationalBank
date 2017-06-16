@@ -16,9 +16,13 @@ public class BankApplication {
 		c.testProcessBankStatementRequest();
 		System.out.println("Processed first one");
 //		c.testProcessPaymentOrder();
-//		c.testProcessMT103();
-		c.testProcessMT900();
-		c.testProcessMT910();
-		c.testProcessMT102();
+		c.testProcessMT103();
+//		c.testProcessMT900();
+//		c.testProcessMT910();
+		c.testProcessMT102WithCounter();
+		c.testProcessMT102WithCounter();
+		c.testProcessMT102WithCounter();
+		c.testProcessMT102WithCounter();
+		c.testProcessMT102WithCounter();
 	}
 }

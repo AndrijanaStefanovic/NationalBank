@@ -1,11 +1,12 @@
-package com.example.Bank.service.jaxws;
+
+package com.example.CentralBank.service.jaxws;
 
 import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "processMT102", namespace = "http://service.Bank.example.com/")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "processMT102", namespace = "http://service.Bank.example.com/")
-public class ProcessMT102 {
+public class ProcessMT102Normal {
 
     @XmlElement(name = "arg0", namespace = "")
     private com.example.service.mt102.Mt102 arg0;

@@ -1,5 +1,7 @@
 package com.example.Bank;
 
+import com.example.Bank.model.ClearingCounter;
+import com.example.Bank.repository.ClearingCounterRepository;
 import com.example.Bank.service.PaymentService;
 import com.example.Bank.service.jaxws.*;
 import com.example.service.mt102.Mt102;
@@ -23,6 +25,9 @@ public class Client extends WebServiceGatewaySupport {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private ClearingCounterRepository clearingCounterRepository;
 
     public void testProcessBankStatementRequest() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -61,29 +66,41 @@ public class Client extends WebServiceGatewaySupport {
 
     public void testProcessMT103() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setClassesToBeBound(ProcessMT103.class, ProcessMT103Response.class);
+        marshaller.setClassesToBeBound(ProcessMT103Central.class, ProcessMT103ResponseCentral.class);
         setMarshaller(marshaller);
         setUnmarshaller(marshaller);
 
-        ProcessMT103 p = new ProcessMT103();
+        ProcessMT103Central p = new ProcessMT103Central();
         Mt103 m = new Mt103();
         m.setMessageId("testiram soap cb");
         p.setArg0(m);
 
         String uri = "http://localhost:8090/ws/mt103";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
-        ProcessMT103Response response = (ProcessMT103Response) o;
+        ProcessMT103ResponseCentral response = (ProcessMT103ResponseCentral) o;
         System.out.println("**************************************");
         System.out.println(response.getReturn());
     }
 
+    int i = 0;
+
+    public void testProcessMT102WithCounter(){
+        i++;
+        System.out.println("Number of times i entered ___ " + i);
+        if (i % 5 == 0) {
+            for (int i = 0; i<this.i; i++) {
+                testProcessMT102();
+            }
+        }
+    }
+
     public void testProcessMT102() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setClassesToBeBound(ProcessMT102.class, ProcessMT102Response.class);
+        marshaller.setClassesToBeBound(ProcessMT102Central.class, ProcessMT102ResponseCentral.class);
         setMarshaller(marshaller);
         setUnmarshaller(marshaller);
 
-        ProcessMT102 p = new ProcessMT102();
+        ProcessMT102Central p = new ProcessMT102Central();
         Mt102 m = new Mt102();
         List<SinglePayment> singlePayments = m.getSinglePayment();
         for (int i = 0; i < 5; i++) {
@@ -94,7 +111,7 @@ public class Client extends WebServiceGatewaySupport {
 
         String uri = "http://localhost:8090/ws/mt102";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
-        ProcessMT102Response response = (ProcessMT102Response) o;
+        ProcessMT102ResponseCentral response = (ProcessMT102ResponseCentral) o;
         System.out.println("**************************************");
         System.out.println(response.getReturn());
     }

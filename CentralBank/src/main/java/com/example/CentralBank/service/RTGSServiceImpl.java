@@ -18,19 +18,19 @@ public class RTGSServiceImpl implements RTGSService {
 	@Override
 	public String processMT103(Mt103 mt103) {
 		
-		List<Bank> crb = bankRepository.findBySwiftCode(mt103.getCreditorsBank().getSWIFT());
-		if(crb.isEmpty()){
-			return "creditorsBankSWIFTError";
-		}
-		
-		List<Bank> dbb = bankRepository.findBySwiftCode(mt103.getDebtorsBank().getSWIFT());
-		if(dbb.isEmpty()){
-			return "debtorsBankSWIFTError";
-		}
-		Bank creditorsBank = crb.get(0);
-		System.out.println(creditorsBank.getName());
-		Bank debtorsBank = dbb.get(0);
-		System.out.println(debtorsBank.getName());
+//		List<Bank> crb = bankRepository.findBySwiftCode(mt103.getCreditorsBank().getSWIFT());
+//		if(crb.isEmpty()){
+//			return "creditorsBankSWIFTError";
+//		}
+//
+//		List<Bank> dbb = bankRepository.findBySwiftCode(mt103.getDebtorsBank().getSWIFT());
+//		if(dbb.isEmpty()){
+//			return "debtorsBankSWIFTError";
+//		}
+//		Bank creditorsBank = crb.get(0);
+//		System.out.println(creditorsBank.getName());
+//		Bank debtorsBank = dbb.get(0);
+//		System.out.println(debtorsBank.getName());
 		
 		return "OK";
 	}

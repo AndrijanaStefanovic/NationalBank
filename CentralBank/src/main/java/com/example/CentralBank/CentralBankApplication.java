@@ -10,6 +10,6 @@ public class CentralBankApplication {
 		SpringApplication.run(CentralBankApplication.class, args);
 		Client c = new Client();
 //		c.testProcessMT103();
-		c.testProcessMT102();
+//		c.testProcessMT102();
 	}
 }

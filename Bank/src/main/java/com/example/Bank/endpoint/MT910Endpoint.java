@@ -18,6 +18,12 @@ public class MT910Endpoint {
         ProcessMT910Response response = new ProcessMT910Response();
         System.out.println(mt910.getArg0().getClass().getSimpleName());
         response.setReturn("test return mt910");
+
+        //TODO Ovde odraditi dodavanje para na racun te banke
+        //Dodaj pare na racun (odraditi)
+
+        System.out.println("Treba dodati pare na racun");
+
         return response;
     }
 }

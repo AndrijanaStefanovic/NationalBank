@@ -2,19 +2,14 @@ package com.example.Bank.service;
 
 import java.util.*;
 
+import com.example.Bank.Client;
+import com.example.Bank.model.*;
+import com.example.Bank.repository.*;
 import com.example.service.mt102.Mt102;
 import com.example.service.mt102.SinglePayment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.Bank.model.Account;
-import com.example.Bank.model.AccountAnalytics;
-import com.example.Bank.model.Bank;
-import com.example.Bank.model.DailyAccountBalance;
-import com.example.Bank.repository.AccountAnalyticsRepository;
-import com.example.Bank.repository.AccountRepository;
-import com.example.Bank.repository.BankRepository;
-import com.example.Bank.repository.DailyAccountBalanceRepository;
 import com.example.service.mt103.Mt103;
 import com.example.service.mt103.TBankData;
 import com.example.service.paymentorder.PaymentOrder;
@@ -33,6 +28,9 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private BankRepository bankRepository;
+
+	@Autowired
+	private ClearingCounterRepository clearingCounterRepository;
 	
 	@Override
 	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder) {
@@ -324,5 +322,4 @@ public class PaymentServiceImpl implements PaymentService {
 
 		return  singlePayment;
 	}
-
 }

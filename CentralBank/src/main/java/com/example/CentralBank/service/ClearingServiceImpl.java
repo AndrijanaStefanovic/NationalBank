@@ -14,7 +14,7 @@ import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import java.util.List;
 
 @Service
-public class ClearingServiceImpl extends WebServiceGatewaySupport implements ClearingService{
+public class ClearingServiceImpl implements ClearingService{
 
     @Autowired
     private BankRepository bankRepository;
