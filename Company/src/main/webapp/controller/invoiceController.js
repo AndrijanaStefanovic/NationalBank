@@ -95,21 +95,7 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 			alert(response.statusText);
 		});
 	}
-	
-	$scope.checkSerialNumber = function(){
-		$http.get('invoice/checkSerialNumber/'+$scope.serialNumber).then(function mySuccess(response) {
-			if(response.data == "OK") {
-				toastr.success("Serial Number is valid!")
-			} else {
-				toastr.error("Serial Number is NOT valid!")
-			}
-			$("#serialNumber").modal("toggle");
-			toastr.info(response.data);
-		}, function myError(response) {
-			alert(response.statusText);
-		});
-	}
-	
+		
 	$scope.exportInvoice = function(id) {
 		toastr.info(id);
 		$http.get('invoice/export/'+id).then(function mySuccess(response) {

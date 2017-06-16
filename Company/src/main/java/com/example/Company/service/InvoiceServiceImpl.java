@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -37,8 +36,6 @@ import com.example.Company.model.InvoiceItem;
 import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.InvoiceItemRepository;
 import com.example.Company.repository.InvoiceRepository;
-
-import model.CertificateModel;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService{
@@ -304,32 +301,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		} 
 		
 		return "OK";
-	}
-
-	@Override
-	public String checkSerialNumber(String serialNum) {
-		Integer serialNumber = Integer.parseInt(serialNum);
-		HashMap<String, CertificateModel> certificateModels = new HashMap<String, CertificateModel>();
-		CertificateModel helperCertificate = new CertificateModel();
-		boolean found = false;
-		String result = "";
-		
-		try {
-			certificateModels = helperCertificate.load();
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
-		
-		for (CertificateModel cm : certificateModels.values()) {
-			if(cm.getSerialNumber() == serialNumber) {
-				found = true;
-				result = "OK";
-			}
-		}
-		if(!found) 
-			result = "NOT FOUND";
-		
-		return result;
 	}
 
 }

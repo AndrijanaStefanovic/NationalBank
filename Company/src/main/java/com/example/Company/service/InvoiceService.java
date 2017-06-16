@@ -29,6 +29,4 @@ public interface InvoiceService {
 
 	public String receiveXML(String xmlParams);
 
-	public String checkSerialNumber(String serialNumber);
-	
 }

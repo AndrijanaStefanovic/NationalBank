@@ -78,16 +78,6 @@ public class InvoiceController {
 	public String export(@PathVariable("invoiceId") Long invoiceId) {
 		return invoiceService.exportInvoiceToXML(invoiceId);
 	}
-	
-	@RequestMapping(
-			value = "/invoice/checkSerialNumber/{serialNumber}",
-			method = RequestMethod.GET,
-			produces = MediaType.TEXT_PLAIN_VALUE
-			)
-	public String checkSerialNumber(@PathVariable("serialNumber") String serialNumber) {
-		System.out.println("Res: " + invoiceService.checkSerialNumber(serialNumber));
-		return invoiceService.checkSerialNumber(serialNumber);
-	}
 		
 	@RequestMapping(
 			value = "/invoice/delete",
