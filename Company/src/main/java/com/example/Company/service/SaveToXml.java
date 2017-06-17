@@ -200,10 +200,10 @@ public class SaveToXml {
 		 		System.out.println("*************Generate Key: *************" 
 		 						+ new BASE64Encoder().encode(secretKey.getEncoded()));
 		 		
-		 		Certificate cert = ksReader.readCertificate("primer.jks", "primer", "primer");
+		 		Certificate cert = ksReader.readCertificate("keystore.p12", "tomcat", "tomcat");
 		 		doc = encUtility.encrypt(doc, secretKey, cert);
 		 		
-		 		PrivateKey privateKey = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
+		 		PrivateKey privateKey = ksReader.readPrivateKey("keystore.p12", "tomcat", "tomcat", "tomcat");
 		 		doc = sigUtility.signDocument(doc, privateKey, cert);
 		 		
 		 		sendPost(doc, bp.getUrl());	   
