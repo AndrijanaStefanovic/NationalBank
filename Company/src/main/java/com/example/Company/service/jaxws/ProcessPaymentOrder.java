@@ -1,8 +1,12 @@
 
 package com.example.Company.service.jaxws;
 
+import java.util.List;
+
+import javax.xml.bind.Element;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -14,8 +18,21 @@ public class ProcessPaymentOrder {
 
     @XmlElement(name = "arg0", namespace = "")
     private com.example.service.paymentorder.PaymentOrder arg0;
+    
+    @XmlAnyElement(lax = true)
+    private List<Element> signature;
 
-    /**
+
+
+	public List<Element> getSignature() {
+		return signature;
+	}
+
+	public void setSignature(List<Element> signature) {
+		this.signature = signature;
+	}
+
+	/**
      * 
      * @return
      *     returns PaymentOrder

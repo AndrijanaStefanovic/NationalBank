@@ -238,44 +238,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}		
 		
 		try {
-/*<<<<<<< HEAD
-			URL url1 =  new URL("https://localhost:8444/invoice/receiveKey");
-			HttpURLConnection conn1 = (HttpURLConnection) url1.openConnection();
-			conn1.setDoOutput(true);
-			conn1.setRequestMethod("POST");
-			conn1.setRequestProperty("Content-Type", "application/json");
-			OutputStream os1 = conn1.getOutputStream();
-			//KeyStoreReader ksReader = new KeyStoreReader();		
-    		//String key2 = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer").toString();
-			
-			KeyGenerator keyGen;
-			try {
-				keyGen = KeyGenerator.getInstance("AES");
-				keyGen.init(256); // for example
-				SecretKey secretKey = keyGen.generateKey();
-				String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-				EncryptedStringXmlAdapter.setKey(encodedKey);
-				os1.write(encodedKey.getBytes());
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
-			
-			if (conn1.getResponseCode() != HttpURLConnection.HTTP_OK) {
-				throw new RuntimeException("Failed : HTTP error code : " + conn1.getResponseCode());
-			}
 
-			BufferedReader br1 = new BufferedReader(new InputStreamReader((conn1.getInputStream())));
-
-			String output1;
-			System.out.println("Output from Server .... \n");
-			while ((output1 = br1.readLine()) != null) {
-				System.out.println(output1);
-			}
-
-			conn1.disconnect();
-
-=======
->>>>>>> c1556baef4f42d15709b6bc9973bbe7768204270*/
 			URL url = new URL(bp.getUrl());
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);

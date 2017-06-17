@@ -56,6 +56,22 @@
 			<groupId>wsdl4j</groupId>
 			<artifactId>wsdl4j</artifactId>
 		</dependency>
+		<dependency>
+      		<groupId>org.jasypt</groupId>
+      		<artifactId>jasypt</artifactId>
+      		<version>1.9.2</version>
+      		<scope>compile</scope>
+    	</dependency>
+    	<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+			<version>3.1.11</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.apache.santuario</groupId>
+    		<artifactId>xmlsec</artifactId>
+    		<version>1.5.4</version>
+		</dependency>
 		
 	</dependencies>
 

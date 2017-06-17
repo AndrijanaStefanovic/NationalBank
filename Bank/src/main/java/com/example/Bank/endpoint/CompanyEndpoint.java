@@ -10,12 +10,12 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import com.example.Bank.service.PaymentService;
 import com.example.Bank.service.SOAPClientService;
+import com.example.Bank.service.SecurityService;
 import com.example.Bank.service.jaxws.ProcessBankStatementRequest;
 import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
 import com.example.Bank.service.jaxws.ProcessPaymentOrder;
 import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatement.BankStatement;
-import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
 @Endpoint
@@ -27,6 +27,9 @@ public class CompanyEndpoint {
 	
 	@Autowired
 	private SOAPClientService clientService;
+	
+	@Autowired
+	private SecurityService securityService;
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processBankStatementRequest")
 	@ResponsePayload
@@ -45,6 +48,10 @@ public class CompanyEndpoint {
 		ProcessPaymentOrderResponse response = new ProcessPaymentOrderResponse();
 		PaymentOrder paymentOrder = processPaymentOrder.getArg0();
 		
+		boolean result = securityService.validateSignature(processPaymentOrder);
+		System.out.println("Signature validation result: "+result);
+		securityService.validateWithSchema(paymentOrder);
+		
 		//Funkcija ce zaduziti racun onog koji je poslao nalog, i kreirace analitiku izvoda i azurirati dnevni balans racuna
 		String code = paymentService.createDebtorAccountAnalytics(paymentOrder);
 		
@@ -57,8 +64,8 @@ public class CompanyEndpoint {
 			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
 				//Salji na RTGS
 				System.out.println("****************rtgs******************");
-				Mt103 mt103 = paymentService.createMT103(paymentOrder);
-				System.out.println(clientService.sendMt103(mt103));
+				//Mt103 mt103 = paymentService.createMT103(paymentOrder);
+				//System.out.println(clientService.sendMt103(mt103));
 				
 			} else {
 				//Salji na Clearing
@@ -67,6 +74,4 @@ public class CompanyEndpoint {
 		response.setReturn(code);
 		return response;
 	}
-	
-	
 }

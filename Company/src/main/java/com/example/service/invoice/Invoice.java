@@ -164,18 +164,15 @@ import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 @XmlRootElement(name = "invoice")
 public class Invoice {
 
-	@XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     @XmlElement(required = true)
     protected String messageId;
     @XmlElement(required = true)
     protected String buyerName;
-    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     @XmlElement(required = true)
     protected String buyerAddress;
     @XmlElement(required = true)
     protected String buyerPIB;
     @XmlElement(required = true)
-    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     protected String supplierName;
     @XmlElement(required = true)
     protected String supplierAddress;
