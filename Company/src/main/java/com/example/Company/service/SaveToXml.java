@@ -206,10 +206,6 @@ public class SaveToXml {
 		 		PrivateKey privateKey = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
 		 		doc = sigUtility.signDocument(doc, privateKey, cert);
 		 		
-		        DOMSource source1 = new DOMSource(doc);
-		        StreamResult sr1 = new StreamResult(new File("inovices1.xml"));
-		        transformer.transform(source1, sr1);
-		 		
 		 		sendPost(doc, bp.getUrl());	   
 	         
 	    } catch (Exception e) {
