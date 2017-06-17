@@ -25,12 +25,12 @@ public class CompanyServiceImp implements CompanyService {
 
 	@Override
 	public String delete(Long id) {
-		if (id != null) {
-			Company company = companyRepository.findOne(id);
-			companyRepository.delete(company);
-			return "200";
-		} else 
-			return "500";		
+		Company company = companyRepository.findOne(id);
+		if (company.getBusinessPartners() != null && !company.getBusinessPartners().isEmpty()) {
+			return "Has Business Parnters";
+		}
+		companyRepository.delete(company);
+		return "200";	
 	}
 
 	@Override
