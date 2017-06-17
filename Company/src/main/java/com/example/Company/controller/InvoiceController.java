@@ -49,16 +49,7 @@ public class InvoiceController {
 	public Collection<Invoice> getAllInvoices() {
 		return invoiceService.getAllInvoices();
 	}
-	
-	@RequestMapping(
-			value = "/invoice/getXML",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE
-			)
-	public Collection<String> getXML() {
-		return invoiceService.getXML();
-	}
-	
+		
 	@RequestMapping(
 			value = "/invoice/receiveXML",
 			method = RequestMethod.POST,

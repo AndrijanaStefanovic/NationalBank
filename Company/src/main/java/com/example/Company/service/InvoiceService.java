@@ -17,8 +17,6 @@ public interface InvoiceService {
 	
 	public Collection<Invoice> getSentInvoices();
 	
-	public List<String> getXML();
-	
 	public String exportInvoiceToXML(Long id);
 	
 	public Invoice getInvoice(Long id);

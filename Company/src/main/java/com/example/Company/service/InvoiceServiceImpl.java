@@ -91,38 +91,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
-	public List<String> getXML() {
-		Connection conn = null;
-		List<String> results = null;
-  	  	try {
-			Class.forName("com.mysql.jdbc.Driver") ;
-		
-		  	conn = DriverManager.getConnection("jdbc:mysql://localhost/company2?"
-		  			+ "useSSL=false&createDatabaseIfNotExist=true", 
-		  			"root", "tasha1994") ;
-		  	Statement stmt = conn.createStatement() ;
-		  	String query = "SELECT * FROM company2.invoice ORDER BY id DESC LIMIT 1";
-		  	ResultSet resultSet = stmt.executeQuery(query);
-		  	results = new ArrayList<String>();
-		  	while(resultSet.next()) {
-		  		for (int i = 2; i < 21; i++)
-		  			results.add(resultSet.getString(i));	  	    
-		  	}
-		  	String queryItems = "SELECT * FROM company2.invoice_item ORDER BY id DESC LIMIT 1";
-		  	ResultSet resultSetItem = stmt.executeQuery(queryItems);
-		  	while(resultSetItem.next()) {
-		  		for (int i = 2; i < 14; i++)
-		  			results.add(resultSetItem.getString(i));	  	    
-		  	}		  	
-  	  	} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	  return results;
-	}
-	
-	@Override
 	public String receiveInvoice(com.example.service.invoice.Invoice invoice) {
 		Invoice i = new Invoice();
 		i.setAccountNumber(invoice.getAccountNumber());
