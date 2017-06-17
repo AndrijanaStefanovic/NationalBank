@@ -192,7 +192,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	@Override
 	public byte[] generateAndEncryptSessionKey() {
 		KeyStoreReader ksReader = new KeyStoreReader();		
-		PublicKey bankPublicKey = ksReader.readCertificate("bank.jks", "a", "a").getPublicKey();
+		PublicKey bankPublicKey = ksReader.readCertificate("bank.p12", "tomcat", "tomcat").getPublicKey();
 		
 		KeyGenerator keyGen;
 		try {

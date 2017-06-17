@@ -43,7 +43,7 @@ public class SecurityServiceImpl implements SecurityService {
 	@Override
 	public void decryptSessionKey(byte[] key) {
 		KeyStoreReader ks = new KeyStoreReader();
-		PrivateKey privateKey = ks.readPrivateKey("bank.jks", "a", "a", "a");
+		PrivateKey privateKey = ks.readPrivateKey("keystore.p12", "tomcat", "tomcat", "tomcat");
 		try {
 			Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");  
 			cipher.init(Cipher.DECRYPT_MODE, privateKey);  
