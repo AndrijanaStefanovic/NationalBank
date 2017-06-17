@@ -8,6 +8,10 @@ import com.example.service.mt103.Mt103;
 
 public class Client extends WebServiceGatewaySupport{
 	
+	static {
+		DisableSSlLVerification.disableSslVerification();
+	}
+	
 	public void testProcessMT103() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setClassesToBeBound(ProcessMT103.class, ProcessMT103Response.class);
@@ -19,7 +23,7 @@ public class Client extends WebServiceGatewaySupport{
 		m.setMessageId("testiram soap cb");
 		p.setArg0(m);
 
-        String uri = "http://localhost:8090/ws/mt103";
+        String uri = "https://localhost:8090/ws/mt103";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
         ProcessMT103Response response = (ProcessMT103Response)o;
         System.out.println("**************************************");

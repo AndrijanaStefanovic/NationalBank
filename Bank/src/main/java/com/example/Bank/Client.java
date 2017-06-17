@@ -27,7 +27,7 @@ public class Client extends WebServiceGatewaySupport{
 		b.setAccountNumber("test");
 		p.setArg0(b);
 
-        String uri = "http://localhost:8080/ws/bankstatement";
+        String uri = "https://localhost:8080/ws/bankstatement";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
         ProcessBankStatementRequestResponse response = (ProcessBankStatementRequestResponse)o;
         System.out.println("**************************************");
@@ -44,7 +44,7 @@ public class Client extends WebServiceGatewaySupport{
 	      PaymentOrder po = new PaymentOrder();
 	      po.setMessageId("vrednost poruke");
 	      ppo.setArg0(po);
-	      String uri = "http://localhost:8080/ws/paymentorder";
+	      String uri = "https://localhost:8080/ws/paymentorder";
 	      Object o = getWebServiceTemplate().marshalSendAndReceive(uri, ppo);
 	      ProcessPaymentOrderResponse response = (ProcessPaymentOrderResponse)o;
 	      System.out.println("*******************************");
@@ -62,7 +62,7 @@ public class Client extends WebServiceGatewaySupport{
 		m.setMessageId("testiram soap cb");
 		p.setArg0(m);
 
-        String uri = "http://localhost:8090/ws/mt103";
+        String uri = "https://localhost:8090/ws/mt103";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
         ProcessMT103Response response = (ProcessMT103Response)o;
         System.out.println("**************************************");

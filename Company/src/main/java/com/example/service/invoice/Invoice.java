@@ -741,10 +741,12 @@ public class Invoice {
         "discountPercent",
         "discountTotal",
         "subtractedDiscount",
-        "taxTotal"
+        "taxTotal",
+        "kind"
     })
     public static class InvoiceItem {
 
+    	@XmlElement(required = true)
         protected int number;
         @XmlElement(required = true)
         protected String name;
@@ -764,8 +766,11 @@ public class Invoice {
         protected BigDecimal subtractedDiscount;
         @XmlElement(required = true)
         protected BigDecimal taxTotal;
+        @XmlElement(required = true)
+        protected String kind;
 
-        /**
+
+		/**
          * Gets the value of the number property.
          * 
          */
@@ -996,7 +1001,14 @@ public class Invoice {
         public void setTaxTotal(BigDecimal value) {
             this.taxTotal = value;
         }
+        
+        public String getKind() {
+			return kind;
+		}
 
+		public void setKind(String kind) {
+			this.kind = kind;
+		}
     }
 
 }

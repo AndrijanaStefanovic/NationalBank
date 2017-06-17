@@ -32,8 +32,10 @@ companyModule.controller('companyController', ['$scope', '$window', '$location',
 			if(response.data == "200"){
 				toastr.success("Company deleted!");
 			} else {
+				toastr.error("Company has children!")
 				$window.location.reload();
 			}
+			toastr.info(response.data);
 		}, function myError(response) {
 			alert(response.statusText);
 		});
