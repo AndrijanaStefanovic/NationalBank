@@ -34,7 +34,7 @@ public class ValidateXMLAndSaveToDB {
 											 InvoiceRepository invoiceRepository, 
 											 InvoiceItemRepository ivoiceItemRepository) {
 		KeyStoreReader ksReader = new KeyStoreReader();		
-		PrivateKey privateKey = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer");
+		PrivateKey privateKey = ksReader.readPrivateKey("keystore.p12", "tomcat", "tomcat", "tomcat");
 		XMLEncryptionUtility encUtility = new XMLEncryptionUtility();
 		XMLSigningUtility sigUtility = new XMLSigningUtility();
         
