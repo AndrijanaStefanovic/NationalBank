@@ -3,13 +3,17 @@ package com.example.service.invoice;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 
 
 /**
@@ -160,15 +164,18 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlRootElement(name = "invoice")
 public class Invoice {
 
+	@XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     @XmlElement(required = true)
     protected String messageId;
     @XmlElement(required = true)
     protected String buyerName;
+    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     @XmlElement(required = true)
     protected String buyerAddress;
     @XmlElement(required = true)
     protected String buyerPIB;
     @XmlElement(required = true)
+    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     protected String supplierName;
     @XmlElement(required = true)
     protected String supplierAddress;

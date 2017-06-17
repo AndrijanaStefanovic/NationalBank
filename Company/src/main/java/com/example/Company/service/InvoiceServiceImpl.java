@@ -9,16 +9,20 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -40,6 +44,7 @@ import com.example.Company.model.InvoiceItem;
 import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.InvoiceItemRepository;
 import com.example.Company.repository.InvoiceRepository;
+import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService{
@@ -160,6 +165,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 
 	@Override
 	public String receiveInvoice(com.example.service.invoice.Invoice invoice) {
+		
 		Invoice i = new Invoice();
 		i.setAccountNumber(invoice.getAccountNumber());
 		i.setReceived(true);
@@ -242,6 +248,40 @@ public class InvoiceServiceImpl implements InvoiceService{
 		invoiceXML.setTotalTax(new BigDecimal(invoiceToSend.getTotalTax()));
 		invoiceXML.setTotalDue(new BigDecimal(invoiceToSend.getTotalDue()));
 		try {
+			URL url1 =  new URL("https://localhost:8444/invoice/receiveKey");
+			HttpURLConnection conn1 = (HttpURLConnection) url1.openConnection();
+			conn1.setDoOutput(true);
+			conn1.setRequestMethod("POST");
+			conn1.setRequestProperty("Content-Type", "application/json");
+			OutputStream os1 = conn1.getOutputStream();
+			//KeyStoreReader ksReader = new KeyStoreReader();		
+    		//String key2 = ksReader.readPrivateKey("primer.jks", "primer", "primer", "primer").toString();
+			
+			KeyGenerator keyGen;
+			try {
+				keyGen = KeyGenerator.getInstance("AES");
+				keyGen.init(256); // for example
+				SecretKey secretKey = keyGen.generateKey();
+				String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+				EncryptedStringXmlAdapter.setKey(encodedKey);
+				os1.write(encodedKey.getBytes());
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+			
+			if (conn1.getResponseCode() != HttpURLConnection.HTTP_OK) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn1.getResponseCode());
+			}
+
+			BufferedReader br1 = new BufferedReader(new InputStreamReader((conn1.getInputStream())));
+
+			String output1;
+			System.out.println("Output from Server .... \n");
+			while ((output1 = br1.readLine()) != null) {
+				System.out.println(output1);
+			}
+
+			conn1.disconnect();
 
 			URL url = new URL(bp.getUrl());
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -252,7 +292,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 
 			JAXBContext jaxbContext = JAXBContext.newInstance(com.example.service.invoice.Invoice.class);
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			jaxbMarshaller.marshal(invoiceXML, System.out);
 

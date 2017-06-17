@@ -17,6 +17,7 @@ import com.example.Company.model.pojo.PaymentOrderModel;
 import com.example.Company.service.InvoiceService;
 import com.example.Company.service.SOAPClientService;
 import com.example.Company.service.SaveToXml;
+import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 
 @RestController
 public class InvoiceController {
@@ -125,6 +126,16 @@ public class InvoiceController {
 	public Invoice getInvoice(@PathVariable("invoiceId") Long invoiceId) {
 		return invoiceService.getInvoice(invoiceId);
 	}
+	
+	@RequestMapping(value = "/invoice/receiveKey",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Response receiveKey(@RequestBody String key) {
+		EncryptedStringXmlAdapter.setKey(key);
+		System.out.println("----------------------------------received key : "+key);
+		return Response.status(200).entity("ok").build();
+	}
+	
 	
 	@RequestMapping(value = "/invoice/receive",
 			method = RequestMethod.POST,
