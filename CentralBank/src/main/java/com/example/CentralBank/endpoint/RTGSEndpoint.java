@@ -51,7 +51,7 @@ public class RTGSEndpoint extends WebServiceGatewaySupport {
 		m.setMessageId("testiram forward soap-a cb na normalnu banku");
 		p.setArg0(m);
 
-		String uri = "http://localhost:8080/ws/mt103";
+		String uri = "https://localhost:8080/ws/mt103";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
 		ProcessMT103ResponseNormal response = (ProcessMT103ResponseNormal)o;
 		System.out.println("**************************************");

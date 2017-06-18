@@ -12,6 +12,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.example.service.security.EncryptedStringXmlAdapter;
 
 
 /**
@@ -60,10 +63,13 @@ import javax.xml.bind.annotation.XmlType;
 public class TCompanyData {
 
     @XmlElement(required = true)
+    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     protected String info;
+    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     @XmlElement(required = true)
     protected String accountNumber;
     @XmlElement(required = true)
+    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     protected String referenceNumber;
     protected int model;
 

@@ -8,9 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BankApplication {
 	
+	static {
+		DisableSSlLVerification.disableSslVerification();
+	}
+	
 	public static void main(String[] args) throws MalformedURLException {
 		SpringApplication.run(BankApplication.class, args);
-
 		Client c = new Client();
 		System.out.println("Started processing 1st one");
 		c.testProcessBankStatementRequest();
@@ -23,6 +26,6 @@ public class BankApplication {
 		c.testProcessMT102WithCounter();
 		c.testProcessMT102WithCounter();
 		c.testProcessMT102WithCounter();
-		c.testProcessMT102WithCounter();
+//		c.testProcessMT102WithCounter();
 	}
 }

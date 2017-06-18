@@ -55,7 +55,7 @@ public class ClearingEndpoint extends WebServiceGatewaySupport {
         m.setMessageId("testiram forward soap-a za mt102 na normalnu banku");
         p.setArg0(m);
 
-        String uri = "http://localhost:8080/ws/mt102";
+        String uri = "https://localhost:8080/ws/mt102";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
         ProcessMT102ResponseNormal response = (ProcessMT102ResponseNormal)o;
         System.out.println("**************************************");

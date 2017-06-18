@@ -1,18 +1,59 @@
 package com.example.Company.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.DigestMethod;
+import javax.xml.crypto.dsig.Reference;
+import javax.xml.crypto.dsig.SignatureMethod;
+import javax.xml.crypto.dsig.SignedInfo;
+import javax.xml.crypto.dsig.Transform;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
+import javax.xml.crypto.dsig.dom.DOMSignContext;
+import javax.xml.crypto.dsig.keyinfo.KeyInfo;
+import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
+import javax.xml.crypto.dsig.keyinfo.X509Data;
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.w3c.dom.Document;
 
 import com.example.Company.model.BusinessPartner;
 import com.example.Company.model.Company;
@@ -21,6 +62,8 @@ import com.example.Company.model.pojo.PaymentOrderModel;
 import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.CompanyRepository;
 import com.example.Company.repository.InvoiceRepository;
+import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
+import com.example.Company.service.XMLsecurity.KeyStoreReader;
 import com.example.Company.service.jaxws.ProcessPaymentOrder;
 import com.example.Company.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.paymentorder.PaymentOrder;
@@ -29,6 +72,7 @@ import com.example.service.paymentorder.TCompanyData;
 @Service
 public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements SOAPClientService {
 
+	private String tempKey;
 	@Autowired
 	private InvoiceRepository invoiceRepository;
 	
@@ -40,6 +84,8 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	
 	@Override
 	public String sendPaymentOrder(PaymentOrderModel paymentOrderModel) {
+		
+		
 		Invoice invoice = invoiceRepository.findOne(paymentOrderModel.getInvoiceId());
 		double totalDue = invoice.getTotalDue() - paymentOrderModel.getAmount();
 		if(totalDue < 0){
@@ -95,15 +141,152 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 		ProcessPaymentOrder ppo = new ProcessPaymentOrder();
 		ppo.setArg0(paymentOrder);
 		
+		sendSessionKey();
+		
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 	    marshaller.setClassesToBeBound(ProcessPaymentOrder.class, ProcessPaymentOrderResponse.class);
 	    setMarshaller(marshaller);
 	    setUnmarshaller(marshaller);
-
-		String uri = "http://localhost:8080/ws/paymentorder";
+		ppo = signWithCert(ppo);
+		String uri = "https://localhost:8080/ws/paymentorder";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, ppo);
 		ProcessPaymentOrderResponse response = (ProcessPaymentOrderResponse) o;
 		return response.getReturn();
 	}
+
+	@Override
+	public void sendSessionKey() {
+		 URL url1;
+			try {
+				String encodedKey = Base64.getEncoder().encodeToString(generateAndEncryptSessionKey());
+				url1 = new URL("https://localhost:8080/bank/receiveKey");
+				HttpURLConnection conn1 = (HttpURLConnection) url1.openConnection();
+				conn1.setDoOutput(true);
+				conn1.setUseCaches( false );
+				conn1.setRequestMethod("POST");
+				conn1.setRequestProperty("Content-Type", "application/json");
+		        conn1.setRequestProperty( "charset", "utf-8");
+		        OutputStream os1 = conn1.getOutputStream();
+				os1.write(encodedKey.getBytes());
+				os1.close();
+				
+				if (conn1.getResponseCode() != HttpURLConnection.HTTP_OK) {
+					throw new RuntimeException("Failed : HTTP error code : " + conn1.getResponseCode());
+				}
+
+				BufferedReader br1 = new BufferedReader(new InputStreamReader((conn1.getInputStream())));
+
+				String output1;
+				System.out.println("Output from Server .... \n");
+				while ((output1 = br1.readLine()) != null) {
+					System.out.println(output1);
+				}
+				conn1.disconnect();
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+	}
+	
+	@Override
+	public byte[] generateAndEncryptSessionKey() {
+		KeyStoreReader ksReader = new KeyStoreReader();		
+		PublicKey bankPublicKey = ksReader.readCertificate("bank.p12", "tomcat", "tomcat").getPublicKey();
+		
+		KeyGenerator keyGen;
+		try {
+			//generate session key
+			keyGen = KeyGenerator.getInstance("AES");
+			keyGen.init(192);
+			SecretKey secretKey = keyGen.generateKey();
+			String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+			EncryptedStringXmlAdapter.setKey(encodedKey);
+			tempKey = encodedKey;
+			Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");   
+			cipher.init(Cipher.ENCRYPT_MODE, bankPublicKey);
+			byte[] cipherBytes = cipher.doFinal(secretKey.getEncoded());
+			return cipherBytes;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public ProcessPaymentOrder signWithCert(ProcessPaymentOrder ppo) {
+		try {
+			JAXBContext jc = JAXBContext.newInstance(ProcessPaymentOrder.class);
+			Marshaller marshaller = jc.createMarshaller();
+			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+			domFactory.setNamespaceAware(true);
+			DocumentBuilder docBuilder = domFactory.newDocumentBuilder();
+			EncryptedStringXmlAdapter.setKey("inv");
+			Document docum = docBuilder.newDocument();
+			DOMResult domResult = new DOMResult(docum);
+			marshaller.marshal(ppo, domResult);
+			Document doc = (Document) domResult.getNode();
+			doc.normalizeDocument();
+
+			XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
+
+			Reference ref = fac.newReference("", fac.newDigestMethod(DigestMethod.SHA1, null),
+					Collections.singletonList(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null)),
+					null, null);
+
+			SignedInfo si = fac.newSignedInfo(
+					fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null),
+					fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null), Collections.singletonList(ref));
+
+			// Load the KeyStore and get the signing key and certificate.
+			KeyStoreReader ks = new KeyStoreReader();
+
+			X509Certificate cert = (X509Certificate) ks.readCertificate("keystore.p12", "tomcat", "tomcat");
+
+			// Create the KeyInfo containing the X509Data.
+			KeyInfoFactory kif = fac.getKeyInfoFactory();
+			@SuppressWarnings("rawtypes")
+			List x509Content = new ArrayList();
+			x509Content.add(cert.getSubjectX500Principal().getName());
+			x509Content.add(cert);
+			X509Data xd = kif.newX509Data(x509Content);
+			KeyInfo ki = kif.newKeyInfo(Collections.singletonList(xd));
+
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+			DOMSignContext dsc = new DOMSignContext(ks.readPrivateKey("keystore.p12", "tomcat", "tomcat", "tomcat"),
+					doc.getDocumentElement());
+
+			XMLSignature signature = fac.newXMLSignature(si, ki);
+			signature.sign(dsc);
+			EncryptedStringXmlAdapter.setKey(tempKey);
+			DOMSource source = new DOMSource(domResult.getNode());
+			ProcessPaymentOrder ret = (ProcessPaymentOrder) jc.createUnmarshaller().unmarshal(source);
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			marshaller.marshal(ret, System.out);
+			
+			return ret;
+
+			
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
+
+
+	
+	
 
 }

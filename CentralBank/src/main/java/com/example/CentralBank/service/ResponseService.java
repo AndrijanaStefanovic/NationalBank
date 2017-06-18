@@ -24,7 +24,7 @@ public class ResponseService extends WebServiceGatewaySupport{
         m.setMessageId("testiram soap za mt900");
         p.setArg0(m);
 
-        String uri = "http://localhost:8080/ws/mt900";
+        String uri = "https://localhost:8080/ws/mt900";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
         ProcessMT900Response response = (ProcessMT900Response) o;
         System.out.println("**************************************");
@@ -42,7 +42,7 @@ public class ResponseService extends WebServiceGatewaySupport{
         m.setMessageId("testiram soap za mt910");
         p.setArg0(m);
 
-        String uri = "http://localhost:8080/ws/mt910";
+        String uri = "https://localhost:8080/ws/mt910";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
         ProcessMT910Response response = (ProcessMT910Response) o;
         System.out.println("**************************************");

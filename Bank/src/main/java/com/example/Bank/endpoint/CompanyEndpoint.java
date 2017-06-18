@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.example.Bank.service.ClearingClientService;
 import com.example.Bank.service.jaxws.*;
 import com.example.service.mt102.Mt102;
+import com.example.service.mt103.Mt103;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
@@ -15,8 +16,12 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import com.example.Bank.service.PaymentService;
 import com.example.Bank.service.SOAPClientService;
+import com.example.Bank.service.SecurityService;
+import com.example.Bank.service.jaxws.ProcessBankStatementRequest;
+import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
+import com.example.Bank.service.jaxws.ProcessPaymentOrder;
+import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatement.BankStatement;
-import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
 @Endpoint
@@ -28,6 +33,9 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 	
 	@Autowired
 	private SOAPClientService clientService;
+	
+	@Autowired
+	private SecurityService securityService;
 
 	@Autowired
 	private ClearingClientService clearingClientService;
@@ -48,6 +56,10 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 	public ProcessPaymentOrderResponse processPaymentOrder(@RequestPayload ProcessPaymentOrder processPaymentOrder){
 		ProcessPaymentOrderResponse response = new ProcessPaymentOrderResponse();
 		PaymentOrder paymentOrder = processPaymentOrder.getArg0();
+		
+		boolean result = securityService.validateSignature(processPaymentOrder);
+		System.out.println("Signature validation result: "+result);
+		securityService.validateWithSchema(paymentOrder);
 		
 		//Funkcija ce zaduziti racun onog koji je poslao nalog, i kreirace analitiku izvoda i azurirati dnevni balans racuna
 		String code = paymentService.createDebtorAccountAnalytics(paymentOrder);

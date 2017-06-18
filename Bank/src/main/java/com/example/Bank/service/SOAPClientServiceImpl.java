@@ -21,7 +21,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport  implements 
         ProcessMT103 processMt103 = new ProcessMT103();
         processMt103.setArg0(mt103);
 
-        String uri = "http://localhost:8090/ws/mt103";
+        String uri = "https://localhost:8090/ws/mt103";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processMt103);
         
         ProcessMT103Response response = (ProcessMT103Response)o;

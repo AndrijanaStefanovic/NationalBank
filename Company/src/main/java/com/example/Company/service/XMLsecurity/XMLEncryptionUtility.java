@@ -54,7 +54,7 @@ public class XMLEncryptionUtility {
 			Element invoice = (Element) invoices.item(0);
 			
 			xmlCipher.doFinal(doc, invoice, true);
-			
+	
 			return doc;
 		} catch (XMLEncryptionException e) {
 			e.printStackTrace();

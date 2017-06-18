@@ -3,13 +3,17 @@ package com.example.service.invoice;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 
 
 /**
@@ -734,10 +738,12 @@ public class Invoice {
         "discountPercent",
         "discountTotal",
         "subtractedDiscount",
-        "taxTotal"
+        "taxTotal",
+        "kind"
     })
     public static class InvoiceItem {
 
+    	@XmlElement(required = true)
         protected int number;
         @XmlElement(required = true)
         protected String name;
@@ -757,8 +763,11 @@ public class Invoice {
         protected BigDecimal subtractedDiscount;
         @XmlElement(required = true)
         protected BigDecimal taxTotal;
+        @XmlElement(required = true)
+        protected String kind;
 
-        /**
+
+		/**
          * Gets the value of the number property.
          * 
          */
@@ -989,7 +998,14 @@ public class Invoice {
         public void setTaxTotal(BigDecimal value) {
             this.taxTotal = value;
         }
+        
+        public String getKind() {
+			return kind;
+		}
 
+		public void setKind(String kind) {
+			this.kind = kind;
+		}
     }
 
 }
