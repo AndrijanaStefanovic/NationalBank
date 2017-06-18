@@ -15,28 +15,42 @@ import org.springframework.xml.xsd.XsdSchema;
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
-	
-	@Bean
-	public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
-		MessageDispatcherServlet servlet = new MessageDispatcherServlet();
-		servlet.setApplicationContext(applicationContext);
-		servlet.setTransformWsdlLocations(true);
-		return new ServletRegistrationBean(servlet, "/ws/*");
-	}
 
-	@Bean(name = "mt103")
-	public DefaultWsdl11Definition MT103SchemaDefinition(XsdSchema MT103Schema) {
-		DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
-		wsdl11Definition.setPortTypeName("MT103Port");
-		wsdl11Definition.setLocationUri("/ws");
-		wsdl11Definition.setTargetNamespace("http://example.com/CentralBank/service");
-		wsdl11Definition.setSchema(MT103Schema);
-		return wsdl11Definition;
-	}
+    @Bean
+    public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
+        MessageDispatcherServlet servlet = new MessageDispatcherServlet();
+        servlet.setApplicationContext(applicationContext);
+        servlet.setTransformWsdlLocations(true);
+        return new ServletRegistrationBean(servlet, "/ws/*");
+    }
 
-	@Bean
-	public XsdSchema MT103Schema() {
-		return new SimpleXsdSchema(new ClassPathResource("MT103.xsd"));
-	}
+    @Bean(name = "mt103")
+    public DefaultWsdl11Definition MT103SchemaDefinition(XsdSchema MT103Schema) {
+        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+        wsdl11Definition.setPortTypeName("MT103Port");
+        wsdl11Definition.setLocationUri("/ws");
+        wsdl11Definition.setTargetNamespace("http://example.com/CentralBank/service");
+        wsdl11Definition.setSchema(MT103Schema);
+        return wsdl11Definition;
+    }
 
+    @Bean
+    public XsdSchema MT103Schema() {
+        return new SimpleXsdSchema(new ClassPathResource("MT103.xsd"));
+    }
+
+    @Bean(name = "mt102")
+    public DefaultWsdl11Definition MT102SchemaDefinition(XsdSchema MT102Schema) {
+        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+        wsdl11Definition.setPortTypeName("MT102Port");
+        wsdl11Definition.setLocationUri("/ws");
+        wsdl11Definition.setTargetNamespace("http://example.com/CentralBank/service");
+        wsdl11Definition.setSchema(MT102Schema);
+        return wsdl11Definition;
+    }
+
+    @Bean
+    public XsdSchema MT102Schema() {
+        return new SimpleXsdSchema(new ClassPathResource("mt102.xsd"));
+    }
 }

@@ -1,24 +1,18 @@
 package com.example.Bank.service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import com.example.Bank.Client;
+import com.example.Bank.model.*;
+import com.example.Bank.repository.*;
+import com.example.service.mt102.Mt102;
+import com.example.service.mt102.SinglePayment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.Bank.model.Account;
-import com.example.Bank.model.AccountAnalytics;
-import com.example.Bank.model.Bank;
-import com.example.Bank.model.DailyAccountBalance;
-import com.example.Bank.repository.AccountAnalyticsRepository;
-import com.example.Bank.repository.AccountRepository;
-import com.example.Bank.repository.BankRepository;
-import com.example.Bank.repository.DailyAccountBalanceRepository;
 import com.example.service.mt103.Mt103;
 import com.example.service.mt103.TBankData;
 import com.example.service.paymentorder.PaymentOrder;
-import com.example.service.mt103.TCompanyData;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -34,6 +28,9 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private BankRepository bankRepository;
+
+	@Autowired
+	private ClearingCounterRepository clearingCounterRepository;
 	
 	@Override
 	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder) {
@@ -208,7 +205,7 @@ public class PaymentServiceImpl implements PaymentService {
 		mt103.setDateOfValue(paymentOrder.getDateOfValue());
 		
 		//debtor + debtors bank
-		TCompanyData debtorData = new TCompanyData();
+		com.example.service.mt103.TCompanyData debtorData = new com.example.service.mt103.TCompanyData();
 		debtorData.setInfo(paymentOrder.getDebtor().getInfo());
 		debtorData.setAccountNumber(paymentOrder.getDebtor().getAccountNumber());
 		debtorData.setModel(paymentOrder.getDebtor().getModel());
@@ -228,7 +225,7 @@ public class PaymentServiceImpl implements PaymentService {
 		mt103.setDebtorsBank(debtorsBankData);
 		
 		//creditor + creditors bank
-		TCompanyData creditorData = new TCompanyData();
+		com.example.service.mt103.TCompanyData creditorData = new com.example.service.mt103.TCompanyData();
 		creditorData.setInfo(paymentOrder.getCreditor().getInfo());
 		creditorData.setAccountNumber(paymentOrder.getCreditor().getAccountNumber());
 		creditorData.setModel(paymentOrder.getCreditor().getModel());
@@ -252,4 +249,77 @@ public class PaymentServiceImpl implements PaymentService {
 		return mt103;
 	}
 
+	@Override
+	public Mt102 createMT102(PaymentOrder paymentOrder) {
+		Mt102 mt102 = new Mt102();
+		//message id
+		mt102.setMessageId(UUID.randomUUID().toString());
+
+		//creditors swift and accountNumber
+		TBankData creditorsBankData = new TBankData();
+		mt102.setCreditorSwift(creditorsBankData.getSWIFT());
+		mt102.setCreditorAccountNumber(paymentOrder.getCreditor().getAccountNumber());
+
+		//debtors swift and accountNumber
+		TBankData debtorsBankData = new TBankData();
+		mt102.setDebtorSwift(debtorsBankData.getSWIFT());
+		mt102.setDebtorAccountNumber(paymentOrder.getDebtor().getAccountNumber());
+
+		//dates
+		mt102.setDateOfPayment(paymentOrder.getDateOfPayment());
+		mt102.setDateOfValue(paymentOrder.getDateOfValue());
+
+		//currency
+		mt102.setCurrency(paymentOrder.getCurrency());
+
+		//total
+		mt102.setTotal(paymentOrder.getAmount());
+
+		//sequence single payments
+		List<SinglePayment> currentSinglePayments = mt102.getSinglePayment();
+		for (int i = 0; i < 5; i++) {
+			currentSinglePayments.add(generateSinglePayment(paymentOrder ,i));
+		}
+
+		SinglePayment singlePayment = new SinglePayment();
+
+		return mt102;
+	}
+
+	private SinglePayment generateSinglePayment(PaymentOrder paymentOrder, int i) {
+		SinglePayment singlePayment = new SinglePayment();
+
+		//paymentID
+		singlePayment.setPaymentId(i+"ID"+UUID.randomUUID().toString());
+
+		//purpose
+		singlePayment.setPaymentPurpose(paymentOrder.getPaymentPurpose());
+
+		//creditor
+		com.example.service.mt102.TCompanyData creditorData = new com.example.service.mt102.TCompanyData();
+		creditorData.setInfo(paymentOrder.getCreditor().getInfo());
+		creditorData.setAccountNumber(paymentOrder.getCreditor().getAccountNumber());
+		creditorData.setModel(paymentOrder.getCreditor().getModel());
+		creditorData.setReferenceNumber(paymentOrder.getCreditor().getReferenceNumber());
+		singlePayment.setCreditor(creditorData);
+
+		//debtor
+		com.example.service.mt102.TCompanyData debtorData = new com.example.service.mt102.TCompanyData();
+		debtorData.setInfo(paymentOrder.getDebtor().getInfo());
+		debtorData.setAccountNumber(paymentOrder.getDebtor().getAccountNumber());
+		debtorData.setModel(paymentOrder.getDebtor().getModel());
+		debtorData.setReferenceNumber(paymentOrder.getDebtor().getReferenceNumber());
+		singlePayment.setCreditor(debtorData);
+
+		//dateOfOrder
+		singlePayment.setDateOfOrder(paymentOrder.getDateOfPayment());
+
+		//totalPayment
+		singlePayment.setTotal(paymentOrder.getAmount());
+
+		//currency
+		singlePayment.setCurrency(paymentOrder.getCurrency());
+
+		return  singlePayment;
+	}
 }

@@ -2,7 +2,13 @@ package com.example.Bank.endpoint;
 
 import java.math.BigDecimal;
 
+import com.example.Bank.service.ClearingClientService;
+import com.example.Bank.service.jaxws.*;
+import com.example.service.mt102.Mt102;
+import com.example.service.mt103.Mt103;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -19,7 +25,7 @@ import com.example.service.bankstatement.BankStatement;
 import com.example.service.paymentorder.PaymentOrder;
 
 @Endpoint
-public class CompanyEndpoint {
+public class CompanyEndpoint extends WebServiceGatewaySupport {
 	private static final String NAMESPACE_URI = "http://service.Bank.example.com/";
 	
 	@Autowired
@@ -30,6 +36,9 @@ public class CompanyEndpoint {
 	
 	@Autowired
 	private SecurityService securityService;
+
+	@Autowired
+	private ClearingClientService clearingClientService;
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processBankStatementRequest")
 	@ResponsePayload
@@ -64,11 +73,12 @@ public class CompanyEndpoint {
 			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
 				//Salji na RTGS
 				System.out.println("****************rtgs******************");
-				//Mt103 mt103 = paymentService.createMT103(paymentOrder);
-				//System.out.println(clientService.sendMt103(mt103));
-				
+				Mt103 mt103 = paymentService.createMT103(paymentOrder);
+				System.out.println(clientService.sendMt103(mt103));
 			} else {
 				//Salji na Clearing
+				Mt102 mt102 = paymentService.createMT102(paymentOrder);
+				System.out.println(clearingClientService.sendMt102(mt102));
 			}
 		}
 		response.setReturn(code);

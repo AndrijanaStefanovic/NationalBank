@@ -38,9 +38,7 @@ public class DisableSSlLVerification {
 			};
 
 			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (KeyManagementException e) {
+		} catch (NoSuchAlgorithmException | KeyManagementException e) {
 			e.printStackTrace();
 		}
 	}
