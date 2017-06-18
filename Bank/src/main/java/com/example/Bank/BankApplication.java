@@ -26,6 +26,6 @@ public class BankApplication {
 		c.testProcessMT102WithCounter();
 		c.testProcessMT102WithCounter();
 		c.testProcessMT102WithCounter();
-//		c.testProcessMT102WithCounter();
+		c.testProcessMT102WithCounter();
 	}
 }
