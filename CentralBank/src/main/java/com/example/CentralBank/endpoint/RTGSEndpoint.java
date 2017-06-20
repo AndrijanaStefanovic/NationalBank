@@ -33,9 +33,9 @@ public class RTGSEndpoint extends WebServiceGatewaySupport {
 
 //		forwardMT103();
 
-		responseService.sendResponseMT900();
+//		responseService.sendResponseMT900();
 
-		responseService.sendResponseMT910();
+//		responseService.sendResponseMT910();
 
 		return r;
 	}
