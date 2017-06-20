@@ -15,7 +15,12 @@ public interface ClearingService {
     public String forwardMt102(Mt102Model mt102model);
     
     /**
-     * Poruka o zaduzenju
+     * Slanje poruke o zaduzenju
      * */
     public String sendMt900(Mt102Model mt102model);
+    
+    /**
+     * Slanje poruke o odobrenju
+     * */
+    public String sendMt910(Mt102Model mt102model);
 }

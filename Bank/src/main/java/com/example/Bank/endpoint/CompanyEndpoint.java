@@ -2,12 +2,7 @@ package com.example.Bank.endpoint;
 
 import java.math.BigDecimal;
 
-import com.example.Bank.service.ClearingClientService;
-import com.example.Bank.service.jaxws.*;
-import com.example.service.mt102.Mt102;
-import com.example.service.mt103.Mt103;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -22,6 +17,7 @@ import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
 import com.example.Bank.service.jaxws.ProcessPaymentOrder;
 import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatement.BankStatement;
+import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
 @Endpoint
@@ -33,9 +29,9 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 	
 	@Autowired
 	private SecurityService securityService;
-
+	
 	@Autowired
-	private ClearingClientService clearingClientService;
+	private SOAPClientService SOAPClientService;
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processBankStatementRequest")
 	@ResponsePayload
@@ -67,7 +63,7 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
 				code = paymentService.createDebtorAccountAnalytics(paymentOrder, false);
 				System.out.println("****************rtgs******************");
-				//Mt103 mt103 = paymentService.createMT103(paymentOrder);
+				Mt103 mt103 = paymentService.createMT103(paymentOrder);
 				//System.out.println(clientService.sendMt103(mt103));
 			} else {
 				code = paymentService.createDebtorAccountAnalytics(paymentOrder, true);
@@ -76,7 +72,7 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 				if(code.equals("readyToSend")){
 					System.out.println("sending to cb........................");
 					String creditorBanksSwift = paymentService.getBanksSwift(paymentOrder.getCreditor().getAccountNumber());
-					code = clearingClientService.sendMt102(creditorBanksSwift);
+					code = SOAPClientService.sendMt102(creditorBanksSwift);
 					System.out.println(code);
 				}
 			}

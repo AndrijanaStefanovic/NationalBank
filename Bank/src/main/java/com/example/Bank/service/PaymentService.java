@@ -50,9 +50,5 @@ public interface PaymentService {
 	 * */
 	public String getBanksSwift(String clientsAccountNumber);
 	
-	/**
-	 * Funkcija koja prima poruku o zaduzenju i zaduzuje racun klijenta
-	 * */
-	public String processMt900(Mt900 mt900);
 	
 }

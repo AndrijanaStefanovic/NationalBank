@@ -22,7 +22,6 @@ import com.example.Bank.repository.Mt102Repository;
 import com.example.Bank.repository.SinglePaymentRepository;
 import com.example.service.mt103.Mt103;
 import com.example.service.mt103.TBankData;
-import com.example.service.mt900.Mt900;
 import com.example.service.paymentorder.PaymentOrder;
 
 @Service
@@ -380,61 +379,7 @@ public class PaymentServiceImpl implements PaymentService {
 		return banks.get(0).getSWIFTcode();
 	}
 
-	@Override
-	public String processMt900(Mt900 mt900) {
-		System.out.println("processing mt900...");
-		Mt102Model mt102 = mt102Repository.findOne(Long.parseLong(mt900.getOrderMessageId()));
-		
-		for (SinglePaymentModel spm : mt102.getSinglePaymentModels()) {
-
-			List<Account> accounts = accountRepository.findByAccountNumber(spm.getDebtorAccountNumber());
-			if (accounts.isEmpty()) {
-				return "accountNotFound";
-			}
-			Account debtorsAccount = accounts.get(0);
-			debtorsAccount.setBalance(debtorsAccount.getBalance() - spm.getTotal());
-			debtorsAccount.setReservedFunds(debtorsAccount.getReservedFunds() - spm.getTotal());
-			System.out.println("subtracted amount from debtors reserved funds...");
-
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(spm.getDateOfOrder());
-			calendar.set(Calendar.MILLISECOND, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.HOUR, 0);
-			Date dateOfOrder = calendar.getTime();
-
-			for (DailyAccountBalance dab : debtorsAccount.getDailyAccountBalances()) {
-				System.out.println("searching through dabs....");
-				calendar.setTime(dab.getDate());
-				calendar.set(Calendar.MILLISECOND, 0);
-				calendar.set(Calendar.SECOND, 0);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.HOUR, 0);
-				Date dabDate = calendar.getTime();
-
-				if (dateOfOrder.equals(dabDate)) {
-					System.out.println("found dab with adequate date...");
-					for (AccountAnalytics aa : dab.getAccountAnalytics()) {
-						if (aa.getDebtorsAccountNumber().equals(spm.getDebtorAccountNumber())
-								&& aa.getReservedFunds() == spm.getTotal()) {
-							System.out.println("found account analytics...");
-							aa.setReservedFunds(0);
-							aa.setAmount(spm.getTotal());
-							dab.setPreviousBalance(dab.getNewBalance());
-							dab.setNewBalance(dab.getNewBalance() - spm.getTotal());
-							dailyAccountBalanceRepository.save(dab);
-							accountAnalyticsRepository.save(aa);
-							break;
-						}
-					}
-					break;
-				}
-			}
-			accountRepository.save(debtorsAccount);
-		}
-		return "OK";
-	}
+	
 
 	
 }

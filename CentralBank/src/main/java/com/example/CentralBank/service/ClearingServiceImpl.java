@@ -24,9 +24,12 @@ import com.example.CentralBank.service.jaxws.ProcessMT102Normal;
 import com.example.CentralBank.service.jaxws.ProcessMT102ResponseNormal;
 import com.example.CentralBank.service.jaxws.ProcessMT900;
 import com.example.CentralBank.service.jaxws.ProcessMT900Response;
+import com.example.CentralBank.service.jaxws.ProcessMT910;
+import com.example.CentralBank.service.jaxws.ProcessMT910Response;
 import com.example.service.mt102.Mt102;
 import com.example.service.mt102.SinglePayment;
 import com.example.service.mt900.Mt900;
+import com.example.service.mt910.Mt910;
 
 @Service
 public class ClearingServiceImpl extends WebServiceGatewaySupport implements ClearingService{
@@ -120,6 +123,9 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 			System.out.println("sending mt900 for mt102..");
 			sendMt900(mt102Model);
 			
+			System.out.println("done with debtor..on to the creditor...");
+			forwardMt102(mt102Model);
+			sendMt910(mt102Model);
 			//posalji mt900 debtor banci
 			//prosledi mt102 creditor banci
 			//posalji mt910 creditor banci
@@ -137,7 +143,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 			return "creditorBankNotFound";
 		}
 		Bank creditorBank = creditorBankList.get(0);
-		System.out.println("prosledjujem mt102....");
+		System.out.println("forwarding mt102....");
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setClassesToBeBound(ProcessMT102Normal.class, ProcessMT102ResponseNormal.class);
 		setMarshaller(marshaller);
@@ -149,7 +155,6 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 		
 		ProcessMT102Normal p = new ProcessMT102Normal();
 		p.setArg0(mt102);
-
 		String uri = creditorBank.getUrl() + "mt102";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
 		ProcessMT102ResponseNormal response = (ProcessMT102ResponseNormal) o;
@@ -184,7 +189,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 		if(debtorsBankList.isEmpty()){
 			return "debtorsBankNotFound";
 		}
-		System.out.println("sending mt900.....");
+		System.out.println("sending mt900 to debtors bank.....");
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setClassesToBeBound(ProcessMT900.class, ProcessMT900Response.class);
 		setMarshaller(marshaller);
@@ -193,8 +198,45 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 		String uri = debtorsBank.getUrl() + "mt900";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
 		ProcessMT900Response response = (ProcessMT900Response) o;
-		System.out.println(response.getReturn());
+		return response.getReturn();
+	}
+
+	@Override
+	public String sendMt910(Mt102Model mt102model) {
+		Mt910 mt910 = new Mt910();
+		com.example.service.mt910.TBankData creditorsBankData = new com.example.service.mt910.TBankData();
+		creditorsBankData.setAccountNumber(mt102model.getCreditorAccountNumber());
+		creditorsBankData.setSWIFT(mt102model.getCreditorSwift());
+		mt910.setCreditorsBank(creditorsBankData);
+		mt910.setCurrency(mt102model.getCurrency());
+		try {
+			GregorianCalendar c = new GregorianCalendar();
+	    	c.setTime(mt102model.getDateOfValue());
+	    	XMLGregorianCalendar dateOfValue = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+	    	mt910.setDateOfValue(dateOfValue);
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+		mt910.setMessageId("?");
+		mt910.setOrderMessageId(mt102model.getId().toString());
+		mt910.setTotal(new BigDecimal(mt102model.getTotal()));
 		
-		return "OK";
+		List<Bank> creditorsBankList = bankRepository.findBySwiftCode(mt102model.getCreditorSwift());
+		if(creditorsBankList.isEmpty()){
+			return "creditorsBankNotFound";
+		}
+		Bank creditorsBank = creditorsBankList.get(0);
+		
+		System.out.println("sending mt910 to creditors bank...");
+		ProcessMT910 processMt910 = new ProcessMT910();
+		processMt910.setArg0(mt910);
+		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+		marshaller.setClassesToBeBound(ProcessMT910.class, ProcessMT910Response.class);
+		setMarshaller(marshaller);
+		setUnmarshaller(marshaller);
+		String uri = creditorsBank.getUrl() + "mt920";
+		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processMt910);
+		ProcessMT910Response response = (ProcessMT910Response) o;
+		return response.getReturn();
 	}
 }
