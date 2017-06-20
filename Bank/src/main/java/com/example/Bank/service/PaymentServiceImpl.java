@@ -1,15 +1,25 @@
 package com.example.Bank.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-import com.example.Bank.Client;
-import com.example.Bank.model.*;
-import com.example.Bank.repository.*;
-import com.example.service.mt102.Mt102;
-import com.example.service.mt102.SinglePayment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.Bank.model.Account;
+import com.example.Bank.model.AccountAnalytics;
+import com.example.Bank.model.Bank;
+import com.example.Bank.model.DailyAccountBalance;
+import com.example.Bank.model.Mt102Model;
+import com.example.Bank.model.SinglePaymentModel;
+import com.example.Bank.repository.AccountAnalyticsRepository;
+import com.example.Bank.repository.AccountRepository;
+import com.example.Bank.repository.BankRepository;
+import com.example.Bank.repository.DailyAccountBalanceRepository;
+import com.example.Bank.repository.Mt102Repository;
+import com.example.Bank.repository.SinglePaymentRepository;
 import com.example.service.mt103.Mt103;
 import com.example.service.mt103.TBankData;
 import com.example.service.paymentorder.PaymentOrder;
@@ -28,15 +38,23 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private BankRepository bankRepository;
-
+	
 	@Autowired
-	private ClearingCounterRepository clearingCounterRepository;
+	private SinglePaymentRepository singlePaymentRepository;
+	
+	@Autowired
+	private Mt102Repository mt102Repository;
 	
 	@Override
-	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder) {
+	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder, boolean isClearing) {
 		Date dateOfPayment = paymentOrder.getDateOfPayment().toGregorianCalendar().getTime();
 		Date dateOfValue = paymentOrder.getDateOfValue().toGregorianCalendar().getTime();
 		double amount = Double.parseDouble(paymentOrder.getAmount().toString());
+		double reservedFunds = 0;
+		if(isClearing){
+			amount = 0;
+			reservedFunds = Double.parseDouble(paymentOrder.getAmount().toString());
+		}
 		List<Account> retList = accountRepository.findByAccountNumber(paymentOrder.getDebtor().getAccountNumber());
 		if(retList.isEmpty()){
 			return "AccountNotFound";
@@ -65,7 +83,8 @@ public class PaymentServiceImpl implements PaymentService {
 				paymentOrder.getCreditor().getAccountNumber(), 
 				paymentOrder.getCreditor().getModel(), 
 				paymentOrder.getCreditor().getReferenceNumber(),
-				amount, 
+				amount,
+				reservedFunds,
 				paymentOrder.getCurrency(),
 				false);
 		Date poDate = paymentOrder.getDateOfPayment().toGregorianCalendar().getTime();
@@ -106,8 +125,11 @@ public class PaymentServiceImpl implements PaymentService {
 			debtorsAccount.getDailyAccountBalances().add(newDab2);
 			dailyAccountBalanceRepository.save(newDabDB);
 		}
-		
-		debtorsAccount.setBalance(debtorsAccount.getBalance() - amount);
+		if(isClearing){
+			debtorsAccount.setReservedFunds(debtorsAccount.getReservedFunds()+reservedFunds);
+		} else {
+			debtorsAccount.setBalance(debtorsAccount.getBalance() - amount);
+		}
 		accountRepository.save(debtorsAccount);
 		accountAnalyticsRepository.save(debtorsAccountAnalytics);
 	
@@ -148,6 +170,7 @@ public class PaymentServiceImpl implements PaymentService {
 				paymentOrder.getCreditor().getModel(), 
 				paymentOrder.getCreditor().getReferenceNumber(),
 				amount, 
+				0,
 				paymentOrder.getCurrency(),
 				true); //razlika u ovom booleanu samo
 		
@@ -250,76 +273,113 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public Mt102 createMT102(PaymentOrder paymentOrder) {
-		Mt102 mt102 = new Mt102();
-		//message id
-		mt102.setMessageId(UUID.randomUUID().toString());
-
-		//creditors swift and accountNumber
-		TBankData creditorsBankData = new TBankData();
-		mt102.setCreditorSwift(creditorsBankData.getSWIFT());
-		mt102.setCreditorAccountNumber(paymentOrder.getCreditor().getAccountNumber());
-
-		//debtors swift and accountNumber
-		TBankData debtorsBankData = new TBankData();
-		mt102.setDebtorSwift(debtorsBankData.getSWIFT());
-		mt102.setDebtorAccountNumber(paymentOrder.getDebtor().getAccountNumber());
-
-		//dates
-		mt102.setDateOfPayment(paymentOrder.getDateOfPayment());
-		mt102.setDateOfValue(paymentOrder.getDateOfValue());
-
-		//currency
-		mt102.setCurrency(paymentOrder.getCurrency());
-
-		//total
-		mt102.setTotal(paymentOrder.getAmount());
-
-		//sequence single payments
-		List<SinglePayment> currentSinglePayments = mt102.getSinglePayment();
-		for (int i = 0; i < 5; i++) {
-			currentSinglePayments.add(generateSinglePayment(paymentOrder ,i));
+	public String createMT102Model(PaymentOrder paymentOrder, SinglePaymentModel singlePaymentModel) {
+		Mt102Model mt102 = new Mt102Model();
+		mt102.setMessageId("?");
+		mt102.setDateOfPayment(paymentOrder.getDateOfPayment().toGregorianCalendar().getTime());
+		mt102.setDateOfValue(paymentOrder.getDateOfValue().toGregorianCalendar().getTime());
+		List<Account> debtorList = accountRepository.findByAccountNumber(paymentOrder.getDebtor().getAccountNumber());
+		if(debtorList.isEmpty()){
+			return "debtorsAccountNotFound";
 		}
-
-		SinglePayment singlePayment = new SinglePayment();
-
-		return mt102;
+		Account debtorsAccount = debtorList.get(0);
+		Bank debtorsBank = debtorsAccount.getBank();
+		mt102.setDebtorAccountNumber(debtorsBank.getAccountNumber());
+		mt102.setDebtorSwift(debtorsBank.getSWIFTcode());
+		String bankCode = paymentOrder.getCreditor().getAccountNumber().substring(0, 3);
+		List<Bank> banks = bankRepository.findByCode(Integer.parseInt(bankCode));
+		if(banks.isEmpty()){
+			return "creditorsBankNotFound";
+		}
+		Bank creditorsBank = banks.get(0);
+		mt102.setCreditorAccountNumber(creditorsBank.getAccountNumber());
+		mt102.setCreditorSwift(creditorsBank.getSWIFTcode());
+		mt102.setTotal(singlePaymentModel.getTotal());
+		mt102.setCurrency(singlePaymentModel.getCurrency());
+		mt102.setSent(false);
+		ArrayList<SinglePaymentModel> list = new ArrayList<SinglePaymentModel>();
+		list.add(singlePaymentModel);
+		mt102.setSinglePaymentModels(list);
+		singlePaymentModel.setMt102(mt102);
+		mt102Repository.save(mt102);
+		singlePaymentRepository.save(singlePaymentModel);
+		return "OK";
 	}
 
-	private SinglePayment generateSinglePayment(PaymentOrder paymentOrder, int i) {
-		SinglePayment singlePayment = new SinglePayment();
-
-		//paymentID
-		singlePayment.setPaymentId(i+"ID"+UUID.randomUUID().toString());
-
-		//purpose
+	@Override
+	public String createSinglePaymentForMt012(PaymentOrder paymentOrder) {
+		SinglePaymentModel singlePayment = new SinglePaymentModel();
+		singlePayment.setPaymentId("?");
 		singlePayment.setPaymentPurpose(paymentOrder.getPaymentPurpose());
-
-		//creditor
-		com.example.service.mt102.TCompanyData creditorData = new com.example.service.mt102.TCompanyData();
-		creditorData.setInfo(paymentOrder.getCreditor().getInfo());
-		creditorData.setAccountNumber(paymentOrder.getCreditor().getAccountNumber());
-		creditorData.setModel(paymentOrder.getCreditor().getModel());
-		creditorData.setReferenceNumber(paymentOrder.getCreditor().getReferenceNumber());
-		singlePayment.setCreditor(creditorData);
-
-		//debtor
-		com.example.service.mt102.TCompanyData debtorData = new com.example.service.mt102.TCompanyData();
-		debtorData.setInfo(paymentOrder.getDebtor().getInfo());
-		debtorData.setAccountNumber(paymentOrder.getDebtor().getAccountNumber());
-		debtorData.setModel(paymentOrder.getDebtor().getModel());
-		debtorData.setReferenceNumber(paymentOrder.getDebtor().getReferenceNumber());
-		singlePayment.setCreditor(debtorData);
-
-		//dateOfOrder
-		singlePayment.setDateOfOrder(paymentOrder.getDateOfPayment());
-
-		//totalPayment
-		singlePayment.setTotal(paymentOrder.getAmount());
-
-		//currency
+		singlePayment.setDateOfOrder(paymentOrder.getDateOfPayment().toGregorianCalendar().getTime());
+		singlePayment.setTotal(paymentOrder.getAmount().doubleValue());
 		singlePayment.setCurrency(paymentOrder.getCurrency());
 
-		return  singlePayment;
+		singlePayment.setCreditorInfo(paymentOrder.getCreditor().getInfo());
+		singlePayment.setCreditorAccountNumber(paymentOrder.getCreditor().getAccountNumber());
+		singlePayment.setCreditorModel(paymentOrder.getCreditor().getModel());
+		singlePayment.setCreditorReferenceNumber(paymentOrder.getCreditor().getReferenceNumber());
+		
+		singlePayment.setDebtorInfo(paymentOrder.getDebtor().getInfo());
+		singlePayment.setDebtorAccountNumber(paymentOrder.getDebtor().getAccountNumber());
+		singlePayment.setDebtorModel(paymentOrder.getDebtor().getModel());
+		singlePayment.setDebtorReferenceNumber(paymentOrder.getDebtor().getReferenceNumber());
+		
+		String bankCode = paymentOrder.getCreditor().getAccountNumber().substring(0, 3);
+		List<Bank> banks = bankRepository.findByCode(Integer.parseInt(bankCode));
+		if(banks.isEmpty()){
+			return "bankNotFound";
+		}
+		Bank creditorsBank = banks.get(0);
+		List<Mt102Model> mt102s = mt102Repository
+								.findByCreditorSwiftAndSent(creditorsBank.getSWIFTcode(), false);
+		singlePaymentRepository.save(singlePayment);
+		reserveFunds(paymentOrder.getDebtor().getAccountNumber(), paymentOrder.getAmount().doubleValue());
+		if(mt102s.isEmpty()){
+			System.out.println("creating new mt102...");
+			 createMT102Model(paymentOrder, singlePayment);
+			 
+		} else {
+			System.out.println("adding to existing mt102...");
+			Mt102Model mt102 = mt102s.get(0);
+			mt102.getSinglePaymentModels().add(singlePayment);
+			mt102.setTotal(mt102.getTotal() + singlePayment.getTotal());
+			singlePayment.setMt102(mt102);
+			mt102Repository.save(mt102);
+			singlePaymentRepository.save(singlePayment);
+			if(mt102.getSinglePaymentModels().size() >= 2){
+				System.out.println(">2......");
+				return "readyToSend";
+			}
+			System.out.println("<2.....");
+			
+		}
+		return "OK";
 	}
+
+	@Override
+	public String reserveFunds(String accountNumber, double amount) {
+		List<Account> accounts = accountRepository.findByAccountNumber(accountNumber);
+		if(accounts.isEmpty()){
+			return "accountNumberNotFound";
+		} 
+		Account account = accounts.get(0);
+		account.setReservedFunds(account.getReservedFunds() + amount);
+		accountRepository.save(account);
+		return "OK";
+	}
+
+	@Override
+	public String getBanksSwift(String clientsAccountNumber) {
+		String bankCode = clientsAccountNumber.substring(0, 3);
+		List<Bank> banks = bankRepository.findByCode(Integer.parseInt(bankCode));
+		if(banks.isEmpty()){
+			return "bankNotFound";
+		}
+		return banks.get(0).getSWIFTcode();
+	}
+
+	
+
+	
 }

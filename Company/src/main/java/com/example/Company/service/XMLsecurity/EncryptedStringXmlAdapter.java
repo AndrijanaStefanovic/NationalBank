@@ -1,9 +1,14 @@
 package com.example.Company.service.XMLsecurity;
 
+import java.security.Provider;
+import java.security.Security;
+import java.util.Iterator;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.properties.PropertyValueEncryptionUtils;
+import org.jasypt.registry.AlgorithmRegistry;
 
 public class EncryptedStringXmlAdapter extends XmlAdapter<String,String> {
 	
@@ -18,7 +23,6 @@ public class EncryptedStringXmlAdapter extends XmlAdapter<String,String> {
 
 	public EncryptedStringXmlAdapter() {
         encryptor.setPassword(k);
-     //   encryptor.setAlgorithm("PBEWITHHMACSHA256ANDAES_256");
 	}
 	 
 	 @Override

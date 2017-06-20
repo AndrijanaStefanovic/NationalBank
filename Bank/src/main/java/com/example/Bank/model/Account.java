@@ -23,6 +23,9 @@ public class Account {
 	@Column
 	private Double balance;
 
+	@Column
+	private Double reservedFunds;
+	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="account")
 	private List<DailyAccountBalance> dailyAccountBalances;
 	
@@ -76,6 +79,13 @@ public class Account {
 		this.bank = bank;
 	}
 	
-	
+	public Double getReservedFunds() {
+		return reservedFunds;
+	}
+
+	public void setReservedFunds(Double reservedFunds) {
+		this.reservedFunds = reservedFunds;
+	}
+
 	
 }

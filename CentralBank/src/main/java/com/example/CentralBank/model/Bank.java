@@ -24,6 +24,12 @@ public class Bank {
 	@Column
 	private String accountNumber;
 	
+	@Column
+	private double accountBalance;
+	
+	@Column
+	private String url; //oblik: https://localhost:port/ws/
+	
 	public Bank(){}
 	
 	public Long getId() {
@@ -66,7 +72,21 @@ public class Bank {
 		this.accountNumber = accountNumber;
 	}
 
+	public double getAccountBalance() {
+		return accountBalance;
+	}
 
+	public void setAccountBalance(double accountBalance) {
+		this.accountBalance = accountBalance;
+	}
 	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUri(String url) {
+		this.url = url;
+	}
+
 	
 }

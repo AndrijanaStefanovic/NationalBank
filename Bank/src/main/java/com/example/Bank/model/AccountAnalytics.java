@@ -66,6 +66,9 @@ public class AccountAnalytics {
 	@Column
 	private double amount;
 	
+	@Column
+	private double reservedFunds;
+
 	@Column 
 	private String currency;
 	
@@ -78,7 +81,7 @@ public class AccountAnalytics {
 			String creditorsBankAccount, String debtor, String paymentPurpose, String creditor, Date dateOfPaymentOrder,
 			Date dateOfValue, String debtorsAccountNumber, int debtorsModel, String debtorsReferenceNumber,
 			String creditorsAccountNumber, int creditorsModel, String creditorsReferenceNumber, double amount,
-			String currency, boolean received) {
+			double reservedFunds, String currency, boolean received) {
 		super();
 		this.debtorsBankSWIFT = debtorsBankSWIFT;
 		this.debtorsBankAccount = debtorsBankAccount;
@@ -96,6 +99,7 @@ public class AccountAnalytics {
 		this.creditorsModel = creditorsModel;
 		this.creditorsReferenceNumber = creditorsReferenceNumber;
 		this.amount = amount;
+		this.reservedFunds = reservedFunds;
 		this.currency = currency;
 		this.received = received;
 	}
@@ -330,5 +334,13 @@ public class AccountAnalytics {
 		this.dailyAccountBalance = dailyAccountBalance;
 	}
 	
+	public double getReservedFunds() {
+		return reservedFunds;
+	}
+
+	public void setReservedFunds(double reservedFunds) {
+		this.reservedFunds = reservedFunds;
+	}
+
 	
 }
