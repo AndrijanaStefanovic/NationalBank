@@ -44,5 +44,11 @@ angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller
 		        templateUrl : 'pages/businessPartners.html',
 		        controller : 'businessPartnerController'
 	    })
+	    
+	    .state('bankStatementItems', {
+				url : '/bankStatementItems/:id',
+				templateUrl : 'pages/bankStatementItems.html',
+				controller : 'bankStatementItemController'
+		})
 
 	});
