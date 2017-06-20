@@ -73,12 +73,24 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
 				//Salji na RTGS
 				System.out.println("****************rtgs******************");
-				Mt103 mt103 = paymentService.createMT103(paymentOrder);
-				System.out.println(clientService.sendMt103(mt103));
+				//Mt103 mt103 = paymentService.createMT103(paymentOrder);
+				//System.out.println(clientService.sendMt103(mt103));
 			} else {
 				//Salji na Clearing
-				Mt102 mt102 = paymentService.createMT102(paymentOrder);
-				System.out.println(clearingClientService.sendMt102(mt102));
+				System.out.println("******************clearing**********************");
+				code = paymentService.createSinglePaymentForMt012(paymentOrder);
+				if(code.equals("readyToSend")){
+					System.out.println("sending to cb........................");
+					String creditorBanksSwift = paymentService.getBanksSwift(paymentOrder.getCreditor().getAccountNumber());
+					code = clearingClientService.sendMt102(creditorBanksSwift);
+					System.out.println(code);
+				}
+				//Mt102 mt102 = paymentService.createMT102(paymentOrder);
+				//System.out.println(clearingClientService.sendMt102(mt102));
+				//izvrsiti rezervaciju sredstava na racunu klijenta
+				//skupljaj naloge
+				//periodicno salji mt102
+				//svaki mt102 sa placanjima za ISTU banku
 			}
 		}
 		response.setReturn(code);

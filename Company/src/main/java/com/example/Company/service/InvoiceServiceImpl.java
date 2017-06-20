@@ -9,20 +9,11 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -44,7 +35,6 @@ import com.example.Company.model.InvoiceItem;
 import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.InvoiceItemRepository;
 import com.example.Company.repository.InvoiceRepository;
-import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService{

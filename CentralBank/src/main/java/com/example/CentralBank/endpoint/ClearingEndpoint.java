@@ -21,26 +21,21 @@ public class ClearingEndpoint extends WebServiceGatewaySupport {
     @Autowired
     private ClearingService clearingService;
 
-    @Autowired
-    private ResponseService responseService;
-
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "processMT102")
     @ResponsePayload
     public ProcessMT102Response processMT102(@RequestPayload ProcessMT102 mt102) {
         System.out.println(mt102.getArg0().getMessageId());
+        System.out.println("single payments:");
         for(SinglePayment singlePayment : mt102.getArg0().getSinglePayment()) {
-            System.out.println(singlePayment.getPaymentId());
+            System.out.println(singlePayment.getTotal());
         }
         ProcessMT102Response r = new ProcessMT102Response();
-        r.setReturn("test return mt102");
-        clearingService.processMT102(mt102.getArg0());
-
-        forwardMT102();
-
-        responseService.sendResponseMT900();
-
-        responseService.sendResponseMT910();
-
+        String code = clearingService.processMT102(mt102.getArg0());
+        if(code.equals("readyToClear")){
+        	code = clearingService.performClear();
+        }
+        r.setReturn(code);
+        
         return r;
     }
 

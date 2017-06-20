@@ -17,7 +17,6 @@ public class EncryptedStringXmlAdapter extends XmlAdapter<String,String> {
 
 	public EncryptedStringXmlAdapter() {
         encryptor.setPassword(k);
-      //  encryptor.setAlgorithm("PBEWITHHMACSHA256ANDAES_256");
 	}
 	 
 	 @Override

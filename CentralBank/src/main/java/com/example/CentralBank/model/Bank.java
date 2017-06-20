@@ -24,6 +24,12 @@ public class Bank {
 	@Column
 	private String accountNumber;
 	
+	@Column
+	private double accountBalance;
+	
+	@Column
+	private String mt102uri;
+	
 	public Bank(){}
 	
 	public Long getId() {
@@ -66,7 +72,21 @@ public class Bank {
 		this.accountNumber = accountNumber;
 	}
 
+	public double getAccountBalance() {
+		return accountBalance;
+	}
 
+	public void setAccountBalance(double accountBalance) {
+		this.accountBalance = accountBalance;
+	}
 	
+	public String getMt102uri() {
+		return mt102uri;
+	}
+
+	public void setMt102uri(String mt102uri) {
+		this.mt102uri = mt102uri;
+	}
+
 	
 }
