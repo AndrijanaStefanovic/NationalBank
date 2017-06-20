@@ -1,33 +1,38 @@
 package com.example.Bank;
 
-import com.example.Bank.model.ClearingCounter;
-import com.example.Bank.repository.ClearingCounterRepository;
-import com.example.Bank.service.PaymentService;
-import com.example.Bank.service.jaxws.*;
-import com.example.service.mt102.Mt102;
-import com.example.service.mt102.SinglePayment;
-import com.example.service.mt900.Mt900;
-import com.example.service.mt910.Mt910;
-import com.example.service.paymentorder.TCompanyData;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
+import com.example.Bank.service.PaymentService;
+import com.example.Bank.service.jaxws.ProcessBankStatementRequest;
+import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
+import com.example.Bank.service.jaxws.ProcessMT102Central;
+import com.example.Bank.service.jaxws.ProcessMT102ResponseCentral;
+import com.example.Bank.service.jaxws.ProcessMT103Central;
+import com.example.Bank.service.jaxws.ProcessMT103ResponseCentral;
+import com.example.Bank.service.jaxws.ProcessMT900;
+import com.example.Bank.service.jaxws.ProcessMT900Response;
+import com.example.Bank.service.jaxws.ProcessMT910;
+import com.example.Bank.service.jaxws.ProcessMT910Response;
+import com.example.Bank.service.jaxws.ProcessPaymentOrder;
+import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatementrequest.BankStatementRequest;
+import com.example.service.mt102.Mt102;
+import com.example.service.mt102.SinglePayment;
 import com.example.service.mt103.Mt103;
+import com.example.service.mt900.Mt900;
+import com.example.service.mt910.Mt910;
 import com.example.service.paymentorder.PaymentOrder;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
 
 public class Client extends WebServiceGatewaySupport {
 
     @Autowired
     private PaymentService paymentService;
 
-    @Autowired
-    private ClearingCounterRepository clearingCounterRepository;
 
     public void testProcessBankStatementRequest() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();

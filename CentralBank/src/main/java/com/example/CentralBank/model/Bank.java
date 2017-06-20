@@ -28,7 +28,7 @@ public class Bank {
 	private double accountBalance;
 	
 	@Column
-	private String mt102uri;
+	private String url; //oblik: https://localhost:port/ws/
 	
 	public Bank(){}
 	
@@ -80,12 +80,12 @@ public class Bank {
 		this.accountBalance = accountBalance;
 	}
 	
-	public String getMt102uri() {
-		return mt102uri;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setMt102uri(String mt102uri) {
-		this.mt102uri = mt102uri;
+	public void setUri(String url) {
+		this.url = url;
 	}
 
 	

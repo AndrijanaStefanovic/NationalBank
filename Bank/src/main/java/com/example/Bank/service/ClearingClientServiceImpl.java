@@ -55,7 +55,7 @@ public class ClearingClientServiceImpl extends WebServiceGatewaySupport implemen
     	
     	mt102.setDebtorAccountNumber(mt102Model.getDebtorAccountNumber());
     	mt102.setDebtorSwift(mt102Model.getDebtorSwift());
-    	mt102.setMessageId("?");
+    	mt102.setMessageId(mt102Model.getId().toString());
     	mt102.setTotal(new BigDecimal(mt102Model.getTotal()));
     	
     	ArrayList<SinglePayment> spList = new ArrayList<SinglePayment>();

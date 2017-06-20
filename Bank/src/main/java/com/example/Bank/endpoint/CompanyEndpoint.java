@@ -32,9 +32,6 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 	private PaymentService paymentService;
 	
 	@Autowired
-	private SOAPClientService clientService;
-	
-	@Autowired
 	private SecurityService securityService;
 
 	@Autowired
@@ -61,22 +58,19 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 		System.out.println("Signature validation result: "+result);
 		securityService.validateWithSchema(paymentOrder);
 		
-		//Funkcija ce zaduziti racun onog koji je poslao nalog, i kreirace analitiku izvoda i azurirati dnevni balans racuna
-		String code = paymentService.createDebtorAccountAnalytics(paymentOrder);
+		String code = "";
 		
 		if(paymentService.checkIfClient(paymentOrder.getCreditor().getAccountNumber())){
-			//oba u istoj banci, mozemo prebaciti sredstva na racun creditora
-			paymentService.createCreditorAccountAnalytics(paymentOrder);
+			code = paymentService.createDebtorAccountAnalytics(paymentOrder, false);
+			code = paymentService.createCreditorAccountAnalytics(paymentOrder);
 		} else {
-			//prosledi centralnoj banci
-			
 			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
-				//Salji na RTGS
+				code = paymentService.createDebtorAccountAnalytics(paymentOrder, false);
 				System.out.println("****************rtgs******************");
 				//Mt103 mt103 = paymentService.createMT103(paymentOrder);
 				//System.out.println(clientService.sendMt103(mt103));
 			} else {
-				//Salji na Clearing
+				code = paymentService.createDebtorAccountAnalytics(paymentOrder, true);
 				System.out.println("******************clearing**********************");
 				code = paymentService.createSinglePaymentForMt012(paymentOrder);
 				if(code.equals("readyToSend")){
@@ -85,12 +79,6 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 					code = clearingClientService.sendMt102(creditorBanksSwift);
 					System.out.println(code);
 				}
-				//Mt102 mt102 = paymentService.createMT102(paymentOrder);
-				//System.out.println(clearingClientService.sendMt102(mt102));
-				//izvrsiti rezervaciju sredstava na racunu klijenta
-				//skupljaj naloge
-				//periodicno salji mt102
-				//svaki mt102 sa placanjima za ISTU banku
 			}
 		}
 		response.setReturn(code);

@@ -2,6 +2,7 @@ package com.example.Bank.service;
 
 import com.example.Bank.model.SinglePaymentModel;
 import com.example.service.mt103.Mt103;
+import com.example.service.mt900.Mt900;
 import com.example.service.paymentorder.PaymentOrder;
 
 public interface PaymentService {
@@ -10,7 +11,7 @@ public interface PaymentService {
 	 * Funkcija zaduzuje racun posiljaoca naloga za placanje, kreira analitiku izvoda za ovo placanje i azurira dnevni
 	 * balans racuna, odnosno kreira ga ukoliko je ovo prvi poslati nalog za taj racun tog dana.
 	 * */
-	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder);
+	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder, boolean isClearing);
 	
 	/**
 	 * Funkcija koja proverava da li se zadati broj racuna nalazi u banci
@@ -48,5 +49,10 @@ public interface PaymentService {
 	 * Funkcija koja za broj racuna klijenta vraca SWIFT kod njegove banke
 	 * */
 	public String getBanksSwift(String clientsAccountNumber);
+	
+	/**
+	 * Funkcija koja prima poruku o zaduzenju i zaduzuje racun klijenta
+	 * */
+	public String processMt900(Mt900 mt900);
 	
 }
