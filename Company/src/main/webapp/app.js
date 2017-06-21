@@ -1,6 +1,6 @@
 'use-strict';
 
-angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller'])
+angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller', 'paymentOrder.controller'])
 
 
 	.config(function($stateProvider, $urlRouterProvider) {
@@ -44,5 +44,11 @@ angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller
 		        templateUrl : 'pages/businessPartners.html',
 		        controller : 'businessPartnerController'
 	    })
+
+		.state('paymentOrders', {
+			url : '/paymentOrders',
+			templateUrl : 'pages/paymentOrders.html',
+			controller : 'paymentOrderController'
+		})
 
 	});
