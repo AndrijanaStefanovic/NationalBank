@@ -13,4 +13,6 @@ public interface Mt102Repository extends Repository<Mt102Model, Long>{
 	public List<Mt102Model> findByCreditorSwiftAndSent(String creditorSwift, boolean sent);
 	
 	public Mt102Model findOne(Long id);
+	
+	public List<Mt102Model> findByMessageId(String messageId);
 }

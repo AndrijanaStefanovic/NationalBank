@@ -44,6 +44,9 @@ public class Company {
 	@Column(length = 30)
 	private String mobile;
 	
+	@Column
+	private String bankUrl;
+
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
 	private List<BusinessPartner> businessPartners;
@@ -149,4 +152,11 @@ public class Company {
 		this.businessPartners = businessPartners;
 	}
 
+	public String getBankUrl() {
+		return bankUrl;
+	}
+
+	public void setBankUrl(String bankUrl) {
+		this.bankUrl = bankUrl;
+	}
 }

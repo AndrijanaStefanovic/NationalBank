@@ -45,7 +45,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 
     @Override
     public String processMT102(Mt102 mt102) {
-
+    	System.out.println("processing mt102 with uuid:"+mt102.getMessageId());
         List<Bank> crb = bankRepository.findBySwiftCode(mt102.getCreditorSwift());
         if(crb.isEmpty()){
             return "creditorsBankSWIFTError";
@@ -65,6 +65,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
         mt102Model.setDateOfValue(mt102.getDateOfValue().toGregorianCalendar().getTime());
         mt102Model.setDateOfPayment(mt102.getDateOfPayment().toGregorianCalendar().getTime());
         mt102Model.setTotal(mt102.getTotal().doubleValue());
+        mt102Model.setMessageId(mt102.getMessageId());
         mt102Repository.save(mt102Model);
 
         ArrayList<SinglePaymentModel> spmList = new ArrayList<SinglePaymentModel>();
@@ -120,11 +121,13 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 			bankRepository.save(creditorBank);
 		
 			//forwardMt102(mt102Model);
-			System.out.println("sending mt900 for mt102..");
+			System.out.println("sending mt900..");
 			sendMt900(mt102Model);
 			
 			System.out.println("done with debtor..on to the creditor...");
+			System.out.println("sending mt102-----------------");
 			forwardMt102(mt102Model);
+			System.out.println("sending mt910----------------");
 			sendMt910(mt102Model);
 			//posalji mt900 debtor banci
 			//prosledi mt102 creditor banci
@@ -143,16 +146,70 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 			return "creditorBankNotFound";
 		}
 		Bank creditorBank = creditorBankList.get(0);
-		System.out.println("forwarding mt102....");
+		System.out.println("forwarding mt102 with uuid:"+mt102model.getMessageId());
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setClassesToBeBound(ProcessMT102Normal.class, ProcessMT102ResponseNormal.class);
 		setMarshaller(marshaller);
 		setUnmarshaller(marshaller);
 
 		Mt102 mt102 = new Mt102();
-		mt102.setMessageId(mt102model.getId().toString());
-		mt102.setTotal(new BigDecimal(mt102model.getTotal()));
+		mt102.setMessageId(mt102model.getMessageId());
+		mt102.setCreditorAccountNumber(mt102model.getCreditorAccountNumber());
+		mt102.setCreditorSwift(mt102model.getCreditorSwift());
+		mt102.setDebtorAccountNumber(mt102model.getDebtorAccountNumber());
+		mt102.setDebtorSwift(mt102model.getDebtorSwift());
 		
+		try {
+			GregorianCalendar c = new GregorianCalendar();
+	    	c.setTime(mt102model.getDateOfValue());
+	    	XMLGregorianCalendar dateOfValue = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+	    	mt102.setDateOfValue(dateOfValue);
+			c.setTime(mt102model.getDateOfPayment());
+	    	XMLGregorianCalendar dateOfPayment = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+	    	mt102.setDateOfPayment(dateOfPayment);
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		mt102.setCurrency(mt102model.getCurrency());
+		mt102.setTotal(new BigDecimal(mt102model.getTotal()));
+		ArrayList<SinglePayment> singlePayments = new ArrayList<SinglePayment>();
+		
+		for(SinglePaymentModel spm : mt102model.getSinglePaymentModels()){
+			SinglePayment sp = new SinglePayment();
+			com.example.service.mt102.TCompanyData creditorBankData = new com.example.service.mt102.TCompanyData();
+			creditorBankData.setAccountNumber(spm.getCreditorAccountNumber());
+			creditorBankData.setInfo(spm.getCreditorInfo());
+			creditorBankData.setModel(spm.getCreditorModel());
+			creditorBankData.setReferenceNumber(spm.getCreditorReferenceNumber());
+			sp.setCreditor(creditorBankData);
+			
+			com.example.service.mt102.TCompanyData debtorBankData = new com.example.service.mt102.TCompanyData();
+			debtorBankData.setAccountNumber(spm.getDebtorAccountNumber());
+			debtorBankData.setInfo(spm.getDebtorInfo());
+			debtorBankData.setModel(spm.getDebtorModel());
+			debtorBankData.setReferenceNumber(spm.getDebtorReferenceNumber());
+			sp.setDebtor(debtorBankData);
+			
+			
+			try {
+				GregorianCalendar c = new GregorianCalendar();
+		    	c.setTime(spm.getDateOfOrder());
+		    	XMLGregorianCalendar dateOfOrder = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+		    	sp.setDateOfOrder(dateOfOrder);
+			} catch (DatatypeConfigurationException e) {
+				e.printStackTrace();
+			}
+			sp.setCurrency(spm.getCurrency());
+			sp.setPaymentId("?");
+			sp.setPaymentPurpose(spm.getPaymentPurpose());
+			sp.setTotal(new BigDecimal(spm.getTotal()));
+			singlePayments.add(sp);
+		}
+		
+		mt102.setSinglePayment(singlePayments);
+		
+		System.out.println("sending mt102...");
 		ProcessMT102Normal p = new ProcessMT102Normal();
 		p.setArg0(mt102);
 		String uri = creditorBank.getUrl() + "mt102";
@@ -164,6 +221,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 
 	@Override
 	public String sendMt900(Mt102Model mt102model) {
+		System.out.println("sending mt900 with uuid:"+mt102model.getMessageId());
 		Mt900 mt900 = new Mt900();
 		mt900.setCurrency(mt102model.getCurrency());
 		try {
@@ -178,7 +236,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 		debtorsBankData.setAccountNumber(mt102model.getDebtorAccountNumber());
 		debtorsBankData.setSWIFT(mt102model.getDebtorSwift());
 		mt900.setDebtorsBank(debtorsBankData);
-		mt900.setMessageId("?");
+		mt900.setMessageId(mt102model.getMessageId());
 		mt900.setOrderMessageId(mt102model.getId().toString());
 		mt900.setTotal(new BigDecimal(mt102model.getTotal()));
 		
@@ -203,6 +261,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 
 	@Override
 	public String sendMt910(Mt102Model mt102model) {
+		System.out.println("sending mt910 with uuid:"+mt102model.getMessageId());
 		Mt910 mt910 = new Mt910();
 		com.example.service.mt910.TBankData creditorsBankData = new com.example.service.mt910.TBankData();
 		creditorsBankData.setAccountNumber(mt102model.getCreditorAccountNumber());
@@ -217,7 +276,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 		} catch (DatatypeConfigurationException e) {
 			e.printStackTrace();
 		}
-		mt910.setMessageId("?");
+		mt910.setMessageId(mt102model.getMessageId());
 		mt910.setOrderMessageId(mt102model.getId().toString());
 		mt910.setTotal(new BigDecimal(mt102model.getTotal()));
 		
@@ -234,7 +293,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 		marshaller.setClassesToBeBound(ProcessMT910.class, ProcessMT910Response.class);
 		setMarshaller(marshaller);
 		setUnmarshaller(marshaller);
-		String uri = creditorsBank.getUrl() + "mt920";
+		String uri = creditorsBank.getUrl() + "mt910";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processMt910);
 		ProcessMT910Response response = (ProcessMT910Response) o;
 		return response.getReturn();

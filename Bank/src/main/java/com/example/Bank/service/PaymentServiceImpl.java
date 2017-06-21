@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -275,7 +276,8 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public String createMT102Model(PaymentOrder paymentOrder, SinglePaymentModel singlePaymentModel) {
 		Mt102Model mt102 = new Mt102Model();
-		mt102.setMessageId("?");
+		mt102.setMessageId(UUID.randomUUID().toString());
+		System.out.println("creating mt102 with uuid:"+mt102.getMessageId());
 		mt102.setDateOfPayment(paymentOrder.getDateOfPayment().toGregorianCalendar().getTime());
 		mt102.setDateOfValue(paymentOrder.getDateOfValue().toGregorianCalendar().getTime());
 		List<Account> debtorList = accountRepository.findByAccountNumber(paymentOrder.getDebtor().getAccountNumber());
@@ -303,6 +305,7 @@ public class PaymentServiceImpl implements PaymentService {
 		singlePaymentModel.setMt102(mt102);
 		mt102Repository.save(mt102);
 		singlePaymentRepository.save(singlePaymentModel);
+		System.out.println("created mt102...");
 		return "OK";
 	}
 

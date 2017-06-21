@@ -58,7 +58,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport  implements 
     	
     	mt102.setDebtorAccountNumber(mt102Model.getDebtorAccountNumber());
     	mt102.setDebtorSwift(mt102Model.getDebtorSwift());
-    	mt102.setMessageId(mt102Model.getId().toString());
+    	mt102.setMessageId(mt102Model.getMessageId());
     	mt102.setTotal(new BigDecimal(mt102Model.getTotal()));
     	
     	ArrayList<SinglePayment> spList = new ArrayList<SinglePayment>();
@@ -99,6 +99,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport  implements 
     	mt102Model.setSent(true);
 		mt102Repository.save(mt102Model);
     	
+		System.out.println("sending mt102 with uuid:"+mt102.getMessageId());
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setClassesToBeBound(ProcessMT102Central.class, ProcessMT102ResponseCentral.class);
         setMarshaller(marshaller);
@@ -111,6 +112,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport  implements 
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processMt102Central);
 
         ProcessMT102ResponseCentral response = (ProcessMT102ResponseCentral)o;
+        System.out.println("mt102 sent....");
         return response.getReturn();
     }
 	

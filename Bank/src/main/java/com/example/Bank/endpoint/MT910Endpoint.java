@@ -23,9 +23,10 @@ public class MT910Endpoint {
     public ProcessMT910Response processMT910(@RequestPayload ProcessMT910 processMt910) {
         ProcessMT910Response response = new ProcessMT910Response();
         response.setReturn("test return mt910");
-        clearingService.processMt910(processMt910.getArg0());
         System.out.println("mt910 delivered....");
 
+        clearingService.processMt910(processMt910.getArg0());
+        
         return response;
     }
 }

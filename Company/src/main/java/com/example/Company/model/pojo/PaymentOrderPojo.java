@@ -1,6 +1,6 @@
 package com.example.Company.model.pojo;
 
-public class PaymentOrderModel {
+public class PaymentOrderPojo {
 
 	private Long invoiceId;
 	
@@ -8,7 +8,7 @@ public class PaymentOrderModel {
 	
 	private boolean urgent;
 	
-	public PaymentOrderModel(){}
+	public PaymentOrderPojo(){}
 
 	public Long getInvoiceId() {
 		return invoiceId;
