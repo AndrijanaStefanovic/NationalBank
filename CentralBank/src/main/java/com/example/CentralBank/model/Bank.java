@@ -88,5 +88,7 @@ public class Bank {
 		this.url = url;
 	}
 
-	
+	public void calculateAccountBalance(double sum) {
+		this.accountBalance += sum;
+	}
 }

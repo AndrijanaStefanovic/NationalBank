@@ -1,0 +1,111 @@
+<h1>Bank statement items</h1>
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<td><a data-ng-click="sortType = 'id'"> Bank statetement item id <span
+					data-ng-show="sortType == 'id'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'debtor'"> Debtor <span
+					data-ng-show="sortType == 'debtor'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'paymentPurpose'"> Payment purpose <span
+					data-ng-show="sortType == 'paymentPurpose'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'creditor'"> Creditor <span
+					data-ng-show="sortType == 'creditor'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'dateOfAccount'"> Date of account <span
+					data-ng-show="sortType == 'dateOfAccount'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'dateOfValue'"> Date of value <span
+					data-ng-show="sortType == 'dateOfValue'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'debtorAccount'"> Debtor account <span
+					data-ng-show="sortType == 'debtorAccount'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'debtorModel'"> Debtor model <span
+					data-ng-show="sortType == 'debtorModel'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'debtorReferenceNumber'"> Debtor reference number <span
+					data-ng-show="sortType == 'debtorReferenceNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'creditorAccount'"> Creditor account <span
+					data-ng-show="sortType == 'creditorAccount'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'creditorModel'"> Creditor model <span
+					data-ng-show="sortType == 'creditorModel'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'creditorReferenceNumber'"> Creditor reference number <span
+					data-ng-show="sortType == 'creditorReferenceNumber'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'amount'"> Amount <span
+					data-ng-show="sortType == 'amount'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'direction'"> Direction <span
+					data-ng-show="sortType == 'direction'" class="fa fa-caret-down"></span>
+			</a></td>
+			<td><a data-ng-click="sortType = 'bankStatement'"> Bank statement id<span
+					data-ng-show="sortType == 'bankStatement'" class="fa fa-caret-down"></span>
+			</a></td>
+			
+		</tr>
+	</thead>
+
+	<tbody>
+
+		<tr
+			data-ng-repeat="x in bankStatementItems | orderBy:sortType:sortReverse">
+			<td>{{x.id}}</td>
+			<td>{{x.debtor}}</td>
+			<td>{{x.paymentPurpose}}</td>
+			<td>{{x.creditor}}</td>
+			<td>{{x.dateOfAccount}}</td>
+			<td>{{x.dateOfValue}}</td>
+			<td>{{x.debtorAccount}}</td>
+			<td>{{x.debtorModel}}</td>
+			<td>{{x.debtorReferenceNumber}}</td>
+			<td>{{x.creditorAccount}}</td>
+			<td>{{x.creditorModel}}</td>
+			<td>{{x.creditorReferenceNumber}}</td>
+			<td>{{x.amount}}</td>
+			<td>{{x.direction}}</td>
+			<td>{{x.bankStatement.id}}</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#newBankStatementItemModal">New bank statement item</button>
+
+<div id="newBankStatementItemModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">New bank statement item</h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" placeholder="Debtor" data-ng-model="bankStatementItem.debtor"><br>
+				<input type="text" placeholder="Payment purpose" data-ng-model="bankStatementItem.paymentPurpose"><br>
+				<input type="text" placeholder="Creditor" data-ng-model="bankStatementItem.creditor"><br>
+				<input type="date" placeholder="Date of account" data-ng-model="bankStatementItem.dateOfAccount"><br>
+				<input type="date" placeholder="Date of value" data-ng-model="bankStatementItem.dateOfValue"><br>
+				<input type="text" placeholder="Debtor account" data-ng-model="bankStatementItem.debtorAccount"><br>
+				<input type="text" placeholder="Debtor model" data-ng-model="bankStatementItem.debtorModel"><br>
+				<input type="text" placeholder="Debtor reference number" data-ng-model="bankStatementItem.debtorReferenceNumber"><br>
+				<input type="text" placeholder="Creditor account" data-ng-model="bankStatementItem.creditorAccount"><br>
+				<input type="text" placeholder="Creditor model" data-ng-model="bankStatementItem.creditorModel"><br>
+				<input type="text" placeholder="Creditor reference number" data-ng-model="bankStatementItem.creditorReferenceNumber"><br>
+				<input type="text" placeholder="Amount" data-ng-model="bankStatementItem.amount"><br>
+				<input type="text" placeholder="Direction" data-ng-model="bankStatementItem.direction"><br>
+				<input type="text" placeholder="Bank statement" data-ng-model="bankStatementItem.bankStatement"><br>
+				<br>
+			</div>
+			<div class="modal-footer">
+				<button data-ng-click="submitBankStatementItem()" class="btn btn-primary">Create</button>
+				<input type="button" class="btn btn-primary" value="Cancel" data-dismiss="modal">
+			</div>
+		</div>
+	</div>
+</div>

@@ -27,29 +27,21 @@ public class RTGSEndpoint extends WebServiceGatewaySupport {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "processMT103")
 	@ResponsePayload
 	public ProcessMT103Response processMT103(@RequestPayload ProcessMT103 mt103) {
+		System.out.println("********************* obrada mt103 ************************");
 		System.out.println(mt103.getArg0().getMessageId());
 		ProcessMT103Response r = new ProcessMT103Response();
 		r.setReturn("test return mt103");
 		RTGSService.processMT103(mt103.getArg0());
+		System.out.println("processed mt103...");
+		RTGSService.sendMT900(mt103.getArg0()); //ok
+		System.out.println("sent mt900...");
+		RTGSService.forwardMT103(mt103.getArg0());
+		System.out.println("sent mt103...");
+		RTGSService.sendMT910(mt103.getArg0());
+		System.out.println("send mt910...done!");
+		
 
 		return r;
 	}
 
-	private void forwardMT103() {
-		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-		marshaller.setClassesToBeBound(ProcessMT103Normal.class, ProcessMT103ResponseNormal.class);
-		setMarshaller(marshaller);
-		setUnmarshaller(marshaller);
-
-		ProcessMT103Normal p = new ProcessMT103Normal();
-		Mt103 m = new Mt103();
-		m.setMessageId("testiram forward soap-a cb na normalnu banku");
-		p.setArg0(m);
-
-		String uri = "https://localhost:8080/ws/mt103";
-		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, p);
-		ProcessMT103ResponseNormal response = (ProcessMT103ResponseNormal)o;
-		System.out.println("**************************************");
-		System.out.println(response.getReturn());
-	}
 }

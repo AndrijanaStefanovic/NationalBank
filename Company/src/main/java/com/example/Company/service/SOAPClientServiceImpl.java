@@ -55,9 +55,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.w3c.dom.Document;
 
+import com.example.Company.model.BankStatement;
+import com.example.Company.model.BankStatementItem;
 import com.example.Company.model.BusinessPartner;
 import com.example.Company.model.Company;
 import com.example.Company.model.Invoice;
+import com.example.Company.repository.BankStatementRepository;
 import com.example.Company.model.PaymentOrderModel;
 import com.example.Company.model.pojo.PaymentOrderPojo;
 import com.example.Company.repository.BusinessPartnerRepository;
@@ -66,8 +69,11 @@ import com.example.Company.repository.InvoiceRepository;
 import com.example.Company.repository.PaymentOrderRepository;
 import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 import com.example.Company.service.XMLsecurity.KeyStoreReader;
+import com.example.Company.service.jaxws.ProcessBankStatementRequest;
+import com.example.Company.service.jaxws.ProcessBankStatementRequestResponse;
 import com.example.Company.service.jaxws.ProcessPaymentOrder;
 import com.example.Company.service.jaxws.ProcessPaymentOrderResponse;
+import com.example.service.bankstatementrequest.BankStatementRequest;
 import com.example.service.paymentorder.PaymentOrder;
 import com.example.service.paymentorder.TCompanyData;
 
@@ -84,6 +90,9 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	@Autowired
 	private BusinessPartnerRepository businessPartnerRepository;
 	
+	@Autowired
+	private BankStatementRepository bankStatementRepository;
+
 	@Autowired
 	private PaymentOrderRepository paymentOrderRepository;
 	
@@ -303,6 +312,45 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public String sendBankStatementRequest(BankStatementRequest bankStatementRequest) {
+		
+		bankStatementRequest.setSectionNumber(1); //ispraviti
+		
+		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+	    marshaller.setClassesToBeBound(ProcessBankStatementRequest.class, ProcessBankStatementRequestResponse.class);
+	    ProcessBankStatementRequest processBankStatementRequest = new ProcessBankStatementRequest();
+	    processBankStatementRequest.setArg0(bankStatementRequest);
+	    
+	    setMarshaller(marshaller);
+	    setUnmarshaller(marshaller);
+		String uri = "https://localhost:8080/ws/bankstatement";
+		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processBankStatementRequest);
+		ProcessBankStatementRequestResponse response = (ProcessBankStatementRequestResponse) o;
+		com.example.service.bankstatement.BankStatement bs = response.getReturn();
+		
+		BankStatement bankStatement = new BankStatement(bs.getAccountNumber(), bs.getSectionNumber(),
+				bs.getDate().toGregorianCalendar().getTime(), bs.getPreviousBalance().doubleValue(), 
+				bs.getNumberOfDeposits(), bs.getTotalDeposited().doubleValue(), bs.getNumberOfWithdrawals(), 
+				bs.getTotalWithdrawn().doubleValue(), bs.getNewBalance().doubleValue());
+		
+		ArrayList<BankStatementItem> bankStatementItems = new ArrayList<BankStatementItem>();
+		for (com.example.service.bankstatement.BankStatement.BankStatementItem bsi : bs.getBankStatementItem()) {
+			BankStatementItem bankStatementItem = new BankStatementItem(bsi.getDebtor().getInfo(), bsi.getPaymentPurpose(),
+					bsi.getCreditor().getInfo(), bsi.getDateOfPayment().toGregorianCalendar().getTime(), 
+					bsi.getDateOfValue().toGregorianCalendar().getTime(), bsi.getDebtor().getAccountNumber(), bsi.getDebtor().getModel(),
+					bsi.getDebtor().getReferenceNumber(), bsi.getCreditor().getAccountNumber(), bsi.getCreditor().getModel(), 
+					bsi.getCreditor().getReferenceNumber(), bsi.getTotal().doubleValue(), bsi.getDirection(), bankStatement);
+			bankStatementItems.add(bankStatementItem);
+		}
+		
+		bankStatement.setBankStatementItems(bankStatementItems);
+		
+		bankStatementRepository.save(bankStatement);
+				
+		return "OK";
 	}
 
 	

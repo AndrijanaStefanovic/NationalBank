@@ -1,11 +1,15 @@
 package com.example.Company.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class BankStatement {
@@ -40,16 +44,19 @@ public class BankStatement {
 
 	@Column
 	private double newBalance;
+	
+	@JsonIgnore
+	@OneToMany
+	private List<BankStatementItem> bankStatementItems;
 
 	public BankStatement() {
 
 	}
 
-	public BankStatement(Long id, String accountNumber, int sectionNumber, Date date, double previousBalance,
+	public BankStatement(String accountNumber, int sectionNumber, Date date, double previousBalance,
 			int numberOfDeposits, double totalDeposited, int numberOfWithdrawals, double totalWithdrawn,
 			double newBalance) {
 		super();
-		this.id = id;
 		this.accountNumber = accountNumber;
 		this.sectionNumber = sectionNumber;
 		this.date = date;
@@ -59,6 +66,7 @@ public class BankStatement {
 		this.numberOfWithdrawals = numberOfWithdrawals;
 		this.totalWithdrawn = totalWithdrawn;
 		this.newBalance = newBalance;
+		this.bankStatementItems = bankStatementItems;
 	}
 
 	public Long getId() {
@@ -139,6 +147,14 @@ public class BankStatement {
 
 	public void setNewBalance(double newBalance) {
 		this.newBalance = newBalance;
+	}
+
+	public List<BankStatementItem> getBankStatementItems() {
+		return bankStatementItems;
+	}
+
+	public void setBankStatementItems(List<BankStatementItem> bankStatementItems) {
+		this.bankStatementItems = bankStatementItems;
 	}
 
 }
