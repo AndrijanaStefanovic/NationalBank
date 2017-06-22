@@ -11,6 +11,7 @@ bankStatementModule.controller('bankStatementController', ['$scope','$location',
 	    	.then(function mySuccess(response) {
 	    		if(response.data == "200"){
 		    		toastr.success("Created!");
+		    		$window.location.reaload();
 		    	}
 	    }, function myError(response) {
 	    	alert(response.statusText);

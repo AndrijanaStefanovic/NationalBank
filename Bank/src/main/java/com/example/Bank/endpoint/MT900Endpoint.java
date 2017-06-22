@@ -29,7 +29,7 @@ public class MT900Endpoint {
         ProcessMT900Response response = new ProcessMT900Response();
         Mt900 mt900 = processMt900.getArg0();
         System.out.println("received mt900...");
-        if (mt900.getOrderMessageId().equals("MT103")) {
+        if (mt900.getOrderMessageId().equals("MT103")) { //mt103 je za rtgs, a mt102 za clearing
         	 response.setReturn(rtgsService.processMT900(mt900));
         }
         else {

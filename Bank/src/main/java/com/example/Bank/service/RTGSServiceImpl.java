@@ -51,10 +51,10 @@ public class RTGSServiceImpl implements RTGSService {
 		System.out.println("processing mt900...");
 		List<Mt103Model> mt103List = mt103ModelRepository.findByMessageId(mt900.getMessageId());
 		if (mt103List.isEmpty()) {
-			return "mt102NotFound";
+			return "mt103NotFound";
 		}
 		Mt103Model mt103 = mt103List.get(0);
-		System.out.println("found mt102...");
+		System.out.println("found mt103...");
 
 		List<Account> accounts = accountRepository.findByAccountNumber(mt103.getDebtorAccountNumber());
 		if (accounts.isEmpty()) {

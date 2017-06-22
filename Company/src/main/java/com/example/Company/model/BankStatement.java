@@ -46,7 +46,7 @@ public class BankStatement {
 	private double newBalance;
 	
 	@JsonIgnore
-	@OneToMany
+	@OneToMany(mappedBy = "bankStatement")
 	private List<BankStatementItem> bankStatementItems;
 
 	public BankStatement() {

@@ -555,4 +555,9 @@ public class BankStatement {
 
     }
 
+
+	public void setBankStatementItem(List<BankStatement.BankStatementItem> bankStatementItem) {
+		this.bankStatementItem = bankStatementItem;
+	}
+
 }

@@ -60,9 +60,10 @@ import com.example.Company.model.BankStatementItem;
 import com.example.Company.model.BusinessPartner;
 import com.example.Company.model.Company;
 import com.example.Company.model.Invoice;
-import com.example.Company.repository.BankStatementRepository;
 import com.example.Company.model.PaymentOrderModel;
 import com.example.Company.model.pojo.PaymentOrderPojo;
+import com.example.Company.repository.BankStatementItemRepository;
+import com.example.Company.repository.BankStatementRepository;
 import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.CompanyRepository;
 import com.example.Company.repository.InvoiceRepository;
@@ -83,31 +84,33 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	private String tempKey;
 	@Autowired
 	private InvoiceRepository invoiceRepository;
-	
+
 	@Autowired
 	private CompanyRepository companyRepository;
-	
+
 	@Autowired
 	private BusinessPartnerRepository businessPartnerRepository;
-	
+
 	@Autowired
 	private BankStatementRepository bankStatementRepository;
 
 	@Autowired
 	private PaymentOrderRepository paymentOrderRepository;
 	
+	@Autowired
+	private BankStatementItemRepository bankStatementItemRepository;
+
 	@Override
 	public String sendPaymentOrder(PaymentOrderPojo paymentOrderModel) {
-		
-		
+
 		Invoice invoice = invoiceRepository.findOne(paymentOrderModel.getInvoiceId());
 		double totalDue = invoice.getTotalDue() - paymentOrderModel.getAmount();
-		if(totalDue < 0){
+		if (totalDue < 0) {
 			totalDue = 0;
 		}
 		invoice.setTotalDue(totalDue);
 		invoiceRepository.save(invoice);
-		
+
 		PaymentOrder paymentOrder = new PaymentOrder();
 		paymentOrder.setAmount(new BigDecimal(paymentOrderModel.getAmount()));
 		paymentOrder.setUrgent(paymentOrderModel.getUrgent());
@@ -125,59 +128,51 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 		} catch (DatatypeConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		List<Company> debtorList = companyRepository.findByCompanyPIB(invoice.getBuyerPIB());
-		if(debtorList.isEmpty()){
+		if (debtorList.isEmpty()) {
 			return "CompanyPIBError";
 		}
 		List<BusinessPartner> creditorList = businessPartnerRepository.findByPartnerPIB(invoice.getSupplierPIB());
-		if(creditorList.isEmpty()){
+		if (creditorList.isEmpty()) {
 			return "BusinessPartnerPIBError";
 		}
 		Company debtor = debtorList.get(0);
-		BusinessPartner creditor =  creditorList.get(0);
-		
+		BusinessPartner creditor = creditorList.get(0);
+
 		TCompanyData debtorData = new TCompanyData();
 		debtorData.setInfo(debtor.getName() + " " + debtor.getCompanyAddress());
 		debtorData.setAccountNumber(debtor.getCompanyAccount());
 		debtorData.setModel(Integer.parseInt(debtor.getModel()));
 		debtorData.setReferenceNumber(debtor.getReferenceNumber());
-		
+
 		TCompanyData creditorData = new TCompanyData();
 		creditorData.setInfo(creditor.getName() + " " + creditor.getPartnerAddress());
 		creditorData.setAccountNumber(creditor.getPartnerAccount());
 		creditorData.setModel(Integer.parseInt(creditor.getModel()));
 		creditorData.setReferenceNumber(creditor.getReferenceNumber());
-		
+
 		paymentOrder.setCreditor(creditorData);
 		paymentOrder.setDebtor(debtorData);
-		
+
 		ProcessPaymentOrder ppo = new ProcessPaymentOrder();
 		ppo.setArg0(paymentOrder);
-		
+
 		sendSessionKey();
-		
+
 		PaymentOrderModel paymentOrderDB = new PaymentOrderModel(debtor.getCompanyAccount(),
-				debtor.getReferenceNumber(),
-				debtor.getName(),
-				Integer.parseInt(debtor.getModel()), 
-				creditor.getPartnerAccount(), 
-				creditor.getReferenceNumber(), 
-				creditor.getName(), 
-				Integer.parseInt(creditor.getModel()),
-				invoice.getDateOfValue(), 
-				new Date(), 
-				"Payment based on an invoice",
-				paymentOrderModel.getAmount(), 
-				invoice.getCurrency(), 
+				debtor.getReferenceNumber(), debtor.getName(), Integer.parseInt(debtor.getModel()),
+				creditor.getPartnerAccount(), creditor.getReferenceNumber(), creditor.getName(),
+				Integer.parseInt(creditor.getModel()), invoice.getDateOfValue(), new Date(),
+				"Payment based on an invoice", paymentOrderModel.getAmount(), invoice.getCurrency(),
 				paymentOrderModel.getUrgent());
-		
+
 		paymentOrderRepository.save(paymentOrderDB);
-		
+
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-	    marshaller.setClassesToBeBound(ProcessPaymentOrder.class, ProcessPaymentOrderResponse.class);
-	    setMarshaller(marshaller);
-	    setUnmarshaller(marshaller);
+		marshaller.setClassesToBeBound(ProcessPaymentOrder.class, ProcessPaymentOrderResponse.class);
+		setMarshaller(marshaller);
+		setUnmarshaller(marshaller);
 		ppo = signWithCert(ppo);
 		String uri = debtor.getBankUrl();
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, ppo);
@@ -187,54 +182,54 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 
 	@Override
 	public void sendSessionKey() {
-		 URL url1;
-			try {
-				String encodedKey = Base64.getEncoder().encodeToString(generateAndEncryptSessionKey());
-				url1 = new URL("https://localhost:8080/bank/receiveKey");
-				HttpURLConnection conn1 = (HttpURLConnection) url1.openConnection();
-				conn1.setDoOutput(true);
-				conn1.setUseCaches( false );
-				conn1.setRequestMethod("POST");
-				conn1.setRequestProperty("Content-Type", "application/json");
-		        conn1.setRequestProperty( "charset", "utf-8");
-		        OutputStream os1 = conn1.getOutputStream();
-				os1.write(encodedKey.getBytes());
-				os1.close();
-				
-				if (conn1.getResponseCode() != HttpURLConnection.HTTP_OK) {
-					throw new RuntimeException("Failed : HTTP error code : " + conn1.getResponseCode());
-				}
+		URL url1;
+		try {
+			String encodedKey = Base64.getEncoder().encodeToString(generateAndEncryptSessionKey());
+			url1 = new URL("https://localhost:8080/bank/receiveKey");
+			HttpURLConnection conn1 = (HttpURLConnection) url1.openConnection();
+			conn1.setDoOutput(true);
+			conn1.setUseCaches(false);
+			conn1.setRequestMethod("POST");
+			conn1.setRequestProperty("Content-Type", "application/json");
+			conn1.setRequestProperty("charset", "utf-8");
+			OutputStream os1 = conn1.getOutputStream();
+			os1.write(encodedKey.getBytes());
+			os1.close();
 
-				BufferedReader br1 = new BufferedReader(new InputStreamReader((conn1.getInputStream())));
-
-				String output1;
-				System.out.println("Output from Server .... \n");
-				while ((output1 = br1.readLine()) != null) {
-					System.out.println(output1);
-				}
-				conn1.disconnect();
-			} catch (MalformedURLException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			if (conn1.getResponseCode() != HttpURLConnection.HTTP_OK) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn1.getResponseCode());
 			}
+
+			BufferedReader br1 = new BufferedReader(new InputStreamReader((conn1.getInputStream())));
+
+			String output1;
+			System.out.println("Output from Server .... \n");
+			while ((output1 = br1.readLine()) != null) {
+				System.out.println(output1);
+			}
+			conn1.disconnect();
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
-	
+
 	@Override
 	public byte[] generateAndEncryptSessionKey() {
-		KeyStoreReader ksReader = new KeyStoreReader();		
+		KeyStoreReader ksReader = new KeyStoreReader();
 		PublicKey bankPublicKey = ksReader.readCertificate("bank.p12", "tomcat", "tomcat").getPublicKey();
-		
+
 		KeyGenerator keyGen;
 		try {
-			//generate session key
+			// generate session key
 			keyGen = KeyGenerator.getInstance("AES");
 			keyGen.init(192);
 			SecretKey secretKey = keyGen.generateKey();
 			String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
 			EncryptedStringXmlAdapter.setKey(encodedKey);
 			tempKey = encodedKey;
-			Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");   
+			Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
 			cipher.init(Cipher.ENCRYPT_MODE, bankPublicKey);
 			byte[] cipherBytes = cipher.doFinal(secretKey.getEncoded());
 			return cipherBytes;
@@ -248,10 +243,10 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 			e.printStackTrace();
 		} catch (BadPaddingException e) {
 			e.printStackTrace();
-		} 
+		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ProcessPaymentOrder signWithCert(ProcessPaymentOrder ppo) {
@@ -304,11 +299,10 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 			ProcessPaymentOrder ret = (ProcessPaymentOrder) jc.createUnmarshaller().unmarshal(source);
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			marshaller.marshal(ret, System.out);
-			
+
 			return ret;
 
-			
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -316,47 +310,57 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 
 	@Override
 	public String sendBankStatementRequest(BankStatementRequest bankStatementRequest) {
-		
-		bankStatementRequest.setSectionNumber(1); //ispraviti
-		
-		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-	    marshaller.setClassesToBeBound(ProcessBankStatementRequest.class, ProcessBankStatementRequestResponse.class);
-	    ProcessBankStatementRequest processBankStatementRequest = new ProcessBankStatementRequest();
-	    processBankStatementRequest.setArg0(bankStatementRequest);
-	    
-	    setMarshaller(marshaller);
-	    setUnmarshaller(marshaller);
-		String uri = "https://localhost:8080/ws/bankstatement";
-		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processBankStatementRequest);
-		ProcessBankStatementRequestResponse response = (ProcessBankStatementRequestResponse) o;
-		com.example.service.bankstatement.BankStatement bs = response.getReturn();
-		
-		BankStatement bankStatement = new BankStatement(bs.getAccountNumber(), bs.getSectionNumber(),
-				bs.getDate().toGregorianCalendar().getTime(), bs.getPreviousBalance().doubleValue(), 
-				bs.getNumberOfDeposits(), bs.getTotalDeposited().doubleValue(), bs.getNumberOfWithdrawals(), 
-				bs.getTotalWithdrawn().doubleValue(), bs.getNewBalance().doubleValue());
-		
-		ArrayList<BankStatementItem> bankStatementItems = new ArrayList<BankStatementItem>();
-		for (com.example.service.bankstatement.BankStatement.BankStatementItem bsi : bs.getBankStatementItem()) {
-			BankStatementItem bankStatementItem = new BankStatementItem(bsi.getDebtor().getInfo(), bsi.getPaymentPurpose(),
-					bsi.getCreditor().getInfo(), bsi.getDateOfPayment().toGregorianCalendar().getTime(), 
-					bsi.getDateOfValue().toGregorianCalendar().getTime(), bsi.getDebtor().getAccountNumber(), bsi.getDebtor().getModel(),
-					bsi.getDebtor().getReferenceNumber(), bsi.getCreditor().getAccountNumber(), bsi.getCreditor().getModel(), 
-					bsi.getCreditor().getReferenceNumber(), bsi.getTotal().doubleValue(), bsi.getDirection(), bankStatement);
-			bankStatementItems.add(bankStatementItem);
+
+		int sectionNumber = 1;
+
+		while (true) {
+			
+			bankStatementRequest.setSectionNumber(sectionNumber);
+
+			Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+			marshaller.setClassesToBeBound(ProcessBankStatementRequest.class,
+					ProcessBankStatementRequestResponse.class);
+			ProcessBankStatementRequest processBankStatementRequest = new ProcessBankStatementRequest();
+			processBankStatementRequest.setArg0(bankStatementRequest);
+
+			setMarshaller(marshaller);
+			setUnmarshaller(marshaller);
+			String uri = "https://localhost:8080/ws/bankstatement";
+			Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processBankStatementRequest);
+			ProcessBankStatementRequestResponse response = (ProcessBankStatementRequestResponse) o;
+			com.example.service.bankstatement.BankStatement bs = response.getReturn();
+			
+			if (bs.getBankStatementItem().isEmpty()) {
+				break;
+			}
+
+			BankStatement bankStatement = new BankStatement(bs.getAccountNumber(), bs.getSectionNumber(),
+					bs.getDate().toGregorianCalendar().getTime(), bs.getPreviousBalance().doubleValue(),
+					bs.getNumberOfDeposits(), bs.getTotalDeposited().doubleValue(), bs.getNumberOfWithdrawals(),
+					bs.getTotalWithdrawn().doubleValue(), bs.getNewBalance().doubleValue());
+			bankStatementRepository.save(bankStatement);
+			ArrayList<BankStatementItem> bankStatementItems = new ArrayList<BankStatementItem>();
+			for (com.example.service.bankstatement.BankStatement.BankStatementItem bsi : bs.getBankStatementItem()) {
+				BankStatementItem bankStatementItem = new BankStatementItem(bsi.getDebtor().getInfo(),
+						bsi.getPaymentPurpose(), bsi.getCreditor().getInfo(),
+						bsi.getDateOfPayment().toGregorianCalendar().getTime(),
+						bsi.getDateOfValue().toGregorianCalendar().getTime(), bsi.getDebtor().getAccountNumber(),
+						bsi.getDebtor().getModel(), bsi.getDebtor().getReferenceNumber(),
+						bsi.getCreditor().getAccountNumber(), bsi.getCreditor().getModel(),
+						bsi.getCreditor().getReferenceNumber(), bsi.getTotal().doubleValue(), bsi.getDirection(),
+						bankStatement);
+				bankStatementItemRepository.save(bankStatementItem);
+				bankStatementItems.add(bankStatementItem);		
+			}
+			
+			bankStatement.setBankStatementItems(bankStatementItems);
+			
+			bankStatementRepository.save(bankStatement);
+			
+			sectionNumber++;
 		}
-		
-		bankStatement.setBankStatementItems(bankStatementItems);
-		
-		bankStatementRepository.save(bankStatement);
-				
+
 		return "OK";
 	}
-
-	
-
-
-	
-	
 
 }
