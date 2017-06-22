@@ -1,9 +1,16 @@
 package com.example.Bank.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,13 +20,19 @@ import com.example.Bank.model.AccountAnalytics;
 import com.example.Bank.model.Bank;
 import com.example.Bank.model.DailyAccountBalance;
 import com.example.Bank.model.Mt102Model;
+import com.example.Bank.model.Mt103Model;
 import com.example.Bank.model.SinglePaymentModel;
 import com.example.Bank.repository.AccountAnalyticsRepository;
 import com.example.Bank.repository.AccountRepository;
 import com.example.Bank.repository.BankRepository;
 import com.example.Bank.repository.DailyAccountBalanceRepository;
 import com.example.Bank.repository.Mt102Repository;
+import com.example.Bank.repository.Mt103ModelRepository;
 import com.example.Bank.repository.SinglePaymentRepository;
+import com.example.service.bankstatement.BankStatement;
+import com.example.service.bankstatement.BankStatement.BankStatementItem;
+import com.example.service.bankstatement.TCompanyData;
+import com.example.service.bankstatementrequest.BankStatementRequest;
 import com.example.service.mt103.Mt103;
 import com.example.service.mt103.TBankData;
 import com.example.service.paymentorder.PaymentOrder;
@@ -44,6 +57,9 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private Mt102Repository mt102Repository;
+	
+	@Autowired
+	private Mt103ModelRepository mt103ModelRepository;
 	
 	@Override
 	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder, boolean isClearing) {
@@ -223,7 +239,7 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public Mt103 createMT103(PaymentOrder paymentOrder) {
 		Mt103 mt103 = new Mt103();
-		mt103.setMessageId("?");
+		mt103.setMessageId(UUID.randomUUID().toString());
 		mt103.setDateOfPayment(paymentOrder.getDateOfPayment());
 		mt103.setDateOfValue(paymentOrder.getDateOfValue());
 		
@@ -269,6 +285,10 @@ public class PaymentServiceImpl implements PaymentService {
 		mt103.setCurrency(paymentOrder.getCurrency());
 		mt103.setPaymentPurpose(paymentOrder.getPaymentPurpose());
 		mt103.setTotal(paymentOrder.getAmount());
+		System.out.println("kreirao mt103");
+		Mt103Model mt103Model = new Mt103Model(mt103);
+		mt103ModelRepository.save(mt103Model);
+		
 		return mt103;
 	}
 
@@ -377,6 +397,114 @@ public class PaymentServiceImpl implements PaymentService {
 			return "bankNotFound";
 		}
 		return banks.get(0).getSWIFTcode();
+	}
+
+	@Override
+	public BankStatement getBankStatement(BankStatementRequest bankStatementRequest) {
+		System.out.println(bankStatementRequest.getDate().toGregorianCalendar().getTime());
+		System.out.println(bankStatementRequest.getAccountNumber());
+		List<Account> accounts = accountRepository.findByAccountNumber(bankStatementRequest.getAccountNumber());
+		if (accounts.isEmpty()) {
+			System.out.println("Nalog nije pronadjen");
+			return null;
+		}
+		Account account = accounts.get(0);
+		
+		Date bsrDate = bankStatementRequest.getDate().toGregorianCalendar().getTime();
+		Calendar calendar = Calendar.getInstance();
+        calendar.setTime(bsrDate);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR, 0);
+        bsrDate = calendar.getTime();
+        
+        BankStatement bankStatement = new BankStatement();
+        
+        double totalWidrawn = 0;
+        double totalDeposited = 0;
+        boolean foundDab = false;
+        ArrayList<BankStatementItem> bankStatementItems = new ArrayList<BankStatementItem>();
+		for (DailyAccountBalance dab : account.getDailyAccountBalances()) {
+			Date dabDate = dab.getDate();
+			calendar.setTime(dabDate);
+	        calendar.set(Calendar.MILLISECOND, 0);
+	        calendar.set(Calendar.SECOND, 0);
+	        calendar.set(Calendar.MINUTE, 0);
+	        calendar.set(Calendar.HOUR, 0);
+	        dabDate = calendar.getTime();
+	        if (dabDate.equals(bsrDate)) {
+	        	System.out.println("found dab...");
+	        	foundDab = true;
+	        	for (AccountAnalytics accountAnalytic : dab.getAccountAnalytics()) {
+	        		BankStatementItem bankStatementItem = new BankStatementItem();
+	        		
+	        		com.example.service.bankstatement.TCompanyData creditorData =  new com.example.service.bankstatement.TCompanyData();
+	        		creditorData.setAccountNumber(accountAnalytic.getCreditorsAccountNumber());
+	        		creditorData.setInfo(accountAnalytic.getCreditor());
+	        		creditorData.setModel(accountAnalytic.getCreditorsModel());
+	        		creditorData.setReferenceNumber(accountAnalytic.getCreditorsReferenceNumber());
+	        		
+	        		com.example.service.bankstatement.TCompanyData debtorData =  new com.example.service.bankstatement.TCompanyData();
+	        		debtorData.setAccountNumber(accountAnalytic.getDebtorsAccountNumber());
+	        		debtorData.setInfo(accountAnalytic.getDebtor());
+	        		debtorData.setModel(accountAnalytic.getDebtorsModel());
+	        		debtorData.setReferenceNumber(accountAnalytic.getDebtorsReferenceNumber());
+	        		
+	        		GregorianCalendar c = new GregorianCalendar();
+	        		c.setTime(accountAnalytic.getDateOfPaymentOrder());
+	        		XMLGregorianCalendar dateOfPayment;
+					try {
+						dateOfPayment = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+						bankStatementItem.setDateOfPayment(dateOfPayment);
+					} catch (DatatypeConfigurationException e1) {
+						e1.printStackTrace();
+					}
+	        		c.setTime(accountAnalytic.getDateOfValue());
+	        		XMLGregorianCalendar dateOfValue;
+					try {
+						dateOfValue = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+						bankStatementItem.setDateOfValue(dateOfValue);
+					} catch (DatatypeConfigurationException e) {
+						e.printStackTrace();
+					}
+	        		
+	        		
+	        		bankStatementItem.setCreditor(creditorData);
+	        		bankStatementItem.setDebtor(debtorData);
+	        		bankStatementItem.setDirection(accountAnalytic.isReceived() ? "i" : "o");
+	        		bankStatementItem.setPaymentPurpose("Payment based on an invoice");
+	        		bankStatementItem.setTotal(new BigDecimal(accountAnalytic.getAmount()));
+	        		
+	        		if (accountAnalytic.isReceived()) {
+	        			totalDeposited += accountAnalytic.getAmount();
+	        		}
+	        		else {
+	        			totalWidrawn += accountAnalytic.getAmount();
+	        		}
+	        		
+	        		bankStatementItems.add(bankStatementItem);
+				}
+	        	bankStatement.setNewBalance(new BigDecimal(dab.getNewBalance()));
+	        	bankStatement.setNumberOfDeposits(dab.getNumberOfDeposits());
+	    		bankStatement.setNumberOfWithdrawals(dab.getNumberOfWithdrawals());
+	    		bankStatement.setPreviousBalance(new BigDecimal(dab.getPreviousBalance()));
+	        }
+		}
+		
+		bankStatement.setAccountNumber(bankStatementRequest.getAccountNumber());
+		bankStatement.setDate(bankStatementRequest.getDate());		
+		bankStatement.setSectionNumber(bankStatementRequest.getSectionNumber());
+		bankStatement.setTotalDeposited(new BigDecimal(totalDeposited));
+		bankStatement.setTotalWithdrawn(new BigDecimal(totalWidrawn));
+		bankStatement.setDate(bankStatementRequest.getDate());
+		if(!foundDab){
+			bankStatement.setNewBalance(new BigDecimal(account.getBalance()));
+        	bankStatement.setNumberOfDeposits(0);
+    		bankStatement.setNumberOfWithdrawals(0);
+    		bankStatement.setPreviousBalance(new BigDecimal(account.getBalance()));
+		}
+		return bankStatement;
 	}
 
 	

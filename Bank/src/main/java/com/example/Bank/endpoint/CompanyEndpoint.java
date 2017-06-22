@@ -17,6 +17,7 @@ import com.example.Bank.service.jaxws.ProcessBankStatementRequestResponse;
 import com.example.Bank.service.jaxws.ProcessPaymentOrder;
 import com.example.Bank.service.jaxws.ProcessPaymentOrderResponse;
 import com.example.service.bankstatement.BankStatement;
+import com.example.service.bankstatementrequest.BankStatementRequest;
 import com.example.service.mt103.Mt103;
 import com.example.service.paymentorder.PaymentOrder;
 
@@ -37,10 +38,11 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 	@ResponsePayload
 	public ProcessBankStatementRequestResponse processBankStatementRequest(@RequestPayload ProcessBankStatementRequest request) {
 		ProcessBankStatementRequestResponse response = new ProcessBankStatementRequestResponse();
-		request.getArg0();
-		BankStatement bs = new BankStatement();
-		bs.setAccountNumber("1234");
-		response.setReturn(bs);
+		BankStatementRequest bankStatementRequest = request.getArg0();
+		System.out.println("stigao zahtev....");
+		BankStatement bankStatement = paymentService.getBankStatement(bankStatementRequest);
+		System.out.println("napravio izvod...");
+		response.setReturn(bankStatement);
 		return response;
 	}
 	
@@ -61,10 +63,10 @@ public class CompanyEndpoint extends WebServiceGatewaySupport {
 			code = paymentService.createCreditorAccountAnalytics(paymentOrder);
 		} else {
 			if(paymentOrder.isUrgent() || paymentOrder.getAmount().compareTo(new BigDecimal(250000)) == 1){
-				code = paymentService.createDebtorAccountAnalytics(paymentOrder, false);
+				code = paymentService.createDebtorAccountAnalytics(paymentOrder, true);
 				System.out.println("****************rtgs******************");
 				Mt103 mt103 = paymentService.createMT103(paymentOrder);
-				//System.out.println(clientService.sendMt103(mt103));
+				System.out.println(SOAPClientService.sendMt103(mt103));
 			} else {
 				code = paymentService.createDebtorAccountAnalytics(paymentOrder, true);
 				System.out.println("******************clearing**********************");
