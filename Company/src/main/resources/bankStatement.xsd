@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
+    vc:minVersion="1.1" targetNamespace="http://service.example.com/bankStatement"
+    xmlns:bs="http://service.example.com/bankStatement">
+    <xs:simpleType name="T_accountNumber">
+        <xs:restriction base="xs:string">
+            <xs:length value="18"/>
+            <xs:pattern value="\d{3}-\d{13}-\d{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="T_sectionNumber">
+        <xs:restriction base="xs:int">
+            <xs:totalDigits value="2"/>
+            <xs:minExclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="T_decimal152">
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="17"/>
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="T_changes">
+        <xs:restriction base="xs:int">
+            <xs:totalDigits value="6"/>
+            <xs:minExclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="T_string255">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="bankStatement">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="accountNumber" type="bs:T_accountNumber"/>
+                <xs:element name="date" type="xs:date"/>
+                <xs:element name="sectionNumber" type="bs:T_sectionNumber"/>
+                <xs:element name="previousBalance" type="bs:T_decimal152"/>
+                <xs:element name="numberOfDeposits" type="bs:T_changes"/>
+                <xs:element name="totalDeposited" type="bs:T_decimal152"/>
+                <xs:element name="numberOfWithdrawals" type="bs:T_changes"/>
+                <xs:element name="totalWithdrawn" type="bs:T_decimal152"/>
+                <xs:element name="newBalance" type="bs:T_decimal152"/>
+                <xs:element name="bankStatementItem" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="debtor" type="bs:T_companyData"/>
+                            <xs:element name="creditor" type="bs:T_companyData"/>
+                            <xs:element name="paymentPurpose" type="bs:T_string255"/>
+                            <xs:element name="dateOfPayment" type="xs:date"/>
+                            <xs:element name="dateOfValue" type="xs:date"/>
+                            <xs:element name="total" type="bs:T_decimal152"/>
+                            <xs:element name="direction">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:length value="1"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="T_companyData">
+        <xs:sequence>
+            <xs:element name="info" type="bs:T_string255"/>
+            <xs:element name="accountNumber" type="bs:T_accountNumber"/>
+            <xs:element name="model">
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:totalDigits value="2"/>
+                        <xs:minExclusive value="9"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="referenceNumber">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:maxLength value="20"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
