@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Company.model.BankStatement;
 import com.example.Company.service.BankStatementService;
+import com.example.service.bankstatementrequest.BankStatementRequest;
 
 @RestController
 public class BankStatementController {
@@ -24,8 +25,8 @@ public class BankStatementController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
 			)
-	public String createBankStatement(@RequestBody BankStatement bankStatement) {
-		return bankStatementService.createBankStatement(bankStatement);
+	public String createBankStatementRequest(@RequestBody BankStatementRequest bankStatementRequest) {
+		return bankStatementService.createBankStatementRequest(bankStatementRequest);
 	}
 	
 	@RequestMapping(

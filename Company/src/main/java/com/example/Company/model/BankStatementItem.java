@@ -53,7 +53,7 @@ public class BankStatementItem {
 	private double amount;
 	
 	@Column 
-	private boolean direction;
+	private String direction;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private BankStatement bankStatement;
@@ -62,12 +62,11 @@ public class BankStatementItem {
 		
 	}
 
-	public BankStatementItem(long id, String debtor, String paymentPurpose, String creditor, Date dateOfAccount,
+	public BankStatementItem(String debtor, String paymentPurpose, String creditor, Date dateOfAccount,
 			Date dateOfValue, String debtorAccount, int debtorModel, String debtorReferenceNumber,
 			String creditorAccount, int creditorModel, String creditorReferenceNumber, double amount,
-			boolean direction, BankStatement bankStatement) {
+			String direction, BankStatement bankStatement) {
 		super();
-		this.id = id;
 		this.debtor = debtor;
 		this.paymentPurpose = paymentPurpose;
 		this.creditor = creditor;
@@ -188,11 +187,11 @@ public class BankStatementItem {
 		this.amount = amount;
 	}
 
-	public boolean isDirection() {
+	public String isDirection() {
 		return direction;
 	}
 
-	public void setDirection(boolean direction) {
+	public void setDirection(String direction) {
 		this.direction = direction;
 	}
 

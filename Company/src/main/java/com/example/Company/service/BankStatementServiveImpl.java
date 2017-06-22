@@ -7,17 +7,20 @@ import org.springframework.stereotype.Service;
 
 import com.example.Company.model.BankStatement;
 import com.example.Company.repository.BankStatementRepository;
+import com.example.service.bankstatementrequest.BankStatementRequest;
 
 @Service
 public class BankStatementServiveImpl implements BankStatementService {
 	
 	@Autowired
 	private BankStatementRepository bankStatementRepository;
+	
+	@Autowired
+	private SOAPClientServiceImpl SOAPClientService;
 
 	@Override
-	public String createBankStatement(BankStatement bankStatement) {
-		bankStatementRepository.save(bankStatement);
-		return "200";
+	public String createBankStatementRequest(BankStatementRequest bankStatementRequest) {
+		return SOAPClientService.sendBankStatementRequest(bankStatementRequest);
 	}
 
 	@Override

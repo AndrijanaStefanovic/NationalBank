@@ -7,7 +7,7 @@ bankStatementModule.controller('bankStatementController', ['$scope','$location',
 	
 	$scope.submitBankStatement = function () { 
 		
-		$http.post('bankStatement/create', $scope.bankStatement)
+		$http.post('bankStatement/create', $scope.bankStatementRequest)
 	    	.then(function mySuccess(response) {
 	    		if(response.data == "200"){
 		    		toastr.success("Created!");
