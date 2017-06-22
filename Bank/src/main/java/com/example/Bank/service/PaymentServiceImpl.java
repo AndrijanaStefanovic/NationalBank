@@ -31,7 +31,6 @@ import com.example.Bank.repository.Mt103ModelRepository;
 import com.example.Bank.repository.SinglePaymentRepository;
 import com.example.service.bankstatement.BankStatement;
 import com.example.service.bankstatement.BankStatement.BankStatementItem;
-import com.example.service.bankstatement.TCompanyData;
 import com.example.service.bankstatementrequest.BankStatementRequest;
 import com.example.service.mt103.Mt103;
 import com.example.service.mt103.TBankData;
@@ -295,7 +294,8 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public String createMT102Model(PaymentOrder paymentOrder, SinglePaymentModel singlePaymentModel) {
 		Mt102Model mt102 = new Mt102Model();
-		mt102.setMessageId("?");
+		mt102.setMessageId(UUID.randomUUID().toString());
+		System.out.println("creating mt102 with uuid:"+mt102.getMessageId());
 		mt102.setDateOfPayment(paymentOrder.getDateOfPayment().toGregorianCalendar().getTime());
 		mt102.setDateOfValue(paymentOrder.getDateOfValue().toGregorianCalendar().getTime());
 		List<Account> debtorList = accountRepository.findByAccountNumber(paymentOrder.getDebtor().getAccountNumber());
@@ -323,6 +323,7 @@ public class PaymentServiceImpl implements PaymentService {
 		singlePaymentModel.setMt102(mt102);
 		mt102Repository.save(mt102);
 		singlePaymentRepository.save(singlePaymentModel);
+		System.out.println("created mt102...");
 		return "OK";
 	}
 

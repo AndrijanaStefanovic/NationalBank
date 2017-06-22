@@ -60,11 +60,13 @@ import com.example.Company.model.BankStatementItem;
 import com.example.Company.model.BusinessPartner;
 import com.example.Company.model.Company;
 import com.example.Company.model.Invoice;
-import com.example.Company.model.pojo.PaymentOrderModel;
 import com.example.Company.repository.BankStatementRepository;
+import com.example.Company.model.PaymentOrderModel;
+import com.example.Company.model.pojo.PaymentOrderPojo;
 import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.CompanyRepository;
 import com.example.Company.repository.InvoiceRepository;
+import com.example.Company.repository.PaymentOrderRepository;
 import com.example.Company.service.XMLsecurity.EncryptedStringXmlAdapter;
 import com.example.Company.service.XMLsecurity.KeyStoreReader;
 import com.example.Company.service.jaxws.ProcessBankStatementRequest;
@@ -90,9 +92,12 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	
 	@Autowired
 	private BankStatementRepository bankStatementRepository;
+
+	@Autowired
+	private PaymentOrderRepository paymentOrderRepository;
 	
 	@Override
-	public String sendPaymentOrder(PaymentOrderModel paymentOrderModel) {
+	public String sendPaymentOrder(PaymentOrderPojo paymentOrderModel) {
 		
 		
 		Invoice invoice = invoiceRepository.findOne(paymentOrderModel.getInvoiceId());
@@ -152,12 +157,29 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 		
 		sendSessionKey();
 		
+		PaymentOrderModel paymentOrderDB = new PaymentOrderModel(debtor.getCompanyAccount(),
+				debtor.getReferenceNumber(),
+				debtor.getName(),
+				Integer.parseInt(debtor.getModel()), 
+				creditor.getPartnerAccount(), 
+				creditor.getReferenceNumber(), 
+				creditor.getName(), 
+				Integer.parseInt(creditor.getModel()),
+				invoice.getDateOfValue(), 
+				new Date(), 
+				"Payment based on an invoice",
+				paymentOrderModel.getAmount(), 
+				invoice.getCurrency(), 
+				paymentOrderModel.getUrgent());
+		
+		paymentOrderRepository.save(paymentOrderDB);
+		
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 	    marshaller.setClassesToBeBound(ProcessPaymentOrder.class, ProcessPaymentOrderResponse.class);
 	    setMarshaller(marshaller);
 	    setUnmarshaller(marshaller);
 		ppo = signWithCert(ppo);
-		String uri = "https://localhost:8080/ws/paymentorder";
+		String uri = debtor.getBankUrl();
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, ppo);
 		ProcessPaymentOrderResponse response = (ProcessPaymentOrderResponse) o;
 		return response.getReturn();

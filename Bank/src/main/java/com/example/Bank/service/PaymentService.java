@@ -4,7 +4,6 @@ import com.example.Bank.model.SinglePaymentModel;
 import com.example.service.bankstatement.BankStatement;
 import com.example.service.bankstatementrequest.BankStatementRequest;
 import com.example.service.mt103.Mt103;
-import com.example.service.mt900.Mt900;
 import com.example.service.paymentorder.PaymentOrder;
 
 public interface PaymentService {

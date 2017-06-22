@@ -9,7 +9,9 @@ import com.example.Bank.model.Bank;
 
 public interface BankRepository extends JpaRepository<Bank, Long> {
 
-	List<Bank> findByCode(int code);
+	public List<Bank> findByCode(int code);
 
-	List<Bank> findById(Long id);
+	public List<Bank> findById(Long id);
+	
+	public List<Bank> findBySwiftCode(String swift);
 }

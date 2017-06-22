@@ -81,7 +81,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlRootElement(name = "mt102")
 public class Mt102 {
 
-    @XmlElement(required = true)
+	@XmlElement(required = true)
     protected String messageId;
     @XmlElement(required = true)
     protected String creditorSwift;
@@ -348,5 +348,9 @@ public class Mt102 {
         }
         return this.singlePayment;
     }
+    
+    public void setSinglePayment(List<SinglePayment> singlePayment) {
+		this.singlePayment = singlePayment;
+	}
 
 }

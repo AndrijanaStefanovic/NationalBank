@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Company.model.Invoice;
-import com.example.Company.model.pojo.PaymentOrderModel;
+import com.example.Company.model.pojo.PaymentOrderPojo;
 import com.example.Company.service.InvoiceService;
 import com.example.Company.service.SOAPClientService;
 import com.example.Company.service.SaveToXml;
@@ -105,7 +105,7 @@ public class InvoiceController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.TEXT_PLAIN_VALUE
 			)
-	public String createPaymentOrder(@RequestBody PaymentOrderModel paymentOrderModel) {
+	public String createPaymentOrder(@RequestBody PaymentOrderPojo paymentOrderModel) {
 		return SOAPClientService.sendPaymentOrder(paymentOrderModel);
 	}
 	

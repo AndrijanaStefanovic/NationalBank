@@ -22,7 +22,7 @@ public class Bank {
 	private int code; //3 cifre
 	
 	@Column
-	private String SWIFTcode;
+	private String swiftCode;
 	
 	@Column
 	private String accountNumber;
@@ -57,11 +57,11 @@ public class Bank {
 	}
 
 	public String getSWIFTcode() {
-		return SWIFTcode;
+		return swiftCode;
 	}
 
 	public void setSWIFTcode(String sWIFTcode) {
-		SWIFTcode = sWIFTcode;
+		swiftCode = sWIFTcode;
 	}
 
 	public String getAccountNumber() {

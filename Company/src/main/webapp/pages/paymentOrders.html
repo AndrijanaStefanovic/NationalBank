@@ -1,0 +1,74 @@
+<h1>Payment Orders</h1>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <td><a data-ng-click="sortType = 'id'"> Payment Order id <span
+                data-ng-show="sortType == 'id'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'debtorAccountNumber'"> Debtor Account Number <span
+                data-ng-show="sortType == 'debtorAccountNumber'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'debtorReferenceNumber'"> Debtor Reference Number <span
+                data-ng-show="sortType == 'debtorReferenceNumber'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'debtorInfo'"> Debtor Info <span
+                data-ng-show="sortType == 'debtorInfo'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'debtorModel'"> Debtor Model <span
+                data-ng-show="sortType == 'debtorModel'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'creditorAccountNumber'"> Creditor Account Number <span
+                data-ng-show="sortType == 'creditorAccountNumber'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'creditorReferenceNumber'"> Creditor Reference Number <span
+                data-ng-show="sortType == 'creditorReferenceNumber'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'creditorInfo'"> Creditor Info <span
+                data-ng-show="sortType == 'creditorInfo'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'creditorModel'"> Creditor Model <span
+                data-ng-show="sortType == 'creditorModel'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'dateOfValue'"> Date Of Value <span
+                data-ng-show="sortType == 'dateOfValue'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'dateOfPayment'"> Date Of Payment <span
+                data-ng-show="sortType == 'dateOfPayment'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'paymentPurpose'"> Payment Purpose <span
+                data-ng-show="sortType == 'paymentPurpose'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'amount'"> Amount <span
+                data-ng-show="sortType == 'amount'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'currency'"> Currency <span
+                data-ng-show="sortType == 'currency'" class="fa fa-caret-down"></span>
+        </a></td>
+        <td><a data-ng-click="sortType = 'urgent'"> Urgent <span
+                data-ng-show="sortType == 'urgent'" class="fa fa-caret-down"></span>
+        </a></td>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr data-ng-repeat="x in paymentOrders | orderBy:sortType:sortReverse">
+        <td>{{x.id}}</td>
+        <td>{{x.debtorAccountNumber}}</td>
+        <td>{{x.debtorReferenceNumber}}</td>
+        <td>{{x.debtorInfo}}</td>
+        <td>{{x.debtorModel}}</td>
+        <td>{{x.creditorAccountNumber}}</td>
+        <td>{{x.creditorReferenceNumber}}</td>
+        <td>{{x.creditorInfo}}</td>
+        <td>{{x.creditorModel}}</td>
+        <td>{{x.dateOfValue}}</td>
+        <td>{{x.dateOfPayment}}</td>
+        <td>{{x.paymentPurpose}}</td>
+        <td>{{x.amount}}</td>
+        <td>{{x.currency}}</td>
+        <td>{{x.urgent}}</td>
+    </tr>
+    </tbody>
+</table>
