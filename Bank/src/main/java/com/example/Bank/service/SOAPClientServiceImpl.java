@@ -19,8 +19,9 @@ import com.example.Bank.model.SinglePaymentModel;
 import com.example.Bank.repository.Mt102Repository;
 import com.example.Bank.service.jaxws.ProcessMT102Central;
 import com.example.Bank.service.jaxws.ProcessMT102ResponseCentral;
-import com.example.Bank.service.jaxws.ProcessMT103;
+import com.example.Bank.service.jaxws.ProcessMT103Central;
 import com.example.Bank.service.jaxws.ProcessMT103Response;
+import com.example.Bank.service.jaxws.ProcessMT103ResponseCentral;
 import com.example.service.mt102.Mt102;
 import com.example.service.mt102.SinglePayment;
 import com.example.service.mt103.Mt103;
@@ -116,18 +117,20 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport  implements 
 	
 	@Override
 	public String sendMt103(Mt103 mt103) {
+		System.out.println("Slanje mt103 za banku");
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setClassesToBeBound(ProcessMT103.class, ProcessMT103Response.class);
+        marshaller.setClassesToBeBound(ProcessMT103Central.class, ProcessMT103ResponseCentral.class);
         setMarshaller(marshaller);
         setUnmarshaller(marshaller);
 
-        ProcessMT103 processMt103 = new ProcessMT103();
+        ProcessMT103Central processMt103 = new ProcessMT103Central();
         processMt103.setArg0(mt103);
 
         String uri = "https://localhost:8090/ws/mt103";
         Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processMt103);
-        
-        ProcessMT103Response response = (ProcessMT103Response)o;
+        System.out.println("Poslao mt103");
+        ProcessMT103ResponseCentral response = (ProcessMT103ResponseCentral)o;
+        System.out.println(response.getReturn());
 		return response.getReturn();
 	}
 
