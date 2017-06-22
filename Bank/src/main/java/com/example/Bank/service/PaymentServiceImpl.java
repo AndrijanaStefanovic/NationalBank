@@ -62,13 +62,14 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Override
 	public String createDebtorAccountAnalytics(PaymentOrder paymentOrder, boolean isClearing) {
+		System.out.println("Creating debtor account analytics....");
 		Date dateOfPayment = paymentOrder.getDateOfPayment().toGregorianCalendar().getTime();
 		Date dateOfValue = paymentOrder.getDateOfValue().toGregorianCalendar().getTime();
-		double amount = Double.parseDouble(paymentOrder.getAmount().toString());
+		double amount = paymentOrder.getAmount().doubleValue();
 		double reservedFunds = 0;
 		if(isClearing){
 			amount = 0;
-			reservedFunds = Double.parseDouble(paymentOrder.getAmount().toString());
+			reservedFunds = paymentOrder.getAmount().doubleValue();
 		}
 		List<Account> retList = accountRepository.findByAccountNumber(paymentOrder.getDebtor().getAccountNumber());
 		if(retList.isEmpty()){
@@ -111,6 +112,7 @@ public class PaymentServiceImpl implements PaymentService {
         calendar.set(Calendar.HOUR, 0);
         poDate = calendar.getTime();
         boolean dabExists = false;
+        System.out.println("Seaching through dabs - date: "+poDate);
 		for (DailyAccountBalance dab : debtorsAccount.getDailyAccountBalances()) {
 			Date dabDate = dab.getDate();
 			calendar.setTime(poDate);
@@ -121,23 +123,33 @@ public class PaymentServiceImpl implements PaymentService {
 	        dabDate = calendar.getTime();
 			
 	        if(dabDate.equals(poDate)){
+	        	System.out.println("Found dab!");
+	        	dab.setPreviousBalance(dab.getNewBalance());
+	        	dab.setNewBalance(dab.getNewBalance() - paymentOrder.getAmount().doubleValue());
 	        	dab.getAccountAnalytics().add(debtorsAccountAnalytics);
 	        	debtorsAccountAnalytics.setDailyAccountBalance(dab);
 	        	dab.setNumberOfWithdrawals(dab.getNumberOfWithdrawals() + 1);
-	        	dab.setNewBalance(debtorsAccount.getBalance() - amount);
 	        	dailyAccountBalanceRepository.save(dab);
+				System.out.println("new Balance:"+dab.getNewBalance());
+				System.out.println("previous Balance:"+dab.getPreviousBalance());
 	        	dabExists = true;
 	        	break;
 	        }
 		}
 		if(!dabExists) {
+			System.out.println("Didn't find dab...creating a new one!");
 			DailyAccountBalance newDab = new DailyAccountBalance(poDate, debtorsAccount.getBalance(),
 					1, debtorsAccount.getBalance() - amount, 0, debtorsAccount);
+			if(isClearing) {
+				newDab.setNewBalance(debtorsAccount.getBalance() - reservedFunds);
+			}
 			DailyAccountBalance newDabDB = dailyAccountBalanceRepository.save(newDab);
 			DailyAccountBalance newDab2 = dailyAccountBalanceRepository.findOne(newDabDB.getId());
 			debtorsAccountAnalytics.setDailyAccountBalance(newDab2);
 			newDab2.getAccountAnalytics().add(debtorsAccountAnalytics);
 			debtorsAccount.getDailyAccountBalances().add(newDab2);
+			System.out.println("new Balance:"+newDab2.getNewBalance());
+			System.out.println("previous Balance:"+newDab2.getPreviousBalance());
 			dailyAccountBalanceRepository.save(newDabDB);
 		}
 		if(isClearing){
@@ -147,7 +159,7 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		accountRepository.save(debtorsAccount);
 		accountAnalyticsRepository.save(debtorsAccountAnalytics);
-	
+		
 		return "OK";
 	}
 
@@ -159,6 +171,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public String createCreditorAccountAnalytics(PaymentOrder paymentOrder) {
+		System.out.println("Creating creditor account analytics...");
 		Date dateOfPayment = paymentOrder.getDateOfPayment().toGregorianCalendar().getTime();
 		Date dateOfValue = paymentOrder.getDateOfValue().toGregorianCalendar().getTime();
 		double amount = Double.parseDouble(paymentOrder.getAmount().toString());
@@ -211,7 +224,8 @@ public class PaymentServiceImpl implements PaymentService {
 	        	dab.getAccountAnalytics().add(creditorsAccountAnalytics);
 	        	creditorsAccountAnalytics.setDailyAccountBalance(dab);
 	        	dab.setNumberOfDeposits(dab.getNumberOfDeposits() + 1);
-	        	dab.setNewBalance(creditorsAccount.getBalance() + amount);
+	        	dab.setPreviousBalance(dab.getNewBalance());
+	        	dab.setNewBalance(dab.getNewBalance() + paymentOrder.getAmount().doubleValue());
 	        	dailyAccountBalanceRepository.save(dab);
 	        	dabExists = true;
 	        	break;
@@ -280,13 +294,14 @@ public class PaymentServiceImpl implements PaymentService {
 		creditorsBankData.setSWIFT(creditorsBank.getSWIFTcode());
 		mt103.setCreditorsBank(creditorsBankData);
 
-		
 		mt103.setCurrency(paymentOrder.getCurrency());
 		mt103.setPaymentPurpose(paymentOrder.getPaymentPurpose());
 		mt103.setTotal(paymentOrder.getAmount());
 		System.out.println("kreirao mt103");
 		Mt103Model mt103Model = new Mt103Model(mt103);
 		mt103ModelRepository.save(mt103Model);
+		
+		//reserveFunds(mt103.getDebtor().getAccountNumber(), mt103.getTotal().doubleValue());
 		
 		return mt103;
 	}
@@ -355,7 +370,7 @@ public class PaymentServiceImpl implements PaymentService {
 		List<Mt102Model> mt102s = mt102Repository
 								.findByCreditorSwiftAndSent(creditorsBank.getSWIFTcode(), false);
 		singlePaymentRepository.save(singlePayment);
-		reserveFunds(paymentOrder.getDebtor().getAccountNumber(), paymentOrder.getAmount().doubleValue());
+		//reserveFunds(paymentOrder.getDebtor().getAccountNumber(), paymentOrder.getAmount().doubleValue());
 		if(mt102s.isEmpty()){
 			System.out.println("creating new mt102...");
 			 createMT102Model(paymentOrder, singlePayment);
@@ -402,8 +417,10 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public BankStatement getBankStatement(BankStatementRequest bankStatementRequest) {
+		System.out.println("creating a bank statement for date and account :");
 		System.out.println(bankStatementRequest.getDate().toGregorianCalendar().getTime());
 		System.out.println(bankStatementRequest.getAccountNumber());
+
 		List<Account> accounts = accountRepository.findByAccountNumber(bankStatementRequest.getAccountNumber());
 		if (accounts.isEmpty()) {
 			System.out.println("Nalog nije pronadjen");
@@ -506,6 +523,7 @@ public class PaymentServiceImpl implements PaymentService {
 		bankStatement.setTotalWithdrawn(new BigDecimal(totalWidrawn));
 		bankStatement.setDate(bankStatementRequest.getDate());
 		if(!foundDab){
+			System.out.println("didn't find dab");
 			bankStatement.setNewBalance(new BigDecimal(account.getBalance()));
         	bankStatement.setNumberOfDeposits(0);
     		bankStatement.setNumberOfWithdrawals(0);

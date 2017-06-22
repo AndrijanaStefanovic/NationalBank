@@ -60,10 +60,10 @@ import com.example.Company.model.BankStatementItem;
 import com.example.Company.model.BusinessPartner;
 import com.example.Company.model.Company;
 import com.example.Company.model.Invoice;
-import com.example.Company.model.PaymentOrderModel;
-import com.example.Company.model.pojo.PaymentOrderPojo;
 import com.example.Company.repository.BankStatementItemRepository;
 import com.example.Company.repository.BankStatementRepository;
+import com.example.Company.model.PaymentOrderModel;
+import com.example.Company.model.pojo.PaymentOrderPojo;
 import com.example.Company.repository.BusinessPartnerRepository;
 import com.example.Company.repository.CompanyRepository;
 import com.example.Company.repository.InvoiceRepository;
@@ -96,7 +96,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 
 	@Autowired
 	private PaymentOrderRepository paymentOrderRepository;
-	
+
 	@Autowired
 	private BankStatementItemRepository bankStatementItemRepository;
 
@@ -174,7 +174,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 		setMarshaller(marshaller);
 		setUnmarshaller(marshaller);
 		ppo = signWithCert(ppo);
-		String uri = debtor.getBankUrl();
+		String uri = debtor.getBankUrl() + "paymentorder";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, ppo);
 		ProcessPaymentOrderResponse response = (ProcessPaymentOrderResponse) o;
 		return response.getReturn();
@@ -311,10 +311,16 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	@Override
 	public String sendBankStatementRequest(BankStatementRequest bankStatementRequest) {
 
+		List<Company> companyList = companyRepository.findByCompanyAccount(bankStatementRequest.getAccountNumber());
+		if (companyList.isEmpty()) {
+			return "CompanyAccountNumberError";
+		}
+		Company company = companyList.get(0);
+
 		int sectionNumber = 1;
 
 		while (true) {
-			
+
 			bankStatementRequest.setSectionNumber(sectionNumber);
 
 			Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -325,11 +331,11 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 
 			setMarshaller(marshaller);
 			setUnmarshaller(marshaller);
-			String uri = "https://localhost:8080/ws/bankstatement";
+			String uri = company.getBankUrl() + "bankstatement";
 			Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processBankStatementRequest);
 			ProcessBankStatementRequestResponse response = (ProcessBankStatementRequestResponse) o;
 			com.example.service.bankstatement.BankStatement bs = response.getReturn();
-			
+
 			if (bs.getBankStatementItem().isEmpty()) {
 				break;
 			}
@@ -350,13 +356,13 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 						bsi.getCreditor().getReferenceNumber(), bsi.getTotal().doubleValue(), bsi.getDirection(),
 						bankStatement);
 				bankStatementItemRepository.save(bankStatementItem);
-				bankStatementItems.add(bankStatementItem);		
+				bankStatementItems.add(bankStatementItem);
 			}
-			
+
 			bankStatement.setBankStatementItems(bankStatementItems);
-			
+
 			bankStatementRepository.save(bankStatement);
-			
+
 			sectionNumber++;
 		}
 
