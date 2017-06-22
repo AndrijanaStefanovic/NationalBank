@@ -60,6 +60,7 @@ import com.example.Company.model.BankStatementItem;
 import com.example.Company.model.BusinessPartner;
 import com.example.Company.model.Company;
 import com.example.Company.model.Invoice;
+import com.example.Company.repository.BankStatementItemRepository;
 import com.example.Company.repository.BankStatementRepository;
 import com.example.Company.model.PaymentOrderModel;
 import com.example.Company.model.pojo.PaymentOrderPojo;
@@ -95,6 +96,9 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 
 	@Autowired
 	private PaymentOrderRepository paymentOrderRepository;
+	
+	@Autowired
+	private BankStatementItemRepository bankStatementItemRepository;
 	
 	@Override
 	public String sendPaymentOrder(PaymentOrderPojo paymentOrderModel) {
@@ -179,7 +183,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	    setMarshaller(marshaller);
 	    setUnmarshaller(marshaller);
 		ppo = signWithCert(ppo);
-		String uri = debtor.getBankUrl();
+		String uri = debtor.getBankUrl()+"paymentorder";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, ppo);
 		ProcessPaymentOrderResponse response = (ProcessPaymentOrderResponse) o;
 		return response.getReturn();
@@ -317,6 +321,12 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	@Override
 	public String sendBankStatementRequest(BankStatementRequest bankStatementRequest) {
 		
+		List<Company> companyList = companyRepository.findByCompanyAccount(bankStatementRequest.getAccountNumber());
+		if(companyList.isEmpty()){
+			return "CompanyAccountNumberError";
+		}
+		Company company = companyList.get(0);	
+		
 		bankStatementRequest.setSectionNumber(1); //ispraviti
 		
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -326,7 +336,8 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 	    
 	    setMarshaller(marshaller);
 	    setUnmarshaller(marshaller);
-		String uri = "https://localhost:8080/ws/bankstatement";
+	   
+		String uri = company.getBankUrl() + "bankstatement";
 		Object o = getWebServiceTemplate().marshalSendAndReceive(uri, processBankStatementRequest);
 		ProcessBankStatementRequestResponse response = (ProcessBankStatementRequestResponse) o;
 		com.example.service.bankstatement.BankStatement bs = response.getReturn();
@@ -336,6 +347,8 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 				bs.getNumberOfDeposits(), bs.getTotalDeposited().doubleValue(), bs.getNumberOfWithdrawals(), 
 				bs.getTotalWithdrawn().doubleValue(), bs.getNewBalance().doubleValue());
 		
+		bankStatementRepository.save(bankStatement);
+		
 		ArrayList<BankStatementItem> bankStatementItems = new ArrayList<BankStatementItem>();
 		for (com.example.service.bankstatement.BankStatement.BankStatementItem bsi : bs.getBankStatementItem()) {
 			BankStatementItem bankStatementItem = new BankStatementItem(bsi.getDebtor().getInfo(), bsi.getPaymentPurpose(),
@@ -344,6 +357,7 @@ public class SOAPClientServiceImpl extends WebServiceGatewaySupport implements S
 					bsi.getDebtor().getReferenceNumber(), bsi.getCreditor().getAccountNumber(), bsi.getCreditor().getModel(), 
 					bsi.getCreditor().getReferenceNumber(), bsi.getTotal().doubleValue(), bsi.getDirection(), bankStatement);
 			bankStatementItems.add(bankStatementItem);
+			bankStatementItemRepository.save(bankStatementItem);
 		}
 		
 		bankStatement.setBankStatementItems(bankStatementItems);

@@ -59,11 +59,11 @@ import com.example.service.security.EncryptedStringXmlAdapter;
 })
 public class TCompanyData {
 
-	@XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
+	//@XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     @XmlElement(required = true)
     protected String info;
     @XmlElement(required = true)
-    @XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
+    //@XmlJavaTypeAdapter(value = EncryptedStringXmlAdapter.class)
     protected String accountNumber;
     @XmlElement(required = true)
     protected String referenceNumber;

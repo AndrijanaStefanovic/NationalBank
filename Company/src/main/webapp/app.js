@@ -1,12 +1,7 @@
 'use-strict';
 
-<<<<<<< HEAD
 angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller',
-							'bankStatementItem.controller'])
-=======
-angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller', 'paymentOrder.controller'])
->>>>>>> 612bc18641528c7371437e2f064b6aa20016b867
-
+							'bankStatementItem.controller', 'paymentOrder.controller'])
 
 	.config(function($stateProvider, $urlRouterProvider) {
 

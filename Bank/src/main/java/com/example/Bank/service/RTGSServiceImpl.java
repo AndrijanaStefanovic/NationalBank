@@ -73,6 +73,7 @@ public class RTGSServiceImpl implements RTGSService {
 		calendar.set(Calendar.HOUR, 0);
 		Date dateOfOrder = calendar.getTime();
 
+		System.out.println("date of order: "+dateOfOrder);
 		for (DailyAccountBalance dab : debtorsAccount.getDailyAccountBalances()) {
 			System.out.println("searching through dabs....");
 			calendar.setTime(dab.getDate());
@@ -85,13 +86,14 @@ public class RTGSServiceImpl implements RTGSService {
 			if (dateOfOrder.equals(dabDate)) {
 				System.out.println("found dab with adequate date...");
 				for (AccountAnalytics aa : dab.getAccountAnalytics()) {
+					System.out.println("mt 103 total:"+mt103.getTotal());
 					if (aa.getDebtorsAccountNumber().equals(mt103.getDebtorAccountNumber())
 							&& aa.getReservedFunds() == mt103.getTotal()) {
 						System.out.println("found account analytics...");
 						aa.setReservedFunds(0);
 						aa.setAmount(mt103.getTotal());
-						dab.setPreviousBalance(dab.getNewBalance());
-						dab.setNewBalance(dab.getNewBalance() - mt103.getTotal());
+						//dab.setPreviousBalance(dab.getNewBalance());
+						//dab.setNewBalance(dab.getNewBalance() - mt103.getTotal());
 						dailyAccountBalanceRepository.save(dab);
 						accountAnalyticsRepository.save(aa);
 						break;
@@ -138,7 +140,7 @@ public class RTGSServiceImpl implements RTGSService {
 		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		Date today = calendar.getTime();
 
 		boolean foundDab = false;
@@ -148,7 +150,7 @@ public class RTGSServiceImpl implements RTGSService {
 			calendar.set(Calendar.MILLISECOND, 0);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
 			Date dabDate = calendar.getTime();
 
 			if (today.equals(dabDate)) {

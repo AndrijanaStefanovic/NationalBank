@@ -144,8 +144,8 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 							System.out.println("found account analytics...");
 							aa.setReservedFunds(0);
 							aa.setAmount(spm.getTotal());
-							dab.setPreviousBalance(dab.getNewBalance());
-							dab.setNewBalance(dab.getNewBalance() - spm.getTotal());
+							//dab.setPreviousBalance(dab.getNewBalance());
+							//dab.setNewBalance(dab.getNewBalance() - spm.getTotal());
 							dailyAccountBalanceRepository.save(dab);
 							accountAnalyticsRepository.save(aa);
 							break;

@@ -19,4 +19,6 @@ public interface CompanyRepository extends Repository<Company, Long> {
 	public Page<Company> findAll(Pageable pageable);
 
 	public List<Company> findByCompanyPIB(String companyPIB);
+	
+	public List<Company> findByCompanyAccount(String companyAccount);
 }
