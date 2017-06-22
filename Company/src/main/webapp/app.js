@@ -1,6 +1,7 @@
 'use-strict';
 
-angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller'])
+angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller', 'invoiceItem.controller', 'bankStatement.controller','company.controller', 'businessPartner.controller',
+							'bankStatementItem.controller'])
 
 
 	.config(function($stateProvider, $urlRouterProvider) {
