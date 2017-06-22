@@ -26,4 +26,8 @@ bankStatementModule.controller('bankStatementController', ['$scope','$location',
 	    });
 	});
 	
+	$scope.showBankStatementItems = function(id){
+		$location.path("/bankStatementItems/"+id);
+	}
+	
 }]);
