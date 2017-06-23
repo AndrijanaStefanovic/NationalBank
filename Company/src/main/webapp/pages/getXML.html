@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Example 1</title>
+    <link rel="stylesheet" href="css/style.css" media="all" />
+  </head>
+  <body>
+    <header class="clearfix">
+      <div id="logo">
+        <img src="css/logo.png">
+      </div>
+      <h1> INVOICE </h1>
+      <div id="company" class="clearfix">
+      	<div><b>MESSAGE ID:</b> {{messageId}}</div>
+      	<div><b>SUPPLIER NAME:</b> {{supplierName}}</div>
+        <div><b>SUPPLIER ADDRESS:</b> {{supplierAddress}}</div>
+        <div><b>SUPPLIER PIB:</b> {{supplierPIB}}</div>
+      </div>
+      <div id="project">
+       <div><b>BUYER NAME:</b> {{buyerName}}</div>
+        <div><b>BUYER ADDRESS:</b> {{buyerAddress}}</div>
+        <div><b>BUYER PIB:</b> {{buyerPIB}}</div>     
+      </div>        
+    </header>
+    <hr> 
+    <div id="company">
+      <div><b>Account Number: </b> {{accountNumber}}</div>
+      <div><b>Date: </b>{{dateOfInvoice}}</div>
+    </div> 
+    <div id="project">
+    	<div><b>Merchandise Value: </b> {{merchandiseValue}}</div>	
+    	<div><b>Service Value: </b> {{servicesValue}}</div>
+    	<div><b>Total Value: </b> {{totalValue}}</div>	
+    	<div><b>Total Discount: </b> {{totalDiscount}}</div>
+    	<div><b>Total Tax: </b> {{totalTax}}</div>	
+    	<div><b>Currency: </b> {{currency}}</div>
+    	<div><b>Total Due: </b> {{totalDue}}</div>	
+    	<div><b>Billing Account Number: </b> {{billingAccountNumber}}</div>
+    	<div><b>Date of Value: </b> {{dateOfValue}}</div>	
+    </div> 
+    <main>
+      <table>
+        <thead>
+          <tr>
+            <th class="service">NUMBER</th>
+            <th class="service">NAME</th>
+            <th class="service">AMOUNT</th>
+            <th class="service">MES_UNIT</th>
+            <th class="service">UNIT_PRICE</th>
+            <th class="service">VALUE</th>
+            <th class="service">DISCOUNT_PERCENT</th>            
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="service">{{number}}</td>
+            <td class="service">{{name}}</td>
+            <td class="service">{{amount}}</td>
+            <td class="service">{{measurmentUnit}}</td>
+            <td class="service">${{unitPrice}}</td>
+            <td class="service">${{value}}</td>
+            <td class="service">{{discountPercent}}</td>
+          </tr>
+          <tr>
+            <td colspan="6">TOTAL DISCOUNT</td>
+            <td class="total">${{totalDiscount}}</td>
+          </tr>
+          <tr>
+            <td colspan="6">SUB.DISCOUNT</td>
+            <td class="total">${{subtractedDiscount}}</td>
+          </tr>
+          <tr>
+            <td colspan="6" class="grand total">TOTAL TAX</td>
+            <td class="grand total">${{totalTax}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <footer>
+      Invoice was created!
+    </footer>
+  </body>
+</html>
