@@ -124,7 +124,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 			calendar.set(Calendar.MILLISECOND, 0);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
 			Date dateOfOrder = calendar.getTime();
 
 			for (DailyAccountBalance dab : debtorsAccount.getDailyAccountBalances()) {
@@ -133,7 +133,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 				calendar.set(Calendar.MILLISECOND, 0);
 				calendar.set(Calendar.SECOND, 0);
 				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.HOUR, 0);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
 				Date dabDate = calendar.getTime();
 
 				if (dateOfOrder.equals(dabDate)) {
@@ -207,7 +207,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 			calendar.set(Calendar.MILLISECOND, 0);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
 			Date today = calendar.getTime();
 			
 			boolean foundDab = false;
@@ -217,7 +217,7 @@ public class ClearingServiceImpl extends WebServiceGatewaySupport implements Cle
 				calendar.set(Calendar.MILLISECOND, 0);
 				calendar.set(Calendar.SECOND, 0);
 				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.HOUR, 0);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
 				Date dabDate = calendar.getTime();
 
 				if (today.equals(dabDate)) {

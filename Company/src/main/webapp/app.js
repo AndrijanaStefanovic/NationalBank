@@ -56,5 +56,10 @@ angular.module('company', [ 'ui.router','invoice.controller', 'getXML.controller
 			templateUrl : 'pages/paymentOrders.html',
 			controller : 'paymentOrderController'
 		})
+		
+		.state('home', {
+			url : '/home',
+			templateUrl : 'pages/home.html'
+		})
 
 	});

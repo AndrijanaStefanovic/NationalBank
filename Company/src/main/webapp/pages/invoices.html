@@ -117,9 +117,9 @@
 			<td><a data-ng-click="sortType = 'buyerPIB'"> Buyer PIB <span
 					data-ng-show="sortType == 'buyerPIB'" class="fa fa-caret-down"></span>
 			</a></td>
-			<td><a data-ng-click="sortType = 'accountNumber'"> Account number <span
+<!-- 			<td><a data-ng-click="sortType = 'accountNumber'"> Account number <span
 					data-ng-show="sortType == 'accountNumber'" class="fa fa-caret-down"></span>
-			</a></td>
+			</a></td> -->
 			<td><a data-ng-click="sortType = 'dateOfInvoice'"> Date of invoice <span
 					data-ng-show="sortType == 'dateOfInvoice'" class="fa fa-caret-down"></span>
 			</a></td>
@@ -162,7 +162,7 @@
 			<td>{{x.buyerName}}</td>
 			<td>{{x.buyerAddress}}</td>
 			<td>{{x.buyerPIB}}</td>
-			<td>{{x.accountNumber}}</td>
+			<!-- <td>{{x.accountNumber}}</td> -->
 			<td>{{x.dateOfInvoice}}</td>
 			<td>{{x.merchandiseValue}}</td>
 			<td>{{x.servicesValue}}</td>
@@ -220,7 +220,7 @@
 </div>
 
 
-<button id="payInvoiceButton" type="button" class="btn btn-info" data-toggle="modal" data-target="#payInvoiceModal" hidden="true">Pay</button>
+<button id="payInvoiceButton" type="button" class="btn btn-info" data-toggle="modal" data-target="#payInvoiceModal" style="display: none;">Pay</button>
 
 <div id="payInvoiceModal" class="modal fade" role="dialog">
 	<div class="modal-dialog">

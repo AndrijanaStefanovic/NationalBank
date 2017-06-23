@@ -26,7 +26,7 @@ public class Company {
 	@Column(length = 11, nullable = false)
 	private String companyPIB;
 	
-	@Column(length = 18, nullable = false)
+	@Column(length = 20, nullable = false)
 	private String companyAccount; 
 	
 	@Column(length = 20, nullable = false)

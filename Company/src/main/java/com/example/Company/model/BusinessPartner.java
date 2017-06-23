@@ -28,7 +28,7 @@ public class BusinessPartner {
 	@Column(length = 11, nullable = false)
 	private String partnerPIB;
 	
-	@Column(length = 18, nullable = false)
+	@Column(length = 20, nullable = false)
 	private String partnerAccount;	
 
 	@Column(length = 20, nullable = false)

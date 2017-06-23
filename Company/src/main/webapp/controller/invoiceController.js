@@ -7,12 +7,46 @@ invoiceModule.controller('invoiceController', ['$scope','$window', '$location', 
 	angular.element(document).ready(function () {
 			$http.get('/invoice/getSentInvoices').then(function(response) {
 			   $scope.sentInvoices = response.data;
+			   
+			   for(i=0; i<$scope.sentInvoices.length; i++){
+	   			   var date = new Date($scope.sentInvoices[i].dateOfInvoice);
+	   			   var month = date.getMonth() + 1;
+	   			   var day = date.getDate();
+	   			   var year = date.getFullYear();
+	   			   var shortStartDate = day + "/" + month + "/" + year;
+	   			   $scope.sentInvoices[i].dateOfInvoice = shortStartDate;
+	   			   
+	   			   var date2 = new Date($scope.sentInvoices[i].dateOfValue);
+	   			   var month2 = date2.getMonth() + 1;
+	   			   var day2 = date2.getDate();
+	   			   var year2 = date2.getFullYear();
+	   			   var shortStartDate2 = day2 + "/" + month2 + "/" + year2;
+	   			   $scope.sentInvoices[i].dateOfValue = shortStartDate2;
+			   }
+			   
 			}, function(response) {
 				alert(response.statusText);
 		    });
 			
 			$http.get('/invoice/getReceivedInvoices').then(function(response) {
 				   $scope.receivedInvoices = response.data;
+				   
+				   for(i=0; i<$scope.receivedInvoices.length; i++){
+		   			   var date = new Date($scope.receivedInvoices[i].dateOfInvoice);
+		   			   var month = date.getMonth() + 1;
+		   			   var day = date.getDate();
+		   			   var year = date.getFullYear();
+		   			   var shortStartDate = day + "/" + month + "/" + year;
+		   			   $scope.receivedInvoices[i].dateOfInvoice = shortStartDate;
+		   			   
+		   			   var date2 = new Date($scope.receivedInvoices[i].dateOfValue);
+		   			   var month2 = date2.getMonth() + 1;
+		   			   var day2 = date2.getDate();
+		   			   var year2 = date2.getFullYear();
+		   			   var shortStartDate2 = day2 + "/" + month2 + "/" + year2;
+		   			   $scope.receivedInvoices[i].dateOfValue = shortStartDate2;
+				   }
+				   
 				}, function(response) {
 					alert(response.statusText);
 			    });
