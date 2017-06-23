@@ -76,36 +76,3 @@
 </table>
 
 
-<button type="button" class="btn btn-info" data-toggle="modal" data-target="#newBankStatementItemModal">New bank statement item</button>
-
-<div id="newBankStatementItemModal" class="modal fade" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">New bank statement item</h4>
-			</div>
-			<div class="modal-body">
-				<input type="text" placeholder="Debtor" data-ng-model="bankStatementItem.debtor"><br>
-				<input type="text" placeholder="Payment purpose" data-ng-model="bankStatementItem.paymentPurpose"><br>
-				<input type="text" placeholder="Creditor" data-ng-model="bankStatementItem.creditor"><br>
-				<input type="date" placeholder="Date of account" data-ng-model="bankStatementItem.dateOfAccount"><br>
-				<input type="date" placeholder="Date of value" data-ng-model="bankStatementItem.dateOfValue"><br>
-				<input type="text" placeholder="Debtor account" data-ng-model="bankStatementItem.debtorAccount"><br>
-				<input type="text" placeholder="Debtor model" data-ng-model="bankStatementItem.debtorModel"><br>
-				<input type="text" placeholder="Debtor reference number" data-ng-model="bankStatementItem.debtorReferenceNumber"><br>
-				<input type="text" placeholder="Creditor account" data-ng-model="bankStatementItem.creditorAccount"><br>
-				<input type="text" placeholder="Creditor model" data-ng-model="bankStatementItem.creditorModel"><br>
-				<input type="text" placeholder="Creditor reference number" data-ng-model="bankStatementItem.creditorReferenceNumber"><br>
-				<input type="text" placeholder="Amount" data-ng-model="bankStatementItem.amount"><br>
-				<input type="text" placeholder="Direction" data-ng-model="bankStatementItem.direction"><br>
-				<input type="text" placeholder="Bank statement" data-ng-model="bankStatementItem.bankStatement"><br>
-				<br>
-			</div>
-			<div class="modal-footer">
-				<button data-ng-click="submitBankStatementItem()" class="btn btn-primary">Create</button>
-				<input type="button" class="btn btn-primary" value="Cancel" data-dismiss="modal">
-			</div>
-		</div>
-	</div>
-</div>

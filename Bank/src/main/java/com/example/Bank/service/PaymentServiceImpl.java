@@ -454,7 +454,12 @@ public class PaymentServiceImpl implements PaymentService {
 	        if (dabDate.equals(bsrDate)) {
 	        	System.out.println("found dab...");
 	        	foundDab = true;
-	        	for (AccountAnalytics accountAnalytic : dab.getAccountAnalytics()) {
+	 
+	        	for (int i = (bankStatementRequest.getSectionNumber() - 1)*3; i < dab.getAccountAnalytics().size(); i++) {
+	        		if (bankStatementItems.size() == 3) {
+	        			break;
+	        		}
+	        		AccountAnalytics accountAnalytic = dab.getAccountAnalytics().get(i);
 	        		BankStatementItem bankStatementItem = new BankStatementItem();
 	        		
 	        		com.example.service.bankstatement.TCompanyData creditorData =  new com.example.service.bankstatement.TCompanyData();
@@ -510,6 +515,7 @@ public class PaymentServiceImpl implements PaymentService {
 	        }
 		}
 		
+		bankStatement.setBankStatementItem(bankStatementItems);
 		bankStatement.setAccountNumber(bankStatementRequest.getAccountNumber());
 		bankStatement.setDate(bankStatementRequest.getDate());		
 		bankStatement.setSectionNumber(bankStatementRequest.getSectionNumber());

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Company.model.BankStatement;
 import com.example.Company.model.BankStatementItem;
 import com.example.Company.service.BankStatementItemService;
 
